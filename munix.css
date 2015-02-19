@@ -1,0 +1,18 @@
+BODY {
+    max-width: 40em;
+    text-align: justify;
+}
+H1 {
+    text-align: center;
+    border: 0.1em solid black;
+}
+H2 {
+    display: inline-block;
+    border-bottom: 0.1em solid black;    
+}
+H3 {
+}
+BLOCKQUOTE {
+    margin-left: 1em;
+    margin-right: 2em;
+}
