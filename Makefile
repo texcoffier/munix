@@ -7,6 +7,14 @@ install:munix.html
 
 munix.html:munix.rst
 
+regtest:
+	./colorize_regtest.py
+
+CONVERT = preamble.py colorize.py
+
+colorize.js:regtest $(CONVERT)
+	cat $(CONVERT) | RapydScript/bin/rapydscript --prettify --bare >$@
+
 clean:
 	@echo "CLEANING"
 	-rm *~ *.pyc munix.html 2>/dev/null

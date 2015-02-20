@@ -1,0 +1,12 @@
+<script src="colorize.js"></script>
+<input id="input" value="a" onkeyup="update()">
+<pre id="output"></pre>
+<script>
+  function update()
+  {
+  var v = document.getElementById("input").value ;
+  var p = new Parser(v);
+  document.getElementById("output").innerHTML = p.parse().nice() ;
+  }
+  update() ;
+</script>

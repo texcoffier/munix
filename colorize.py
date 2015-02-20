@@ -1,21 +1,28 @@
-#!/usr/bin/python
-
-# Missing $() & &&
+# Missing * ? [] $() & && 
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
 digit = "0123456789"
-name  = alpha + digit
+names = alpha + digit
 
-class Container(object):
-    def __init__(self, content=()):
-        self.content = list(content)
+def name(obj):
+    try:
+        return obj.__class__.__name__
+    except:
+        return obj.__proto__.constructor.name
+
+def pad(x):
+    return "                                                         "[:x]
+
+class Container:
+    def __init__(self):
+        self.content = []
     def append(self, item):
         self.content.append(item)
-    def __str__(self):
-        return self.__class__.__name__ + '(' + ','.join(str(x)
-                                                        for x in self.content
-                                                    ) + ')'
+    def str(self):
+        return name(self) + '(' + ','.join([x.str()
+                                            for x in self.content
+                                        ]) + ')'
     def extract_last_separator(self):
         if not self.content:
             return ''
@@ -23,18 +30,19 @@ class Container(object):
             return self.content.pop().content
         try:
             return self.content[-1].extract_last_separator()
-        except AttributeError:
+        except:
             return ''
     def nice(self, depth=0):
         return ('C'
-                + ' '*depth
-                + self.__class__.__name__ + '[%d]\n' % len(self.content)
-                + ''.join(x.nice(depth+4)
-                          for x in self.content)
+                + pad(depth)
+                + name(self) + '\n'
+                + ''.join([x.nice(depth+4)
+                           for x in self.content
+                       ])
             )
     def nr_arguments(self):
-        return sum(x.nr_arguments()
-                   for x in self.content)
+        return sum([x.nr_arguments()
+                    for x in self.content])
         
 class Line(Container):
     pass
@@ -44,12 +52,12 @@ class Command(Container):
     pass
 class Argument(Container):
     def append(self, item):
-        if self.content and self.content[-1].__class__ is item.__class__:
+        if len(self.content) != 0 and name(self.content[-1]) == name(item):
             self.content[-1].content += item.content
         else:
             self.content.append(item)
     def nice(self, depth=0):
-        return 'A' + ' '*depth + ' '.join(str(x) for x in self.content) + '\n'
+        return 'A' + pad(depth) + ' '.join([x.str() for x in self.content])+'\n'
     def nr_arguments(self):
         return 1
 class Redirection(Argument):
@@ -57,13 +65,13 @@ class Redirection(Argument):
 class File(Container):
     pass
 
-class Chars(object):
+class Chars:
     def __init__(self, chars):
         self.content = chars
-    def __str__(self):
-        return '%s(%s)' % (self.__class__.__name__, repr(self.content))
+    def str(self):
+        return name(self) + '(' + repr(self.content) + ')'
     def nice(self, depth):
-        return 'C' + ' '*depth + str(self) + '\n'
+        return 'C' + pad(depth) + self.str() + '\n'
     def nr_arguments(self):
         return 0
     
@@ -71,12 +79,15 @@ class Normal(Chars):
     pass
 class Separator(Chars):
     def nice(self, depth):
-        return  'S' + ' '*depth + '%s(%s)\n' % (
-            self.__class__.__name__, repr(self.content))
+        return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
 class Pipe(Separator):
     pass
+def _Pipe(x): # RapydScript can not pass class as function argument
+    return Pipe(x)
 class DotComa(Separator):
     pass
+def _DotComa(x): # RapydScript can not pass class as function argument
+    return DotComa(x)
 class Variable(Chars):
     pass
 class Unterminated(Chars):
@@ -102,7 +113,6 @@ class Parser:
         self.text = text.strip()
         self.len = len(self.text)
     def empty(self):
-        assert self.i <= self.len
         return self.len == self.i
     def get(self):
         return self.text[self.i]
@@ -132,15 +142,15 @@ class Parser:
         parsed = Line()
         while not self.empty():
             parsed.append(self.parse_pipeline())
-            self.merge_separator(parsed, ';', DotComa)
-        if parsed.content and isinstance(parsed.content[-1], DotComa):
+            self.merge_separator(parsed, ';', _DotComa)
+        if len(parsed.content) != 0 and isinstance(parsed.content[-1], DotComa):
             parsed.content[-1] = Unterminated(parsed.content[-1].content)
         return parsed
     def parse_pipeline(self):
         parsed = Pipeline()
         while not self.empty():
             parsed.append(self.parse_command())
-            self.merge_separator(parsed, '|', Pipe)
+            self.merge_separator(parsed, '|', _Pipe)
             if not self.empty() and self.get() == ';':
                 break
         if parsed.content and isinstance(parsed.content[-1], Pipe):
@@ -173,7 +183,7 @@ class Parser:
         c = self.get()
         if c not in ' \t':
             return True
-        parsed.append(Separator(self.skip(" \t")))        
+        parsed.append(Separator(self.skip(" \t")))
     def read_redirection(self, parsed):
         i = self.i
         fildes = self.skip(digit)
@@ -196,7 +206,9 @@ class Parser:
             else:
                 redirection.append(Unterminated("&"))
         else:
-            redirection.append(File(self.parse_argument().content))
+            f = File()
+            f.content = self.parse_argument().content
+            redirection.append(f)
         parsed.append(redirection)
         
     def read_backslash(self, parsed):
@@ -219,7 +231,7 @@ class Parser:
             c = self.get()
             if c in alpha:
                 parsed.append(Dollar('$'))
-                parsed.append(Variable(self.skip(name)))
+                parsed.append(Variable(self.skip(names)))
             else:
                 parsed.append(Normal('$')) # Assume its signification disapear
     def read_quote(self, parsed):
@@ -274,48 +286,3 @@ class Parser:
                 parsed.append(Normal(c))
                 self.next()
         return parsed
-
-
-def check(input, output):
-    p = Parser(input)
-    result = str(p.parse())
-    if result != output:
-        print 'Input   :', input
-        print 'Output  :', result
-        print 'Expected:', output
-        print p.parse().nice()
-        for i in range(len(output)):
-            if result[i] != output[i]:
-                break
-        print '===>' + result[i:]
-        bug
-
-check("", "Line()")
-check("a", "Line(Pipeline(Command(Argument(Normal('a')))))")
-check("aa", "Line(Pipeline(Command(Argument(Normal('aa')))))")
-check("a aa  a", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('aa')),Separator('  '),Argument(Normal('a')))))")
-check("a\\ a\\ \\   \\    \\", r"Line(Pipeline(Command(Argument(Normal('a'),Backslash('\\'),Normal(' a'),Backslash('\\'),Normal(' '),Backslash('\\'),Normal(' ')),Separator('  '),Argument(Backslash('\\'),Normal(' ')),Separator('   '),Argument(Unterminated('\\')))))")
-check("' ' '  ' '\\' '\\\\' '\\\\\\' '", r"""Line(Pipeline(Command(Argument(Quote("'"),Normal(' '),Quote("'")),Separator(' '),Argument(Quote("'"),Normal('  '),Quote("'")),Separator(' '),Argument(Quote("'"),Normal('\\'),Quote("'")),Separator(' '),Argument(Quote("'"),Normal('\\\\'),Quote("'")),Separator(' '),Argument(Quote("'"),Normal('\\\\\\'),Quote("'")),Separator(' '),Argument(Unterminated("'")))))""")
-check("a'b", """Line(Pipeline(Command(Argument(Normal('a'),Unterminated("'"),Normal('b')))))""")
-check("$A '$B' \\$B $/ $B1/ $", r"""Line(Pipeline(Command(Argument(Dollar('$'),Variable('A')),Separator(' '),Argument(Quote("'"),Normal('$B'),Quote("'")),Separator(' '),Argument(Backslash('\\'),Normal('$B')),Separator(' '),Argument(Normal('$/')),Separator(' '),Argument(Dollar('$'),Variable('B1'),Normal('/')),Separator(' '),Argument(Normal('$')))))""")
-check("$A$B", "Line(Pipeline(Command(Argument(Dollar('$'),Variable('A'),Dollar('$'),Variable('B')))))")
-check('"A $B \\$C \\"" "', r"""Line(Pipeline(Command(Argument(Guillemet('"'),Normal('A '),Dollar('$'),Variable('B'),Normal(' '),Backslash('\\'),Normal('$C '),Backslash('\\'),Normal('"'),Guillemet('"')),Separator(' '),Argument(Unterminated('"')))))""")
-check('"$" "a', """Line(Pipeline(Command(Argument(Guillemet('"'),Normal('$'),Guillemet('"')),Separator(' '),Argument(Unterminated("'"),Normal('a')))))""")
-check('a>b', "Line(Pipeline(Command(Argument(Normal('a')),Redirection(Fildes(''),Direction('>'),File(Normal('b'))))))")
-check('a >$C >>\\$ <" $A"', r"""Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Redirection(Fildes(''),Direction('>'),File(Dollar('$'),Variable('C'))),Separator(' '),Redirection(Fildes(''),Direction('>>'),File(Backslash('\\'),Normal('$'))),Separator(' '),Redirection(Fildes(''),Direction('<'),File(Guillemet('"'),Normal(' '),Dollar('$'),Variable('A'),Guillemet('"'))))))""")
-check("22>A B", "Line(Pipeline(Command(Redirection(Fildes('22'),Direction('>'),File(Normal('A'))),Separator(' '),Argument(Normal('B')))))")
-check("a >&23", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Redirection(Fildes(''),Direction('>'),Fildes('&23')))))")
-check("a | b", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')))))")
-check("a|b", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe('|'),Command(Argument(Normal('b')))))")
-check("a | b c | d e f", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')),Separator(' '),Argument(Normal('c'))),Pipe(' | '),Command(Argument(Normal('d')),Separator(' '),Argument(Normal('e')),Separator(' '),Argument(Normal('f')))))")
-check("|a", "Line(Pipeline(Command(),Unterminated('|'),Command(Argument(Normal('a')))))")
-check("a | ", "Line(Pipeline(Command(Argument(Normal('a'))),Unterminated(' |')))")
-check("a;b ; c", "Line(Pipeline(Command(Argument(Normal('a')))),DotComa(';'),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('c')))))")
-check(";a;", "Line(Pipeline(Command()),Unterminated(';'),Pipeline(Command(Argument(Normal('a')))),Unterminated(';'))")
-check("a | b ; c | d", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('c'))),Pipe(' | '),Command(Argument(Normal('d')))))")
-check("a#b", "Line(Pipeline(Command(Argument(Normal('a#b')))))")
-check("a #b", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' #b'))))")
-
-print "OK"
-
-        
