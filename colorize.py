@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Missing ; # $() & &&
+# Missing $() & &&
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
@@ -17,14 +17,13 @@ class Container(object):
                                                         for x in self.content
                                                     ) + ')'
     def extract_last_separator(self):
-        if self.content and isinstance(self.content[-1], Separator):
-            return self.content.pop().content
-        else:
+        if not self.content:
             return ''
-    def extract_first_separator(self):
-        if self.content and isinstance(self.content[0], Separator):
-            return self.content.pop(0).content
-        else:
+        if  isinstance(self.content[-1], Separator):
+            return self.content.pop().content
+        try:
+            return self.content[-1].extract_last_separator()
+        except AttributeError:
             return ''
     def nice(self, depth=0):
         return ('C'
@@ -33,6 +32,10 @@ class Container(object):
                 + ''.join(x.nice(depth+4)
                           for x in self.content)
             )
+    def nr_arguments(self):
+        return sum(x.nr_arguments()
+                   for x in self.content)
+        
 class Line(Container):
     pass
 class Pipeline(Container):
@@ -47,6 +50,8 @@ class Argument(Container):
             self.content.append(item)
     def nice(self, depth=0):
         return 'A' + ' '*depth + ' '.join(str(x) for x in self.content) + '\n'
+    def nr_arguments(self):
+        return 1
 class Redirection(Argument):
     pass
 class File(Container):
@@ -59,6 +64,8 @@ class Chars(object):
         return '%s(%s)' % (self.__class__.__name__, repr(self.content))
     def nice(self, depth):
         return 'C' + ' '*depth + str(self) + '\n'
+    def nr_arguments(self):
+        return 0
     
 class Normal(Chars):
     pass
@@ -67,6 +74,8 @@ class Separator(Chars):
         return  'S' + ' '*depth + '%s(%s)\n' % (
             self.__class__.__name__, repr(self.content))
 class Pipe(Separator):
+    pass
+class DotComa(Separator):
     pass
 class Variable(Chars):
     pass
@@ -108,27 +117,43 @@ class Parser:
             else:
                 break
         return s
+    def merge_separator(self, parsed, char, classe):
+        if self.empty() or self.get() != char:
+            return
+        text = parsed.content[-1].extract_last_separator() + self.get()
+        self.next()
+        text += self.skip(" \t")
+        if parsed.content[-1].nr_arguments() == 0:
+            parsed.append(Unterminated(text))
+        else:
+            parsed.append(classe(text))
     def parse(self):
         self.i = 0
         parsed = Line()
         while not self.empty():
             parsed.append(self.parse_pipeline())
+            self.merge_separator(parsed, ';', DotComa)
+        if parsed.content and isinstance(parsed.content[-1], DotComa):
+            parsed.content[-1] = Unterminated(parsed.content[-1].content)
         return parsed
     def parse_pipeline(self):
         parsed = Pipeline()
         while not self.empty():
             parsed.append(self.parse_command())
-            if not self.empty() and self.get() == '|':
-                self.next()
-                before = parsed.content[-1].extract_last_separator() + '|'
-                if len(parsed.content[-1].content) == 0:
-                    parsed.append(Unterminated(before))
-                else:
-                    before += self.skip(" \t")
-                    parsed.append(Pipe(before))
+            self.merge_separator(parsed, '|', Pipe)
+            if not self.empty() and self.get() == ';':
+                break
         if parsed.content and isinstance(parsed.content[-1], Pipe):
             parsed.content[-1] = Unterminated(parsed.content[-1].content)
         return parsed
+    def read_comment(self, parsed):
+        if (self.get() != '#'
+            or len(parsed.content) == 0
+            or not isinstance(parsed.content[-1], Separator)
+            ):
+            return True
+        parsed.content[-1].content += self.text[self.i:]
+        self.i = self.len
     def parse_command(self):
         parsed = Command()
         while not self.empty():
@@ -137,7 +162,9 @@ class Parser:
                         or not self.read_redirection(parsed))):
                 pass
             if not self.empty():
-                if self.get() == '|':
+                if not self.read_comment(parsed):
+                    return parsed
+                if self.get() in '|;':
                     return parsed
             if not self.empty():
                 parsed.append(self.parse_argument())
@@ -237,7 +264,7 @@ class Parser:
         parsed = Argument()
         while not self.empty():
             c = self.get()
-            if c in ' \t><|':
+            if c in ' \t><|;':
                 return parsed
             if (self.read_backslash(parsed)
                 and self.read_dollar(parsed)
@@ -283,7 +310,11 @@ check("a|b", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe('|'),Command(Arg
 check("a | b c | d e f", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')),Separator(' '),Argument(Normal('c'))),Pipe(' | '),Command(Argument(Normal('d')),Separator(' '),Argument(Normal('e')),Separator(' '),Argument(Normal('f')))))")
 check("|a", "Line(Pipeline(Command(),Unterminated('|'),Command(Argument(Normal('a')))))")
 check("a | ", "Line(Pipeline(Command(Argument(Normal('a'))),Unterminated(' |')))")
-
+check("a;b ; c", "Line(Pipeline(Command(Argument(Normal('a')))),DotComa(';'),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('c')))))")
+check(";a;", "Line(Pipeline(Command()),Unterminated(';'),Pipeline(Command(Argument(Normal('a')))),Unterminated(';'))")
+check("a | b ; c | d", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('c'))),Pipe(' | '),Command(Argument(Normal('d')))))")
+check("a#b", "Line(Pipeline(Command(Argument(Normal('a#b')))))")
+check("a #b", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' #b'))))")
 
 print "OK"
 
