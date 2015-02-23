@@ -14,6 +14,9 @@ def name(obj):
 def pad(x):
     return "                                                         "[:x]
 
+def protect(t):
+    return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        
 class Container:
     def __init__(self):
         self.content = []
@@ -43,6 +46,12 @@ class Container:
     def nr_arguments(self):
         return sum([x.nr_arguments()
                     for x in self.content])
+    def html(self):
+        return ('<div class="Parsed ' + name(self) + '">'
+                + ''.join([x.html()
+                           for x in self.content
+                           ])
+                + '</div>')
         
 class Line(Container):
     pass
@@ -72,6 +81,9 @@ class Chars:
         return name(self) + '(' + repr(self.content) + ')'
     def nice(self, depth):
         return 'C' + pad(depth) + self.str() + '\n'
+    def html(self):
+        return ('<div class="Parsed ' + name(self) + '">'
+                + protect(self.content) + '</div>')
     def nr_arguments(self):
         return 0
     

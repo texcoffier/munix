@@ -42,4 +42,8 @@ check("a | b ; c | d", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | ')
 check("a#b", "Line(Pipeline(Command(Argument(Normal('a#b')))))")
 check("a #b", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' #b'))))")
 
+if colorize.Parser("'a>'>b").parse().html() != """<div class="Parsed Line"><div class="Parsed Pipeline"><div class="Parsed Command"><div class="Parsed Argument"><div class="Parsed Quote">'</div><div class="Parsed Normal">a&gt;</div><div class="Parsed Quote">'</div></div><div class="Parsed Redirection"><div class="Parsed Fildes"></div><div class="Parsed Direction">&gt;</div><div class="Parsed File"><div class="Parsed Normal">b</div></div></div></div></div></div>""":
+    print colorize.Parser("'a>'>b").parse().html()
+    bug
+
 print "OK"

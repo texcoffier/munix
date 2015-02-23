@@ -1,0 +1,49 @@
+
+#input, #output {
+    font-family: Courier ;
+    font-size: 16pt ;
+    width: 100% ;
+    font-weight: bold ;
+}
+
+.Parsed {
+    display: inline-block ;
+}
+
+.Unterminated {
+    background: #F00 ;
+    color: #FFF ;
+}
+
+.Variable {
+    color: #080 ;
+}
+
+.Backslash, .Quote, .Guillemet, .Dollar, .Fildes, .Direction {
+    color: #BBB ;
+}
+
+.Redirection {
+    border-bottom: 4px solid #DD0 ;
+}
+
+.Redirection .Fildes {
+    color: #F00 ;
+}
+.Redirection .File {
+    color: #F00 ;
+}
+
+.Argument {
+    border-bottom: 4px solid #000 ;
+}
+
+.Command {
+    border-bottom: 4px solid #888 ;
+    padding-bottom: 4px ;
+}
+
+.Pipeline {
+    border-bottom: 4px solid #CCC ;
+    padding-bottom: 4px ;
+}

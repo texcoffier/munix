@@ -5,7 +5,7 @@
 install:munix.html
 	cp munix.html munix.css $$HOME/public_html/MUNIX
 
-munix.html:munix.rst
+munix.html:munix.rst colorize.js
 
 regtest:
 	./colorize_regtest.py

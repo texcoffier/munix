@@ -1,12 +1,24 @@
-<script src="colorize.js"></script>
-<input id="input" value="a" onkeyup="update()">
-<pre id="output"></pre>
-<script>
-  function update()
-  {
-  var v = document.getElementById("input").value ;
-  var p = new Parser(v);
-  document.getElementById("output").innerHTML = p.parse().nice() ;
-  }
-  update() ;
-</script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="colorize.css" type="text/css">
+    <script src="colorize.js"></script>
+  </head>
+  <body>
+    <input id="input" value="a" onkeyup="update()">
+    <pre id="output"></pre>
+    <pre id="output2"></pre>
+    <script>
+      function update()
+      {
+      var v = document.getElementById("input").value ;
+      var p = new Parser(v);
+      document.getElementById("output2").innerHTML = p.parse().nice() ;
+      document.getElementById("output").innerHTML = p.parse().html() ;
+      }
+      update() ;
+    </script>
+  </body>
+</html>
