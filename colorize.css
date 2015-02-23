@@ -23,6 +23,10 @@
     pointer-events:none;
 }
 
+#help {
+    margin-top: 2em ;
+}
+
 .Parsed {
     display: inline-block ;
 }
@@ -32,11 +36,11 @@
     color: #FFF ;
 }
 
-.Variable {
+.Dollar, .Variable {
     color: #080 ;
 }
 
-.Backslash, .Quote, .Guillemet, .Dollar, .Fildes, .Direction {
+.Backslash, .Quote, .Guillemet, .Fildes, .Direction {
     color: #BBB ;
 }
 

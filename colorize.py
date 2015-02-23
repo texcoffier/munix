@@ -52,13 +52,52 @@ class Container:
                            for x in self.content
                            ])
                 + '</div>')
+    def init_position(self, i=0):
+        self.start = i
+        for content in self.content:
+            i = content.init_position(i)
+        self.end = i
+        return i
+    def help(self, position):
+        s = self.local_help()
+        for content in self.content:
+            if content.start <= position <= content.end:
+                s += content.help(position)
+                break
+        return s
+    def local_help(self):
+        return name(self) + ':<br>'
+    def number_of(self, classe):
+        return len([x
+                  for x in self.content
+                    if isinstance(x, classe)
+                  ])
         
 class Line(Container):
-    pass
+    def local_help(self):
+        nr = self.number_of(Pipeline)
+        if nr == 0:
+            return 'Une ligne de commande vide.'
+        if nr == 1:
+            return 'Une ligne de commande avec une seule commande.<br>'
+        return ('Une ligne de commande avec ' + str(nr) + ' commandes.<br>')
 class Pipeline(Container):
-    pass
+    def local_help(self):
+        nr = self.number_of(Command)
+        if nr == 0:
+            return 'Un pipeline vide !'
+        if nr == 1:
+            return ''
+        return ('Un pipeline enchainant ' + str(nr) + ' commandes.<br>')
 class Command(Container):
-    pass
+    def local_help(self):
+        nr = self.number_of(Argument)
+        if nr == 0:
+            return 'Une commande vide !'
+        if nr == 1:
+            return 'Commande : '+self.content[0].html()+' sans argument<br>'
+        return ('La commande ' + self.content[0].html() + ' avec '
+                + (nr-1) + ' arguments.<br>')
 class Argument(Container):
     def append(self, item):
         if len(self.content) != 0 and name(self.content[-1]) == name(item):
@@ -69,6 +108,8 @@ class Argument(Container):
         return 'A' + pad(depth) + ' '.join([x.str() for x in self.content])+'\n'
     def nr_arguments(self):
         return 1
+    def local_help(self):
+        return 'Argument : ' + self.html() + '<br>'
 class Redirection(Argument):
     pass
 class File(Container):
@@ -86,6 +127,12 @@ class Chars:
                 + protect(self.content) + '</div>')
     def nr_arguments(self):
         return 0
+    def init_position(self, i=0):
+        self.start = i
+        self.end = i + len(self.content)
+        return self.end
+    def help(self, position):
+        return name(self) + ':' + protect(self.content)
     
 class Normal(Chars):
     pass
@@ -157,6 +204,7 @@ class Parser:
             self.merge_separator(parsed, ';', _DotComa)
         if len(parsed.content) != 0 and isinstance(parsed.content[-1], DotComa):
             parsed.content[-1] = Unterminated(parsed.content[-1].content)
+        parsed.init_position()
         return parsed
     def parse_pipeline(self):
         parsed = Pipeline()

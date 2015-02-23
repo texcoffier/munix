@@ -16,17 +16,22 @@
 	     >
       <div id="output"></div>
     </div>
+    <div id="help"></div>
     <pre id="output2"></pre>
     <script>
       function update()
       {
-      var v = document.getElementById("input").value ;
-      if ( v === update.last )
+      var input = document.getElementById("input") ;
+      var position = input.selectionStart ;
+      if ( input.value === update.last && position ==  update.last_position )
          return ;
-      update.last = v ;
-      var p = new Parser(v);
-      document.getElementById("output").innerHTML = p.parse().html() ;
-      document.getElementById("output2").innerHTML = p.parse().nice() ;
+      update.last = input.value ;
+      update.last_position = position ;
+      var p = new Parser(update.last);
+      p = p.parse() ;
+      document.getElementById("output").innerHTML = p.html() ;
+      document.getElementById("help").innerHTML = p.help(input.selectionStart);
+      document.getElementById("output2").innerHTML = p.nice() ;
       }
       update() ;
     </script>
