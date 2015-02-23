@@ -1,9 +1,26 @@
+#editor {
+    position: relative ;
+    border: 1px solid black ;
+}
+
+#input {
+}
 
 #input, #output {
     font-family: Courier ;
     font-size: 16pt ;
     width: 100% ;
+    padding: 0px ;
+    border: 0px ;
     font-weight: bold ;
+}
+
+#output {
+    position: absolute ;
+    top: 0px ;
+    left: 0px ;
+    white-space: pre ;
+    pointer-events:none;
 }
 
 .Parsed {
@@ -23,27 +40,29 @@
     color: #BBB ;
 }
 
-.Redirection {
-    border-bottom: 4px solid #DD0 ;
-}
-
 .Redirection .Fildes {
     color: #F00 ;
 }
 .Redirection .File {
-    color: #F00 ;
+    color: #00F ;
+}
+
+.Redirection {
+    border-bottom: 4px solid #DD0 ;
+    padding-bottom: 2px ;
 }
 
 .Argument {
     border-bottom: 4px solid #000 ;
+    padding-bottom: 2px ;
 }
 
 .Command {
-    border-bottom: 4px solid #888 ;
-    padding-bottom: 4px ;
+    border-bottom: 6px solid #888 ;
+    padding-bottom: 2px ;
 }
 
 .Pipeline {
-    border-bottom: 4px solid #CCC ;
-    padding-bottom: 4px ;
+    border-bottom: 10px solid #CCC ;
+    padding-bottom: 2px ;
 }

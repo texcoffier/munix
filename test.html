@@ -7,16 +7,26 @@
     <script src="colorize.js"></script>
   </head>
   <body>
-    <input id="input" value="a" onkeyup="update()">
-    <pre id="output"></pre>
+    <div id="editor">
+      <input id="input"
+	     onkeyup="update();setTimeout(update,1)"
+	     onkeydown="update();setTimeout(update,1)"
+	     onpaste="update()"
+	     onkeypress="setTimeout(update,1)"
+	     >
+      <div id="output"></div>
+    </div>
     <pre id="output2"></pre>
     <script>
       function update()
       {
       var v = document.getElementById("input").value ;
+      if ( v === update.last )
+         return ;
+      update.last = v ;
       var p = new Parser(v);
-      document.getElementById("output2").innerHTML = p.parse().nice() ;
       document.getElementById("output").innerHTML = p.parse().html() ;
+      document.getElementById("output2").innerHTML = p.parse().nice() ;
       }
       update() ;
     </script>

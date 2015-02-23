@@ -283,7 +283,7 @@ class Parser:
                         return
                     parsed.append(Normal(c))
             if not isinstance(parsed.content[-1], Guillemet):
-                parsed.content[i] = Unterminated("'")
+                parsed.content[i] = Unterminated('"')
     def parse_argument(self):
         parsed = Argument()
         while not self.empty():

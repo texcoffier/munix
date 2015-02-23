@@ -26,7 +26,7 @@ check("a'b", """Line(Pipeline(Command(Argument(Normal('a'),Unterminated("'"),Nor
 check("$A '$B' \\$B $/ $B1/ $", """Line(Pipeline(Command(Argument(Dollar('$'),Variable('A')),Separator(' '),Argument(Quote("'"),Normal('$B'),Quote("'")),Separator(' '),Argument(Backslash('\\\\'),Normal('$B')),Separator(' '),Argument(Normal('$/')),Separator(' '),Argument(Dollar('$'),Variable('B1'),Normal('/')),Separator(' '),Argument(Normal('$')))))""")
 check("$A$B", "Line(Pipeline(Command(Argument(Dollar('$'),Variable('A'),Dollar('$'),Variable('B')))))")
 check('"A $B \\$C \\"" "', """Line(Pipeline(Command(Argument(Guillemet('"'),Normal('A '),Dollar('$'),Variable('B'),Normal(' '),Backslash('\\\\'),Normal('$C '),Backslash('\\\\'),Normal('"'),Guillemet('"')),Separator(' '),Argument(Unterminated('"')))))""")
-check('"$" "a', """Line(Pipeline(Command(Argument(Guillemet('"'),Normal('$'),Guillemet('"')),Separator(' '),Argument(Unterminated("'"),Normal('a')))))""")
+check('"$" "a', """Line(Pipeline(Command(Argument(Guillemet('"'),Normal('$'),Guillemet('"')),Separator(' '),Argument(Unterminated('"'),Normal('a')))))""")
 check('a>b', "Line(Pipeline(Command(Argument(Normal('a')),Redirection(Fildes(''),Direction('>'),File(Normal('b'))))))")
 check('a >$C >>\\$ <" $A"', """Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Redirection(Fildes(''),Direction('>'),File(Dollar('$'),Variable('C'))),Separator(' '),Redirection(Fildes(''),Direction('>>'),File(Backslash('\\\\'),Normal('$'))),Separator(' '),Redirection(Fildes(''),Direction('<'),File(Guillemet('"'),Normal(' '),Dollar('$'),Variable('A'),Guillemet('"'))))))""")
 check("22>A B", "Line(Pipeline(Command(Redirection(Fildes('22'),Direction('>'),File(Normal('A'))),Separator(' '),Argument(Normal('B')))))")
