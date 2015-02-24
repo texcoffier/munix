@@ -11,6 +11,7 @@
       <input id="input"
 	     onkeyup="update();setTimeout(update,1)"
 	     onkeydown="update();setTimeout(update,1)"
+	     onclick="update();setTimeout(update,1)"
 	     onpaste="update()"
 	     onkeypress="setTimeout(update,1)"
 	     >
@@ -23,14 +24,14 @@
       {
       var input = document.getElementById("input") ;
       var position = input.selectionStart ;
-      if ( input.value === update.last && position ==  update.last_position )
+      if ( input.value === update.last && position == update.last_position )
          return ;
       update.last = input.value ;
       update.last_position = position ;
       var p = new Parser(update.last);
       p = p.parse() ;
-      document.getElementById("output").innerHTML = p.html() ;
-      document.getElementById("help").innerHTML = p.help(input.selectionStart);
+      document.getElementById("output").innerHTML = p.html(position) ;
+      document.getElementById("help").innerHTML = p.help(position);
       document.getElementById("output2").innerHTML = p.nice() ;
       }
       update() ;

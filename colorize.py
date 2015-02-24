@@ -1,4 +1,4 @@
-# Missing * ? [] $() & && 
+# Missing * ? [] () $() & && 
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
@@ -46,9 +46,14 @@ class Container:
     def nr_arguments(self):
         return sum([x.nr_arguments()
                     for x in self.content])
-    def html(self):
-        return ('<div class="Parsed ' + name(self) + '">'
-                + ''.join([x.html()
+    def active(self, position):
+        if self.start <= position <= self.end:
+            return "active "
+        else:
+            return ""
+    def html(self, position=-1):
+        return ('<div class="Parsed ' + self.active(position) + name(self) + '">'
+                + ''.join([x.html(position)
                            for x in self.content
                            ])
                 + '</div>')
@@ -77,27 +82,31 @@ class Line(Container):
     def local_help(self):
         nr = self.number_of(Pipeline)
         if nr == 0:
-            return 'Une ligne de commande vide.'
+            return '<div class="help_Line">Une ligne de commande vide.</div>'
         if nr == 1:
-            return 'Une ligne de commande avec une seule commande.<br>'
-        return ('Une ligne de commande avec ' + str(nr) + ' commandes.<br>')
+            return '<div class="help_Line">Une ligne de commande avec une seule commande.</div>'
+        return ('<div class="help_Line">Une ligne de commande avec '
+                + str(nr) + ' commandes.</div>')
 class Pipeline(Container):
     def local_help(self):
         nr = self.number_of(Command)
         if nr == 0:
-            return 'Un pipeline vide !'
+            return '<div class="help_Pipeline">Un pipeline vide !</div>'
         if nr == 1:
             return ''
-        return ('Un pipeline enchainant ' + str(nr) + ' commandes.<br>')
+        return ('<div class="help_Pipeline">'
+                + 'Un pipeline enchainant ' + str(nr) + ' commandes.</div>')
 class Command(Container):
     def local_help(self):
         nr = self.number_of(Argument)
         if nr == 0:
-            return 'Une commande vide !'
+            return '<div class="help_Command">Une commande vide !'
         if nr == 1:
-            return 'Commande : '+self.content[0].html()+' sans argument<br>'
-        return ('La commande ' + self.content[0].html() + ' avec '
-                + (nr-1) + ' arguments.<br>')
+            return '<div class="help_Command">Commande : '
+            + self.content[0].html()+' sans argument</div>'
+        return ('<div class="help_Command">La commande '
+                + self.content[0].html() + ' avec '
+                + (nr-1) + ' arguments.</div>')
 class Argument(Container):
     def append(self, item):
         if len(self.content) != 0 and name(self.content[-1]) == name(item):
@@ -122,8 +131,8 @@ class Chars:
         return name(self) + '(' + repr(self.content) + ')'
     def nice(self, depth):
         return 'C' + pad(depth) + self.str() + '\n'
-    def html(self):
-        return ('<div class="Parsed ' + name(self) + '">'
+    def html(self, position=-1):
+        return ('<div class="Parsed ' + self.active(position) + name(self) + '">'
                 + protect(self.content) + '</div>')
     def nr_arguments(self):
         return 0
@@ -133,6 +142,11 @@ class Chars:
         return self.end
     def help(self, position):
         return name(self) + ':' + protect(self.content)
+    def active(self, position):
+        if self.start < position <= self.end:
+            return "active "
+        else:
+            return ""
     
 class Normal(Chars):
     pass

@@ -28,6 +28,7 @@
 }
 
 .Parsed {
+    font-family: Courier ;
     display: inline-block ;
 }
 
@@ -57,16 +58,35 @@
 }
 
 .Argument {
-    border-bottom: 4px solid #000 ;
+    border-bottom-width: 4px ;
+    border-bottom-style: solid ;
+    border-bottom-color: rgba(0, 0, 0, 0.4) ;
     padding-bottom: 2px ;
 }
+.Argument.active {
+    border-bottom-color: rgba(0, 0, 0, 1) ;
+}
+
 
 .Command {
-    border-bottom: 6px solid #888 ;
+    border-bottom-width: 6px ;
+    border-bottom-style: solid ;
+    border-bottom-color: rgba(0, 0, 255, 0.4) ;
     padding-bottom: 2px ;
 }
+.Command.active {
+    border-bottom-color: rgba(0, 0, 255, 1) ;
+}
+.help_Command { color: #00F ; }
 
 .Pipeline {
-    border-bottom: 10px solid #CCC ;
+    border-bottom-width: 8px ;
+    border-bottom-style: solid ;
+    border-bottom-color: rgba(0, 255, 0, 0.4) ;
     padding-bottom: 2px ;
 }
+.Pipeline.active {
+    border-bottom-color: rgba(0, 255, 0, 1) ;
+}
+.help_Pipeline { color: #080 ; }
+
