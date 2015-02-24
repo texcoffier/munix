@@ -36,7 +36,7 @@
     color: #F00 ;
 }
 
-.Backslash, .Quote, .Guillemet, .Fildes, .Direction {
+.Backslash, .Quote, .Guillemet {
     color: #BBB ;
 }
 
@@ -51,7 +51,7 @@
     color: #080 ;
 }
 
-.Redirection .Fildes {
+.Redirection, .Fildes, .Direction {
     color: #0FF ;
 }
 

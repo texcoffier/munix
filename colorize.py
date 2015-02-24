@@ -1,7 +1,6 @@
 # -*- coding: utf-8
 
-# > seul
-# Missing * ? [] # () $() & && 
+# Missing () $() & && 
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
@@ -32,7 +31,7 @@ class Container:
     def extract_last_separator(self):
         if not self.content:
             return ''
-        if  isinstance(self.content[-1], Separator):
+        if isinstance(self.content[-1], Separator):
             return self.content.pop().content
         try:
             return self.content[-1].extract_last_separator()
@@ -200,17 +199,23 @@ class Pattern(Chars):
     def help(self, position):
         return '<div class="help_Pattern">' + self.local_help() + "</div>"
 class Star(Pattern):
-    def local_help(self, position):
+    def local_help(self):
         return ("L'étoile représente une suite quelconque de caractères"
                 + " pouvant être vide.")
 class QuestionMark(Pattern):
-    def local_help(self, position):
+    def local_help(self):
         return "Le point d'intérogation représente un caractère quelconque."
 class Separator(Chars):
     def nice(self, depth):
         return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
     def help(self, position):
         return ('Un espace ou plus pour séparer les arguments.')
+class Comment(Separator):
+    def help(self, position):
+        return ("Un commentaire jusqu'à la fin de la ligne."
+                + " Il n'est pas passé à la commande."
+                + " Ce n'est pas un argument."
+                + " Le shell ne regarde pas dedans.")
 class Pipe(Separator):
     def help(self, position):
         return ('Le | redirige la sortie standard de la commande de gauche'
@@ -321,6 +326,8 @@ class Parser:
                 break
         return s
     def merge_separator(self, parsed, char, classe):
+        self.raise_comment(parsed)
+
         if self.empty() or self.get() != char:
             return
         text = parsed.content[-1].extract_last_separator() + self.get()
@@ -330,6 +337,10 @@ class Parser:
             parsed.append(Unterminated(text))
         else:
             parsed.append(classe(text))
+    def raise_comment(self, parsed):
+        if len(parsed.content[-1].content) != 0:
+            if isinstance(parsed.content[-1].content[-1], Comment):
+                parsed.append(parsed.content[-1].content.pop())
     def parse(self):
         self.i = 0
         parsed = Line()
@@ -347,16 +358,16 @@ class Parser:
             self.merge_separator(parsed, '|', _Pipe)
             if not self.empty() and self.get() == ';':
                 break
-        if parsed.content and isinstance(parsed.content[-1], Pipe):
-            parsed.content[-1] = Unterminated(parsed.content[-1].content)
+        if len(parsed.content) and isinstance(parsed.content[-1], Pipe):
+                parsed.content[-1] = Unterminated(parsed.content[-1].content)
         return parsed
     def read_comment(self, parsed):
         if (self.get() != '#'
-            or len(parsed.content) == 0
-            or not isinstance(parsed.content[-1], Separator)
+            or (len(parsed.content) != 0
+                and not isinstance(parsed.content[-1], Separator))
             ):
             return True
-        parsed.content[-1].content += self.text[self.i:]
+        parsed.append(Comment(self.text[self.i:]))
         self.i = self.len
     def parse_command(self):
         parsed = Command()
@@ -389,10 +400,10 @@ class Parser:
         if self.get() == c:
             c += c
             self.next()
-        while self.get() in ' \t':
+        while self.get() in ' \t#':
             c += self.get()
             self.next()
-        if self.empty() or self.get() in '<>;|':
+        if self.empty() or self.get() in '#<>;|':
             parsed.append(Unterminated(fildes + c))
             return
         redirection = Redirection()
