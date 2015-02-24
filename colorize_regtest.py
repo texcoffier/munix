@@ -41,6 +41,9 @@ check(";a;", "Line(Pipeline(Command()),Unterminated(';'),Pipeline(Command(Argume
 check("a | b ; c | d", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('c'))),Pipe(' | '),Command(Argument(Normal('d')))))")
 check("a#b", "Line(Pipeline(Command(Argument(Normal('a#b')))))")
 check("a #b", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '))),Comment('#b'))")
+check("a | ;", "Line(Pipeline(Command(Argument(Normal('a'))),Unterminated(' | ')),Unterminated(';'))")
+check("a | # b", "Line(Pipeline(Command(Argument(Normal('a'))),Unterminated(' | ')),Comment('# b'))")
+check("a ; # b", "Line(Pipeline(Command(Argument(Normal('a')))),Unterminated(' ; '),Comment('# b'))")
 
 check("a [ab]", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),SquareBracketChar('b'),SquareBracketStop(']'))))))")
 check("a [", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Unterminated('[')))))")

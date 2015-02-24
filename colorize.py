@@ -340,15 +340,36 @@ class Parser:
     def raise_comment(self, parsed):
         if len(parsed.content[-1].content) != 0:
             if isinstance(parsed.content[-1].content[-1], Comment):
-                parsed.append(parsed.content[-1].content.pop())
+                comment = parsed.content[-1].content.pop()
+                if len(parsed.content[-1].content) == 0:
+                    parsed.content.pop()
+                parsed.append(comment)
+    def replace_empty(self, parsed, class1, class2):
+        if (len(parsed.content) > 1
+            and isinstance(parsed.content[-2], class1)
+            and (isinstance(parsed.content[-1], class2)
+                 and len(parsed.content[-1].content) == 0
+                 or isinstance(parsed.content[-1], Comment))
+            ):
+            # Case:  a |
+            parsed.content[-2] = Unterminated(parsed.content[-2].content)
+        if (len(parsed.content) > 2
+            and isinstance(parsed.content[-3], class1)
+            and isinstance(parsed.content[-2], class2)
+            and len(parsed.content[-2].content) == 0
+            ):
+            # Case:  a | #
+            parsed.content[-3] = Unterminated(parsed.content[-3].content)
+            parsed.content.pop(-2)
+        if len(parsed.content) and isinstance(parsed.content[-1], class1):
+            parsed.content[-1] = Unterminated(parsed.content[-1].content)
     def parse(self):
         self.i = 0
         parsed = Line()
         while not self.empty():
             parsed.append(self.parse_pipeline())
             self.merge_separator(parsed, ';', _DotComa)
-        if len(parsed.content) != 0 and isinstance(parsed.content[-1], DotComa):
-            parsed.content[-1] = Unterminated(parsed.content[-1].content)
+        self.replace_empty(parsed, DotComa, Pipeline)
         parsed.init_position()
         return parsed
     def parse_pipeline(self):
@@ -358,8 +379,7 @@ class Parser:
             self.merge_separator(parsed, '|', _Pipe)
             if not self.empty() and self.get() == ';':
                 break
-        if len(parsed.content) and isinstance(parsed.content[-1], Pipe):
-                parsed.content[-1] = Unterminated(parsed.content[-1].content)
+        self.replace_empty(parsed, Pipe, Command)
         return parsed
     def read_comment(self, parsed):
         if (self.get() != '#'

@@ -1,19 +1,18 @@
+CONVERT = preamble.py colorize.py
 
 %.html:%.rst
 	rst2html $*.rst $*.html
 
+colorize.js:regtest $(CONVERT)
+	cat $(CONVERT) | RapydScript/bin/rapydscript --prettify --bare >$@
+
 install:munix.html
-	cp munix.html munix.css $$HOME/public_html/MUNIX
+	cp munix.html munix.css colorize.js colorize.css test.html $$HOME/public_html/MUNIX
 
 munix.html:munix.rst colorize.js
 
 regtest:
 	./colorize_regtest.py
-
-CONVERT = preamble.py colorize.py
-
-colorize.js:regtest $(CONVERT)
-	cat $(CONVERT) | RapydScript/bin/rapydscript --prettify --bare >$@
 
 clean:
 	@echo "CLEANING"
