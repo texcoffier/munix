@@ -37,25 +37,29 @@
     color: #FFF ;
 }
 
-.Dollar, .Variable {
-    color: #080 ;
-}
-
 .Backslash, .Quote, .Guillemet, .Fildes, .Direction {
     color: #BBB ;
+}
+
+.Variable {
+    color: #080 ;
 }
 
 .Redirection .Fildes {
     color: #F00 ;
 }
-.Redirection .File {
-    color: #00F ;
-}
 
 .Redirection {
-    border-bottom: 4px solid #DD0 ;
+    border-bottom-width: 4px ;
+    border-bottom-style: solid ;
+    border-bottom-color: rgba(0, 255, 255, 0.4) ;
     padding-bottom: 2px ;
 }
+.Redirection.active {
+    border-bottom-color: rgba(0, 255, 255, 1) ;
+}
+.help_Redirection { color: #088 ; }
+
 
 .Argument {
     border-bottom-width: 4px ;

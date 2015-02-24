@@ -1,3 +1,6 @@
+# -*- coding: utf-8
+
+# > seul
 # Missing * ? [] () $() & && 
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -52,15 +55,16 @@ class Container:
         else:
             return ""
     def html(self, position=-1):
-        return ('<div class="Parsed ' + self.active(position) + name(self) + '">'
-                + ''.join([x.html(position)
-                           for x in self.content
-                           ])
+        return ('<div class="Parsed ' + self.active(position) + name(self)
+                + '">' + ''.join([x.html(position)
+                                  for x in self.content
+                              ])
                 + '</div>')
     def init_position(self, i=0):
         self.start = i
         for content in self.content:
             i = content.init_position(i)
+            content.parent = self
         self.end = i
         return i
     def help(self, position):
@@ -102,14 +106,17 @@ class Command(Container):
         if nr == 0:
             return '<div class="help_Command">Une commande vide !'
         if nr == 1:
-            return '<div class="help_Command">Commande : '
-            + self.content[0].html()+' sans argument</div>'
+            return ('<div class="help_Command">Commande : '
+                    + self.content[0].html() + ' sans argument</div>')
         return ('<div class="help_Command">La commande '
                 + self.content[0].html() + ' avec '
                 + (nr-1) + ' arguments.</div>')
 class Argument(Container):
     def append(self, item):
-        if len(self.content) != 0 and name(self.content[-1]) == name(item):
+        if (len(self.content) != 0
+            and name(self.content[-1]) == name(item)
+            and not isinstance(item, Variable)
+            ):
             self.content[-1].content += item.content
         else:
             self.content.append(item)
@@ -118,11 +125,31 @@ class Argument(Container):
     def nr_arguments(self):
         return 1
     def local_help(self):
-        return 'Argument : ' + self.html() + '<br>'
+        pos = 0
+        for child in self.parent.content:
+            if isinstance(child, Argument):
+                if child is self:
+                    break
+                pos += 1
+        if pos == 0:
+            return ''
+        return 'Argument ' + str(pos) + ' : ' + self.html() + '<br>'
 class Redirection(Argument):
-    pass
+    def local_help(self, position):
+        m = ''
+        if self.content[0].content == '':
+            if self.content[1].content == '>':
+                m = " de la sortie standard"
+            elif self.content[1].content == '<':
+                m = " de l'entrée standard"
+        return ('<div class="help_Redirection">'
+                + "C'est une redirection "
+                + m + ", pas un argument de la commande."
+                + '</div>')
 class File(Container):
-    pass
+    def local_help(self, position):
+        return ('<div class="help_Redirection">Le fichier dont le nom est : '
+                + self.html() + '</div>')
 
 class Chars:
     def __init__(self, chars):
@@ -149,38 +176,79 @@ class Chars:
             return ""
     
 class Normal(Chars):
-    pass
+    def help(self, position):
+        return ('Verbatim : ' + protect(self.content))
 class Separator(Chars):
     def nice(self, depth):
         return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
+    def help(self, position):
+        return ('Un espace ou plus pour séparer les arguments.')
 class Pipe(Separator):
-    pass
+    def help(self, position):
+        return ('Le | redirige la sortie standard de la commande de gauche'
+                + " sur l'entrée standard de la commande de droite."
+            )
 def _Pipe(x): # RapydScript can not pass class as function argument
     return Pipe(x)
 class DotComa(Separator):
-    pass
+    def help(self, position):
+        return ("Le ';' permet de séparer les commandes.")
 def _DotComa(x): # RapydScript can not pass class as function argument
     return DotComa(x)
 class Variable(Chars):
-    pass
+    def help(self, position):
+        return (self.html()
+                + " est remplacé par le shell par le contenu de la variable «"
+                + self.content[1:] + '».'
+                + ' Le nom de la variable disparaît.'
+            )
 class Unterminated(Chars):
-    pass
+    def help(self, position):
+        return "Il manque une suite pour ce symbole : " + self.content
 
 class Invisible(Chars):
-    pass
+    def text(self, txt):
+        return ("Le caractère «" + self.content
+                + "» n'est pas passé à la commande. "
+                + txt)
 class Backslash(Invisible):
-    pass
+    def help(self, position):
+        return self.text("Il annule la signification du caractère suivant.")
 class Quote(Invisible):
-    pass
+    def help(self, position):
+        return self.text("La signification de tous les caractères entres les deux cotes est annulée.")
 class Guillemet(Invisible):
-    pass
-class Dollar(Invisible):
-    pass
+    def help(self, position):
+        return self.text("La signification de tous les caractères entres les 2 guillemets est annullée sauf l'anti-slash et le dollar.")
 class Fildes(Invisible):
-    pass
+    def help(self, position):
+        if self.content[0] == '&':
+            c = self.content[1:]
+        else:
+            c = self.content
+        if c == '1':
+            s = "la sortie standard."
+        elif c == '2':
+            s = "la sortie d'erreur."
+        elif c == '0':
+            s = "l'entrée standard."
+        else:
+            s = "???"
+        return ('<div class="help_Redirection">Le fildes «'
+                + self.content + "» représentant " + s + '</div>')
 class Direction(Invisible):
-    pass
-
+    def help(self, position):
+        if self.parent.content[2].content[0] == '&':
+            s = "On mélange la sortie avec le fildes indiqué."
+        elif self.content == '>':
+            s = "On vide le fichier destination."
+        elif self.content == '>>':
+            s = "On ajoute à la fin du fichier destination."
+        elif self.content == '<':
+            s = "On lit à partir du fichier indiqué."
+        else:
+            s = 'bug'
+        return '<div class="help_Redirection">' + s + '</div>'
 class Parser:
     def __init__(self, text):
         self.text = text.strip()
@@ -304,8 +372,7 @@ class Parser:
         else:
             c = self.get()
             if c in alpha:
-                parsed.append(Dollar('$'))
-                parsed.append(Variable(self.skip(names)))
+                parsed.append(Variable('$' + self.skip(names)))
             else:
                 parsed.append(Normal('$')) # Assume its signification disapear
     def read_quote(self, parsed):
