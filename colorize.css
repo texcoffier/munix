@@ -49,9 +49,9 @@
 }
 
 .Redirection {
-    border-bottom-width: 4px ;
+    border-bottom-width: 6px ;
     border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 255, 255, 0.33) ;
+    border-bottom-color: rgba(0, 255, 255, 0.222) ;
     padding-bottom: 2px ;
 }
 .Redirection.active {
@@ -61,9 +61,9 @@
 
 
 .Argument {
-    border-bottom-width: 4px ;
+    border-bottom-width: 6px ;
     border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 0, 0, 0.33) ;
+    border-bottom-color: rgba(0, 0, 0, 0.222) ;
     padding-bottom: 2px ;
 }
 .Argument.active {
@@ -74,7 +74,7 @@
 .Command {
     border-bottom-width: 6px ;
     border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 0, 255, 0.33) ;
+    border-bottom-color: rgba(0, 0, 255, 0.222) ;
     padding-bottom: 2px ;
 }
 .Command.active {
@@ -83,9 +83,9 @@
 .help_Command { color: #00F ; }
 
 .Pipeline {
-    border-bottom-width: 8px ;
+    border-bottom-width: 6px ;
     border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 255, 0, 0.33) ;
+    border-bottom-color: rgba(0, 255, 0, 0.222) ;
     padding-bottom: 2px ;
 }
 .Pipeline.active {

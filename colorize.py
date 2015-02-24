@@ -50,7 +50,7 @@ class Container:
         return sum([x.nr_arguments()
                     for x in self.content])
     def active(self, position):
-        if self.start <= position <= self.end:
+        if self.start < position <= self.end:
             return "active "
         else:
             return ""
@@ -238,17 +238,24 @@ class Fildes(Invisible):
                 + self.content + "» représentant " + s + '</div>')
 class Direction(Invisible):
     def help(self, position):
+        c = self.content.strip()
+        if c == self.content:
+            more = ''
+        else:
+            more = (" <b>Ce n'est pas une bonne idée de mettre des espaces "
+                    + "après la redirection car ce n'est pas un opérateur "
+                    + "symétrique.</b>")
         if self.parent.content[2].content[0] == '&':
             s = "On mélange la sortie avec le fildes indiqué."
-        elif self.content == '>':
-            s = "On vide le fichier destination."
-        elif self.content == '>>':
+        elif c == '>>':
             s = "On ajoute à la fin du fichier destination."
-        elif self.content == '<':
+        elif c == '>':
+            s = "On vide le fichier destination."
+        elif c == '<':
             s = "On lit à partir du fichier indiqué."
         else:
             s = 'bug'
-        return '<div class="help_Redirection">' + s + '</div>'
+        return '<div class="help_Redirection">' + s + more + '</div>'
 class Parser:
     def __init__(self, text):
         self.text = text.strip()
@@ -337,7 +344,10 @@ class Parser:
         if self.get() == c:
             c += c
             self.next()
-        if self.empty():
+        while self.get() in ' \t':
+            c += self.get()
+            self.next()
+        if self.empty() or self.get() in '<>;|':
             parsed.append(Unterminated(fildes + c))
             return
         redirection = Redirection()
@@ -355,7 +365,7 @@ class Parser:
             f.content = self.parse_argument().content
             redirection.append(f)
         parsed.append(redirection)
-        
+
     def read_backslash(self, parsed):
         if self.get() != '\\':
             return True
