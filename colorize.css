@@ -40,7 +40,10 @@
     color: #BBB ;
 }
 
-.Star, .QuestionMark, .help_Pattern {
+.Star, .QuestionMark,
+.SquareBracketChar, .SquareBracketInterval, .SquareBracketNegate,
+.SquareBracketStart, .SquareBracketStop,
+.help_Pattern {
     color: #B0B ;
 }
 

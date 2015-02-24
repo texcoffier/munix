@@ -113,7 +113,7 @@ class Command(Container):
                     + self.content[0].html() + ' sans argument</div>')
         return ('<div class="help_Command">La commande '
                 + self.content[0].html() + ' avec '
-                + (nr-1) + ' arguments.</div>')
+                + str(nr-1) + ' arguments.</div>')
 class Argument(Container):
     def append(self, item):
         if (len(self.content) != 0
@@ -154,6 +154,12 @@ class Redirection(Container):
                 + "C'est une redirection"
                 + m + ", pas un argument de la commande."
                 + '</div>')
+class SquareBracket(Container):
+    def local_help(self):
+        return ('<div class="help_Pattern">'
+                + "Les crochets indiquent que l'on veut un seul caractère."
+                + '</div>')
+                
 class File(Container):
     def local_help(self, position):
         return ('<div class="help_Redirection">Le fichier dont le nom est : '
@@ -278,6 +284,23 @@ class Direction(Invisible):
         else:
             s = 'bug'
         return '<div class="help_Redirection">' + s + more + '</div>'
+class SquareBracketStart(Pattern):
+    def local_help(self):
+        return "Début de la liste des caractères possibles."
+class SquareBracketStop(Pattern):
+    def local_help(self):
+        return "Fin de la liste des caractères possibles."
+class SquareBracketChar(Pattern):
+    def local_help(self):
+        return "Le caractère «" + self.content + "» est autorisé"
+class SquareBracketInterval(Pattern):
+    def local_help(self):
+        return ("Tous les caractères dans l'intervalle «" + self.content
+                + "» sont autorisés")
+class SquareBracketNegate(Pattern):
+    def local_help(self):
+        return ("Ce caractère indique que les caractères listés"
+                + " sont ceux dont on ne veux pas.")
 class Parser:
     def __init__(self, text):
         self.text = text.strip()
@@ -453,6 +476,44 @@ class Parser:
             parsed.append(Star("*"))
         elif self.get() == '?':
             parsed.append(QuestionMark("?"))
+        elif self.get() == '[':
+            self.next()
+            if self.empty():
+                parsed.append(Unterminated('['))
+                return
+            i = self.i
+            sb = SquareBracket()
+            sb.append(SquareBracketStart('['))
+            while not self.empty():
+                if self.get() == ']' and len(sb.content) != 0:
+                    break
+                if self.get() == '!' and len(sb.content) == 0:
+                    sb.append(SquareBracketNegate('!'))
+                    self.next()
+                    continue
+                c = self.get()
+                self.next()
+                if self.empty():
+                    sb.append(Unterminated(c))
+                    break
+                if self.get() == '-':
+                    self.next()
+                    if self.empty():
+                        break
+                    if self.get() == ']':
+                        sb.append(SquareBracketChar(c))
+                        sb.append(SquareBracketChar('-'))
+                    else:
+                        sb.append(SquareBracketInterval(c + '-' + self.get()))
+                        self.next()
+                else:
+                    sb.append(SquareBracketChar(c))
+            if self.empty():
+                parsed.append(Unterminated('['))
+                self.i = i
+                return
+            sb.append(SquareBracketStop(']'))
+            parsed.append(sb)
         else:
             return True
         self.next()

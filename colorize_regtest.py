@@ -42,4 +42,11 @@ check("a | b ; c | d", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | ')
 check("a#b", "Line(Pipeline(Command(Argument(Normal('a#b')))))")
 check("a #b", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' #b'))))")
 
+check("a [ab]", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),SquareBracketChar('b'),SquareBracketStop(']'))))))")
+check("a [", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Unterminated('[')))))")
+check("a [a-bcd-e]", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketInterval('a-b'),SquareBracketChar('c'),SquareBracketInterval('d-e'),SquareBracketStop(']'))))))")
+check("a []a-c-d]", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketStop(']')),Normal('a-c-d]')))))")
+check("a [!a-]]", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('!'),SquareBracketChar('a'),SquareBracketChar('-'),SquareBracketStop(']')),Normal(']')))))")
+check("a [1*", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Unterminated('['),Normal('1'),Star('*')))))")
+
 print "OK"
