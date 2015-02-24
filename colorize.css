@@ -33,8 +33,7 @@
 }
 
 .Unterminated {
-    background: #F00 ;
-    color: #FFF ;
+    color: #F00 ;
 }
 
 .Backslash, .Quote, .Guillemet, .Fildes, .Direction {
@@ -46,13 +45,13 @@
 }
 
 .Redirection .Fildes {
-    color: #F00 ;
+    color: #0FF ;
 }
 
 .Redirection {
     border-bottom-width: 4px ;
     border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 255, 255, 0.4) ;
+    border-bottom-color: rgba(0, 255, 255, 0.33) ;
     padding-bottom: 2px ;
 }
 .Redirection.active {
@@ -64,7 +63,7 @@
 .Argument {
     border-bottom-width: 4px ;
     border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 0, 0, 0.4) ;
+    border-bottom-color: rgba(0, 0, 0, 0.33) ;
     padding-bottom: 2px ;
 }
 .Argument.active {
@@ -75,7 +74,7 @@
 .Command {
     border-bottom-width: 6px ;
     border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 0, 255, 0.4) ;
+    border-bottom-color: rgba(0, 0, 255, 0.33) ;
     padding-bottom: 2px ;
 }
 .Command.active {
@@ -86,7 +85,7 @@
 .Pipeline {
     border-bottom-width: 8px ;
     border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 255, 0, 0.4) ;
+    border-bottom-color: rgba(0, 255, 0, 0.33) ;
     padding-bottom: 2px ;
 }
 .Pipeline.active {

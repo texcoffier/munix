@@ -337,6 +337,9 @@ class Parser:
         if self.get() == c:
             c += c
             self.next()
+        if self.empty():
+            parsed.append(Unterminated(fildes + c))
+            return
         redirection = Redirection()
         redirection.append(Fildes(fildes))
         redirection.append(Direction(c))
