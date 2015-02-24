@@ -40,6 +40,10 @@
     color: #BBB ;
 }
 
+.Star, .QuestionMark, .help_Pattern {
+    color: #B0B ;
+}
+
 .Variable {
     color: #080 ;
 }

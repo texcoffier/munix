@@ -1,7 +1,7 @@
 # -*- coding: utf-8
 
 # > seul
-# Missing * ? [] () $() & && 
+# Missing * ? [] # () $() & && 
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
@@ -81,7 +81,10 @@ class Container:
                   for x in self.content
                     if isinstance(x, classe)
                   ])
-        
+    def is_a_pattern(self):
+        for c in self.content:
+            if c.is_a_pattern():
+                return True
 class Line(Container):
     def local_help(self):
         nr = self.number_of(Pipeline)
@@ -133,8 +136,13 @@ class Argument(Container):
                 pos += 1
         if pos == 0:
             return ''
-        return 'Argument ' + str(pos) + ' : ' + self.html() + '<br>'
-class Redirection(Argument):
+        if self.is_a_pattern():
+            more = (" c'est un pattern qui est remplacé par tous les noms"
+                    + " de fichiers existant qui rentrent dans le moule.")
+        else:
+            more = ''
+        return 'Argument ' + str(pos) + ' : ' + self.html() + more + '<br>'
+class Redirection(Container):
     def local_help(self, position):
         m = ''
         if self.content[0].content == '':
@@ -143,7 +151,7 @@ class Redirection(Argument):
             elif self.content[1].content == '<':
                 m = " de l'entrée standard"
         return ('<div class="help_Redirection">'
-                + "C'est une redirection "
+                + "C'est une redirection"
                 + m + ", pas un argument de la commande."
                 + '</div>')
 class File(Container):
@@ -174,10 +182,24 @@ class Chars:
             return "active "
         else:
             return ""
+    def is_a_pattern(self):
+        return False
     
 class Normal(Chars):
     def help(self, position):
         return ('Verbatim : ' + protect(self.content))
+class Pattern(Chars):
+    def is_a_pattern(self):
+        return True
+    def help(self, position):
+        return '<div class="help_Pattern">' + self.local_help() + "</div>"
+class Star(Pattern):
+    def local_help(self, position):
+        return ("L'étoile représente une suite quelconque de caractères"
+                + " pouvant être vide.")
+class QuestionMark(Pattern):
+    def local_help(self, position):
+        return "Le point d'intérogation représente un caractère quelconque."
 class Separator(Chars):
     def nice(self, depth):
         return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
@@ -204,7 +226,7 @@ class Variable(Chars):
             )
 class Unterminated(Chars):
     def help(self, position):
-        return "Il manque une suite pour ce symbole : " + self.content
+        return "Il manque une suite pour ce symbole : «" + self.content + "»"
 
 class Invisible(Chars):
     def text(self, txt):
@@ -426,6 +448,14 @@ class Parser:
                     parsed.append(Normal(c))
             if not isinstance(parsed.content[-1], Guillemet):
                 parsed.content[i] = Unterminated('"')
+    def read_pattern(self, parsed):
+        if self.get() == '*':
+            parsed.append(Star("*"))
+        elif self.get() == '?':
+            parsed.append(QuestionMark("?"))
+        else:
+            return True
+        self.next()
     def parse_argument(self):
         parsed = Argument()
         while not self.empty():
@@ -436,6 +466,7 @@ class Parser:
                 and self.read_dollar(parsed)
                 and self.read_quote(parsed)
                 and self.read_guillemet(parsed)
+                and self.read_pattern(parsed)
                 ):
                 parsed.append(Normal(c))
                 self.next()
