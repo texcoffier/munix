@@ -66,5 +66,7 @@ check("A=B b c", "Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Norma
 
 check("a $(c) b", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Replacement(GroupStart('$('),Line(Pipeline(Command(Argument(Normal('c'))))),GroupStop(')'))),Separator(' '),Argument(Normal('b')))))")
 
+check("a & b &", "Line(Pipeline(Command(Argument(Normal('a')))),Background(' & '),Pipeline(Command(Argument(Normal('b')))),Background(' &'))")
+
 
 print "OK"

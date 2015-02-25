@@ -1,6 +1,6 @@
 # -*- coding: utf-8
 
-# Missing  & && 
+# Missing  && & : message explicites
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
@@ -184,6 +184,17 @@ class GroupStop(Pattern):
 class Equal(Chars):
     def local_help(self):
         return "Affectation dans la variable dont le nom est à gauche de la valeur à droite."
+class And(Chars):
+    def help(self):
+        return ('<div class="help_And">'
+                + "La commande de droite ne s'exécute que"
+                + " si la commande de gauche s'est terminée sans erreur")
+
+class Background(Chars):
+    def help(self):
+        return ('<div class="help_Background">'
+        + 'La commande de gauche est lancée en arrière plan')
+        
 
 ##############################################################################
 ##############################################################################
@@ -280,6 +291,8 @@ class Container:
                 or isinstance(self.content[i], DotComa)
                 or isinstance(self.content[i], GroupStop)
                 or isinstance(self.content[i], GroupStart)
+                or isinstance(self.content[i], And)
+                or isinstance(self.content[i], Background)
                 ):
                 v = self.content[i].content
                 if i != 0 and isinstance(self.content[i-1], Separator):
@@ -473,6 +486,13 @@ class Parser:
             if not self.empty() and self.get() == ';':
                 self.next()
                 parsed.append(DotComa(";" + self.skip(" \t")))
+            if not self.empty() and self.get() == '&':
+                self.next()
+                if not self.empty() and self.get() == '&':
+                    self.next()
+                    parsed.append(And("&&" + self.skip(" \t")))
+                else:
+                    parsed.append(Background("&" + self.skip(" \t")))
         if init:
             parsed.raise_comment()
             parsed.raise_separator()
@@ -489,7 +509,7 @@ class Parser:
                 parsed.append(self.parse_group())
             else:
                 parsed.append(self.parse_command())
-            if not self.empty() and self.get() in ';)':
+            if not self.empty() and self.get() in ';)&':
                 break
             if not self.empty() and self.get() == '|':
                 self.next()
@@ -530,7 +550,7 @@ class Parser:
             if not self.empty():
                 if not self.read_comment(parsed):
                     return parsed
-                if self.get() in '|;)':
+                if self.get() in '|;)&':
                     return parsed
                 while not self.empty() and self.get() in '(':
                     parsed.append(Unexpected("("))
