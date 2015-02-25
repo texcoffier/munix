@@ -1,6 +1,6 @@
 # -*- coding: utf-8
 
-# Missing () $() & && 
+# Missing () = $() & && 
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
@@ -18,7 +18,176 @@ def pad(x):
 
 def protect(t):
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-        
+
+##############################################################################
+##############################################################################
+##############################################################################
+
+class Chars:
+    def __init__(self, chars):
+        self.content = chars
+    def str(self):
+        return name(self) + '(' + repr(self.content) + ')'
+    def nice(self, depth):
+        return 'C' + pad(depth) + self.str() + '\n'
+    def html(self, position=-1):
+        return ('<div class="Parsed ' + self.active(position) + name(self)
+                + '">' + protect(self.content) + '</div>')
+    def nr_arguments(self):
+        return 0
+    def init_position(self, i=0):
+        self.start = i
+        self.end = i + len(self.content)
+        return self.end
+    def help(self, position):
+        return name(self) + ':' + protect(self.content)
+    def active(self, position):
+        if self.start < position <= self.end:
+            return "active "
+        else:
+            return ""
+    def is_a_pattern(self):
+        return False
+    def empty(self):
+        return True # To easely stop container recursion
+    def raise_separator(self):
+        return [self] # To easely stop container recursion
+    def merge_separator(self):
+        pass # To easely stop container recursion
+    def remove_empty(self):
+        pass # To easely stop container recursion
+    
+class Normal(Chars):
+    def help(self, position):
+        return ('Verbatim : ' + protect(self.content))
+class Pattern(Chars):
+    def is_a_pattern(self):
+        return True
+    def help(self, position):
+        return '<div class="help_Pattern">' + self.local_help() + "</div>"
+class Star(Pattern):
+    def local_help(self):
+        return ("L'étoile représente une suite quelconque de caractères"
+                + " pouvant être vide.")
+class QuestionMark(Pattern):
+    def local_help(self):
+        return "Le point d'intérogation représente un caractère quelconque."
+class Separator(Chars):
+    def nice(self, depth):
+        return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
+    def help(self, position):
+        return ('Un espace ou plus pour séparer les arguments.')
+class Comment(Separator):
+    def help(self, position):
+        return ("Un commentaire jusqu'à la fin de la ligne."
+                + " Il n'est pas passé à la commande."
+                + " Ce n'est pas un argument."
+                + " Le shell ne regarde pas dedans.")
+class Pipe(Separator):
+    def help(self, position):
+        return ('Le | redirige la sortie standard de la commande de gauche'
+                + " sur l'entrée standard de la commande de droite."
+            )
+def _Pipe(x): # RapydScript can not pass class as function argument
+    return Pipe(x)
+class DotComa(Separator):
+    def help(self, position):
+        return ("Le ';' permet de séparer les commandes.")
+def _DotComa(x): # RapydScript can not pass class as function argument
+    return DotComa(x)
+class Variable(Chars):
+    def help(self, position):
+        return (self.html()
+                + " est remplacé par le shell par le contenu de la variable «"
+                + self.content[1:] + '».'
+                + ' Le nom de la variable disparaît.'
+            )
+class Unterminated(Chars):
+    def help(self, position):
+        return "Il manque une suite pour ce symbole : «" + self.content + "»"
+
+class Unexpected(Chars):
+    def help(self, position):
+        return "Il est interdit d'avoir «" + self.content + "» à cet endroit"
+
+class Invisible(Chars):
+    def text(self, txt):
+        return ("Le caractère «" + self.content
+                + "» n'est pas passé à la commande. "
+                + txt)
+class Backslash(Invisible):
+    def help(self, position):
+        return self.text("Il annule la signification du caractère suivant.")
+class Quote(Invisible):
+    def help(self, position):
+        return self.text("La signification de tous les caractères entres les deux cotes est annulée.")
+class Guillemet(Invisible):
+    def help(self, position):
+        return self.text("La signification de tous les caractères entres les 2 guillemets est annullée sauf l'anti-slash et le dollar.")
+class Fildes(Invisible):
+    def help(self, position):
+        if self.content[0] == '&':
+            c = self.content[1:]
+        else:
+            c = self.content
+        if c == '1':
+            s = "la sortie standard."
+        elif c == '2':
+            s = "la sortie d'erreur."
+        elif c == '0':
+            s = "l'entrée standard."
+        else:
+            s = "???"
+        return ('<div class="help_Redirection">Le fildes «'
+                + self.content + "» représentant " + s + '</div>')
+class Direction(Invisible):
+    def help(self, position):
+        c = self.content.strip()
+        if c == self.content:
+            more = ''
+        else:
+            more = (" <b>Ce n'est pas une bonne idée de mettre des espaces "
+                    + "après la redirection car ce n'est pas un opérateur "
+                    + "symétrique.</b>")
+        if self.parent.content[2].content[0] == '&':
+            s = "On mélange la sortie avec le fildes indiqué."
+        elif c == '>>':
+            s = "On ajoute à la fin du fichier destination."
+        elif c == '>':
+            s = "On vide le fichier destination."
+        elif c == '<':
+            s = "On lit à partir du fichier indiqué."
+        else:
+            s = 'bug'
+        return '<div class="help_Redirection">' + s + more + '</div>'
+class SquareBracketStart(Pattern):
+    def local_help(self):
+        return "Début de la liste des caractères possibles."
+class SquareBracketStop(Pattern):
+    def local_help(self):
+        return "Fin de la liste des caractères possibles."
+class SquareBracketChar(Pattern):
+    def local_help(self):
+        return "Le caractère «" + self.content + "» est autorisé"
+class SquareBracketInterval(Pattern):
+    def local_help(self):
+        return ("Tous les caractères dans l'intervalle «" + self.content
+                + "» sont autorisés")
+class SquareBracketNegate(Pattern):
+    def local_help(self):
+        return ("Ce caractère indique que les caractères listés"
+                + " sont ceux dont on ne veux pas.")
+class GroupStart(Pattern):
+    def local_help(self):
+        return "Début du groupement"
+class GroupStop(Pattern):
+    def local_help(self):
+        return "Fin du groupement"
+
+##############################################################################
+##############################################################################
+##############################################################################
+
 class Container:
     def __init__(self):
         self.content = []
@@ -28,15 +197,6 @@ class Container:
         return name(self) + '(' + ','.join([x.str()
                                             for x in self.content
                                         ]) + ')'
-    def extract_last_separator(self):
-        if not self.content:
-            return ''
-        if isinstance(self.content[-1], Separator):
-            return self.content.pop().content
-        try:
-            return self.content[-1].extract_last_separator()
-        except:
-            return ''
     def nice(self, depth=0):
         return ('C'
                 + pad(depth)
@@ -84,6 +244,92 @@ class Container:
         for c in self.content:
             if c.is_a_pattern():
                 return True
+    def empty(self):
+        return len(self.content) == 0
+    def raise_separator(self):
+        if self.empty():
+            return [self]
+        new_content = []
+        for content in self.content[:]:
+            for i in content.raise_separator():
+                new_content.append(i)
+        self.content = new_content
+        value = []
+        if name(self.content[0]) == 'Separator':
+            value.append(self.content[0]) # pop(0) not working with rapydscript
+            self.content = self.content[1:]
+        value.append(self)
+        if not self.empty() and name(self.content[-1]) == 'Separator':
+            value.append(self.content.pop())
+        return value
+    def merge_separator(self):
+        for content in self.content:
+            content.merge_separator()
+        i = 0
+        new_content = []
+        while i < len(self.content):
+            current = self.content[i]
+            if (isinstance(self.content[i], Pipe)
+                or isinstance(self.content[i], DotComa)
+                or isinstance(self.content[i], GroupStop)
+                or isinstance(self.content[i], GroupStart)
+                ):
+                v = self.content[i].content
+                if i != 0 and isinstance(self.content[i-1], Separator):
+                    v = self.content[i-1].content + v
+                    new_content.pop() # Remove the separator before
+                if (i != len(self.content)-1
+                    and isinstance(self.content[i+1], Separator)
+                    ):
+                    v += self.content[i+1].content
+                    self.content[i+1] = Unterminated("FAKE")
+                    i += 1 # Jump over beware of '|'  ' '  '|'
+                current.content = v
+                new_content.append(current)
+            else:
+                new_content.append(current)
+            i += 1
+        self.content = new_content
+    def raise_comment(self):
+        if self.empty():
+            return
+        if self.content[-1].empty():
+            return
+        self.content[-1].raise_comment()
+        if isinstance(self.content[-1].content[-1], Comment):
+            self.append(self.content[-1].content.pop())
+    def remove_empty(self):
+        for content in self.content:
+            content.remove_empty()
+        self.content = [
+            content
+            for content in self.content
+            if (not content.empty() or
+                (not isinstance(content, Command)
+                 and not isinstance(content, Pipeline)
+                 ))
+            ]
+    def replace_empty(self):
+        for content in self.content:
+            if not content.empty():
+                content.replace_empty()
+        if self.empty():
+            return
+        if (isinstance(self.content[0], Pipe)
+            or isinstance(self.content[0], DotComa)
+            ):
+            self.content[0] = Unterminated(self.content[0].content)
+        if (isinstance(self.content[-1], Pipe)
+            or isinstance(self.content[-1], DotComa)
+            ):
+            self.content[-1] = Unterminated(self.content[-1].content)
+        if (len(self.content) > 1
+            and isinstance(self.content[-1], Comment)
+            and (
+                isinstance(self.content[-2], Pipe)
+                or isinstance(self.content[-2], DotComa)
+            )):
+            self.content[-2] = Unterminated(self.content[-2].content)
 class Line(Container):
     def local_help(self):
         nr = self.number_of(Pipeline)
@@ -158,157 +404,23 @@ class SquareBracket(Container):
         return ('<div class="help_Pattern">'
                 + "Les crochets indiquent que l'on veut un seul caractère."
                 + '</div>')
-                
+class Group(Container):
+    def local_help(self):
+        return ('<div class="">'
+                + "Lance une nouveau processus."
+                + '</div>')
 class File(Container):
     def local_help(self, position):
         return ('<div class="help_Redirection">Le fichier dont le nom est : '
                 + self.html() + '</div>')
 
-class Chars:
-    def __init__(self, chars):
-        self.content = chars
-    def str(self):
-        return name(self) + '(' + repr(self.content) + ')'
-    def nice(self, depth):
-        return 'C' + pad(depth) + self.str() + '\n'
-    def html(self, position=-1):
-        return ('<div class="Parsed ' + self.active(position) + name(self) + '">'
-                + protect(self.content) + '</div>')
-    def nr_arguments(self):
-        return 0
-    def init_position(self, i=0):
-        self.start = i
-        self.end = i + len(self.content)
-        return self.end
-    def help(self, position):
-        return name(self) + ':' + protect(self.content)
-    def active(self, position):
-        if self.start < position <= self.end:
-            return "active "
-        else:
-            return ""
-    def is_a_pattern(self):
-        return False
-    
-class Normal(Chars):
-    def help(self, position):
-        return ('Verbatim : ' + protect(self.content))
-class Pattern(Chars):
-    def is_a_pattern(self):
-        return True
-    def help(self, position):
-        return '<div class="help_Pattern">' + self.local_help() + "</div>"
-class Star(Pattern):
-    def local_help(self):
-        return ("L'étoile représente une suite quelconque de caractères"
-                + " pouvant être vide.")
-class QuestionMark(Pattern):
-    def local_help(self):
-        return "Le point d'intérogation représente un caractère quelconque."
-class Separator(Chars):
-    def nice(self, depth):
-        return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
-    def help(self, position):
-        return ('Un espace ou plus pour séparer les arguments.')
-class Comment(Separator):
-    def help(self, position):
-        return ("Un commentaire jusqu'à la fin de la ligne."
-                + " Il n'est pas passé à la commande."
-                + " Ce n'est pas un argument."
-                + " Le shell ne regarde pas dedans.")
-class Pipe(Separator):
-    def help(self, position):
-        return ('Le | redirige la sortie standard de la commande de gauche'
-                + " sur l'entrée standard de la commande de droite."
-            )
-def _Pipe(x): # RapydScript can not pass class as function argument
-    return Pipe(x)
-class DotComa(Separator):
-    def help(self, position):
-        return ("Le ';' permet de séparer les commandes.")
-def _DotComa(x): # RapydScript can not pass class as function argument
-    return DotComa(x)
-class Variable(Chars):
-    def help(self, position):
-        return (self.html()
-                + " est remplacé par le shell par le contenu de la variable «"
-                + self.content[1:] + '».'
-                + ' Le nom de la variable disparaît.'
-            )
-class Unterminated(Chars):
-    def help(self, position):
-        return "Il manque une suite pour ce symbole : «" + self.content + "»"
+##############################################################################
+##############################################################################
+##############################################################################
 
-class Invisible(Chars):
-    def text(self, txt):
-        return ("Le caractère «" + self.content
-                + "» n'est pas passé à la commande. "
-                + txt)
-class Backslash(Invisible):
-    def help(self, position):
-        return self.text("Il annule la signification du caractère suivant.")
-class Quote(Invisible):
-    def help(self, position):
-        return self.text("La signification de tous les caractères entres les deux cotes est annulée.")
-class Guillemet(Invisible):
-    def help(self, position):
-        return self.text("La signification de tous les caractères entres les 2 guillemets est annullée sauf l'anti-slash et le dollar.")
-class Fildes(Invisible):
-    def help(self, position):
-        if self.content[0] == '&':
-            c = self.content[1:]
-        else:
-            c = self.content
-        if c == '1':
-            s = "la sortie standard."
-        elif c == '2':
-            s = "la sortie d'erreur."
-        elif c == '0':
-            s = "l'entrée standard."
-        else:
-            s = "???"
-        return ('<div class="help_Redirection">Le fildes «'
-                + self.content + "» représentant " + s + '</div>')
-class Direction(Invisible):
-    def help(self, position):
-        c = self.content.strip()
-        if c == self.content:
-            more = ''
-        else:
-            more = (" <b>Ce n'est pas une bonne idée de mettre des espaces "
-                    + "après la redirection car ce n'est pas un opérateur "
-                    + "symétrique.</b>")
-        if self.parent.content[2].content[0] == '&':
-            s = "On mélange la sortie avec le fildes indiqué."
-        elif c == '>>':
-            s = "On ajoute à la fin du fichier destination."
-        elif c == '>':
-            s = "On vide le fichier destination."
-        elif c == '<':
-            s = "On lit à partir du fichier indiqué."
-        else:
-            s = 'bug'
-        return '<div class="help_Redirection">' + s + more + '</div>'
-class SquareBracketStart(Pattern):
-    def local_help(self):
-        return "Début de la liste des caractères possibles."
-class SquareBracketStop(Pattern):
-    def local_help(self):
-        return "Fin de la liste des caractères possibles."
-class SquareBracketChar(Pattern):
-    def local_help(self):
-        return "Le caractère «" + self.content + "» est autorisé"
-class SquareBracketInterval(Pattern):
-    def local_help(self):
-        return ("Tous les caractères dans l'intervalle «" + self.content
-                + "» sont autorisés")
-class SquareBracketNegate(Pattern):
-    def local_help(self):
-        return ("Ce caractère indique que les caractères listés"
-                + " sont ceux dont on ne veux pas.")
 class Parser:
     def __init__(self, text):
-        self.text = text.strip()
+        self.text = text
         self.len = len(self.text)
     def empty(self):
         return self.len == self.i
@@ -325,61 +437,49 @@ class Parser:
             else:
                 break
         return s
-    def merge_separator(self, parsed, char, classe):
-        self.raise_comment(parsed)
-
-        if self.empty() or self.get() != char:
-            return
-        text = parsed.content[-1].extract_last_separator() + self.get()
-        self.next()
-        text += self.skip(" \t")
-        if parsed.content[-1].nr_arguments() == 0:
-            parsed.append(Unterminated(text))
-        else:
-            parsed.append(classe(text))
-    def raise_comment(self, parsed):
-        if len(parsed.content[-1].content) != 0:
-            if isinstance(parsed.content[-1].content[-1], Comment):
-                comment = parsed.content[-1].content.pop()
-                if len(parsed.content[-1].content) == 0:
-                    parsed.content.pop()
-                parsed.append(comment)
-    def replace_empty(self, parsed, class1, class2):
-        if (len(parsed.content) > 1
-            and isinstance(parsed.content[-2], class1)
-            and (isinstance(parsed.content[-1], class2)
-                 and len(parsed.content[-1].content) == 0
-                 or isinstance(parsed.content[-1], Comment))
-            ):
-            # Case:  a |
-            parsed.content[-2] = Unterminated(parsed.content[-2].content)
-        if (len(parsed.content) > 2
-            and isinstance(parsed.content[-3], class1)
-            and isinstance(parsed.content[-2], class2)
-            and len(parsed.content[-2].content) == 0
-            ):
-            # Case:  a | #
-            parsed.content[-3] = Unterminated(parsed.content[-3].content)
-            parsed.content.pop(-2)
-        if len(parsed.content) and isinstance(parsed.content[-1], class1):
-            parsed.content[-1] = Unterminated(parsed.content[-1].content)
-    def parse(self):
-        self.i = 0
+    def parse(self, init=True):
+        if init:
+            self.i = 0
         parsed = Line()
         while not self.empty():
+            if self.get() == ')':
+                return parsed
             parsed.append(self.parse_pipeline())
-            self.merge_separator(parsed, ';', _DotComa)
-        self.replace_empty(parsed, DotComa, Pipeline)
-        parsed.init_position()
+            if not self.empty() and self.get() == ';':
+                parsed.append(DotComa(";"))
+                self.next()
+        if init:
+            parsed.raise_comment()
+            parsed.raise_separator()
+            parsed.merge_separator()
+            parsed.remove_empty()
+            parsed.replace_empty()
+            parsed.init_position()
         return parsed
     def parse_pipeline(self):
         parsed = Pipeline()
         while not self.empty():
-            parsed.append(self.parse_command())
-            self.merge_separator(parsed, '|', _Pipe)
-            if not self.empty() and self.get() == ';':
+            if self.get() == '(':
+                parsed.append(self.parse_group())
+            else:
+                parsed.append(self.parse_command())
+            if not self.empty() and self.get() in ';)':
                 break
-        self.replace_empty(parsed, Pipe, Command)
+            if not self.empty() and self.get() == '|':
+                parsed.append(Pipe("|"))
+                self.next()
+        return parsed
+    def parse_group(self):
+        parsed = Group()
+        self.next()
+        parsed.append(GroupStart("("))
+        parsed.append(self.parse(init=False))
+        if self.empty():
+            parsed.content[0] = Unterminated("(")
+        else:
+            if self.get() == ')':
+                parsed.append(GroupStop(")"))
+                self.next()
         return parsed
     def read_comment(self, parsed):
         if (self.get() != '#'
@@ -399,8 +499,11 @@ class Parser:
             if not self.empty():
                 if not self.read_comment(parsed):
                     return parsed
-                if self.get() in '|;':
+                if self.get() in '|;)':
                     return parsed
+                while not self.empty() and self.get() in '(':
+                    parsed.append(Unexpected("("))
+                    self.next()
             if not self.empty():
                 parsed.append(self.parse_argument())
         return parsed
@@ -552,7 +655,7 @@ class Parser:
         parsed = Argument()
         while not self.empty():
             c = self.get()
-            if c in ' \t><|;':
+            if c in ' \t><|;)(':
                 return parsed
             if (self.read_backslash(parsed)
                 and self.read_dollar(parsed)
