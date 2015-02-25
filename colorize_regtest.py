@@ -60,5 +60,8 @@ check("a ; ( b ) ; c", "Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' 
 check("( a ; b ) | ( c ; d )", "Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('b'))))),GroupStop(' ) ')),Pipe('| '),Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('c')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('d'))))),GroupStop(' )'))))")
 
 check("( a ) >b",  "Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('a'))))),GroupStop(' ) '),Redirection(Fildes(''),Direction('>'),File(Normal('b'))))))")
-      
+
+check("A=B", "Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('B')))))")
+check("A=B b c", "Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('B')),Separator(' '),Argument(Normal('b')),Separator(' '),Argument(Normal('c')))))")
+
 print "OK"

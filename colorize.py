@@ -1,6 +1,6 @@
 # -*- coding: utf-8
 
-# Missing () = $() & && 
+# Missing = $() & && 
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
@@ -112,9 +112,7 @@ class Unexpected(Chars):
 
 class Invisible(Chars):
     def text(self, txt):
-        return ("Le caractère «" + self.content
-                + "» n'est pas passé à la commande. "
-                + txt)
+        return "Le caractère «" + self.content + "» disparaît. " + txt
 class Backslash(Invisible):
     def help(self, position):
         return self.text("Il annule la signification du caractère suivant.")
@@ -183,6 +181,9 @@ class GroupStart(Pattern):
 class GroupStop(Pattern):
     def local_help(self):
         return "Fin du groupement"
+class Equal(Chars):
+    def local_help(self):
+        return "Affectation dans la variable dont le nom est à gauche de la valeur à droite."
 
 ##############################################################################
 ##############################################################################
@@ -207,7 +208,9 @@ class Container:
             )
     def nr_arguments(self):
         return sum([x.nr_arguments()
-                    for x in self.content])
+                    for x in self.content
+                    is isinstance(x, Argument)
+                ])
     def active(self, position):
         if self.start < position <= self.end:
             return "active "
@@ -240,6 +243,10 @@ class Container:
                   for x in self.content
                     if isinstance(x, classe)
                   ])
+    def first_of(self, classe):
+        for x in self.content:
+            if isinstance(x, classe):
+                return x                  
     def is_a_pattern(self):
         for c in self.content:
             if c.is_a_pattern():
@@ -330,6 +337,7 @@ class Container:
                 or isinstance(self.content[-2], DotComa)
             )):
             self.content[-2] = Unterminated(self.content[-2].content)
+
 class Line(Container):
     def local_help(self):
         nr = self.number_of(Pipeline)
@@ -357,7 +365,7 @@ class Command(Container):
             return ('<div class="help_Command">Commande : '
                     + self.content[0].html() + ' sans argument</div>')
         return ('<div class="help_Command">La commande '
-                + self.content[0].html() + ' avec '
+                + self.first_of(Argument).html() + ' avec '
                 + str(nr-1) + ' arguments.</div>')
 class Argument(Container):
     def append(self, item):
@@ -413,6 +421,14 @@ class File(Container):
     def local_help(self, position):
         return ('<div class="help_Redirection">Le fichier dont le nom est : '
                 + self.html() + '</div>')
+
+class Affectation(Container):
+    def local_help(self, position):
+        v = ''
+        for content in self.content[2:]:
+            v += content.html()
+        return ('<div class="help_Affectation">Affectation dans la variable : «'
+                + self.content[0].html() + '» de la valeur «' + v + '»</div>')
 
 ##############################################################################
 ##############################################################################
@@ -654,18 +670,33 @@ class Parser:
         else:
             return True
         self.next()
+    def read_equal(self, parsed):
+        if len(parsed.content) != 1 or self.get() != '=':
+            return True
+        self.next()
+        if name(parsed.content[0]) != 'Normal':
+            return True
+        a = Affectation()
+        a.append(parsed.content.pop())
+        a.append(Equal("="))
+        for content in self.parse_argument().content:
+            a.append(content)
+        parsed.append(a)
     def parse_argument(self):
         parsed = Argument()
         while not self.empty():
             c = self.get()
             if c in ' \t><|;)(':
-                return parsed
+                break
             if (self.read_backslash(parsed)
                 and self.read_dollar(parsed)
                 and self.read_quote(parsed)
                 and self.read_guillemet(parsed)
                 and self.read_pattern(parsed)
+                and self.read_equal(parsed)
                 ):
                 parsed.append(Normal(c))
                 self.next()
+        if isinstance(parsed.content[0], Affectation):
+            return parsed.content[0]
         return parsed
