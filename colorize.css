@@ -71,6 +71,20 @@
 .help_Redirection { color: #088 ; }
 
 
+.Replacement {
+    border-bottom-width: 6px ;
+    border-bottom-style: solid ;
+    border-bottom-color: rgba(255, 255, 0, 0.222) ;
+    padding-bottom: 2px ;
+}
+.Replacement.active {
+    border-bottom-color: rgba(255, 255, 0, 1) ;
+}
+.help_Replacement { color: #880 ; }
+
+
+
+
 .Argument {
     border-bottom-width: 6px ;
     border-bottom-style: solid ;

@@ -64,4 +64,7 @@ check("( a ) >b",  "Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(A
 check("A=B", "Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('B')))))")
 check("A=B b c", "Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('B')),Separator(' '),Argument(Normal('b')),Separator(' '),Argument(Normal('c')))))")
 
+check("a $(c) b", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Replacement(GroupStart('$('),Line(Pipeline(Command(Argument(Normal('c'))))),GroupStop(')'))),Separator(' '),Argument(Normal('b')))))")
+
+
 print "OK"

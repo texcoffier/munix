@@ -1,6 +1,6 @@
 # -*- coding: utf-8
 
-# Missing = $() & && 
+# Missing  & && 
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
@@ -417,6 +417,15 @@ class Group(Container):
         return ('<div class="help_Group">'
                 + "Lance un nouveau processus pour évaluer le contenu."
                 + '</div>')
+class Replacement(Container):
+    def is_a_pattern(self):
+        return False
+    def local_help(self):
+        return ('<div class="help_Replacement">'
+                + "Lance un nouveau processus pour évaluer le contenu. "
+                + "Ces caractères sont remplacés par ce qui a été "
+                + "écrit par le processus sur sa sortie standard."
+                + '</div>')
 class File(Container):
     def local_help(self, position):
         return ('<div class="help_Redirection">Le fichier dont le nom est : '
@@ -486,7 +495,7 @@ class Parser:
                 self.next()
                 parsed.append(Pipe("|" + self.skip(" \t")))
         return parsed
-    def parse_group(self):
+    def parse_group(self, eat_separator=True):
         parsed = Group()
         self.next()
         parsed.append(GroupStart("("))
@@ -496,7 +505,10 @@ class Parser:
         else:
             if self.get() == ')':
                 self.next()
-                parsed.append(GroupStop(")" + self.skip(" \t")))
+                c = ")"
+                if eat_separator:
+                    c += self.skip(" \n")
+                parsed.append(GroupStop(c))
                 if not self.empty():
                     self.read_redirection(parsed)
         return parsed
@@ -584,6 +596,12 @@ class Parser:
             c = self.get()
             if c in alpha:
                 parsed.append(Variable('$' + self.skip(names)))
+            elif c == '(':
+                r = Replacement()
+                for content in self.parse_group(False).content:
+                    r.append(content)
+                r.content[0].content = '$' + r.content[0].content
+                parsed.append(r)
             else:
                 parsed.append(Normal('$')) # Assume its signification disapear
     def read_quote(self, parsed):
