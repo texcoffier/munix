@@ -56,5 +56,9 @@ check("(a)", "Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Argument
 check("(a", "Line(Pipeline(Group(Unterminated('('),Line(Pipeline(Command(Argument(Normal('a'))))))))")
 check("a (", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Unexpected('('))))")
 check("( d ; e )", "Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('d')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('e'))))),GroupStop(' )'))))")
+check("a ; ( b ) ; c", "Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('b'))))),GroupStop(' ) '))),DotComa('; '),Pipeline(Command(Argument(Normal('c')))))")
+check("( a ; b ) | ( c ; d )", "Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('b'))))),GroupStop(' ) ')),Pipe('| '),Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('c')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('d'))))),GroupStop(' )'))))")
 
+check("( a ) >b",  "Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('a'))))),GroupStop(' ) '),Redirection(Fildes(''),Direction('>'),File(Normal('b'))))))")
+      
 print "OK"

@@ -279,7 +279,7 @@ class Container:
                     v = self.content[i-1].content + v
                     new_content.pop() # Remove the separator before
                 if (i != len(self.content)-1
-                    and isinstance(self.content[i+1], Separator)
+                    and name(self.content[i+1]) == 'Separator'
                     ):
                     v += self.content[i+1].content
                     self.content[i+1] = Unterminated("FAKE")
@@ -406,8 +406,8 @@ class SquareBracket(Container):
                 + '</div>')
 class Group(Container):
     def local_help(self):
-        return ('<div class="">'
-                + "Lance une nouveau processus."
+        return ('<div class="help_Group">'
+                + "Lance un nouveau processus pour évaluer le contenu."
                 + '</div>')
 class File(Container):
     def local_help(self, position):
@@ -443,16 +443,17 @@ class Parser:
         parsed = Line()
         while not self.empty():
             if self.get() == ')':
-                return parsed
+                break
             parsed.append(self.parse_pipeline())
             if not self.empty() and self.get() == ';':
-                parsed.append(DotComa(";"))
                 self.next()
+                parsed.append(DotComa(";" + self.skip(" \t")))
         if init:
             parsed.raise_comment()
             parsed.raise_separator()
-            parsed.merge_separator()
             parsed.remove_empty()
+            parsed.raise_separator()
+            parsed.merge_separator()
             parsed.replace_empty()
             parsed.init_position()
         return parsed
@@ -466,20 +467,22 @@ class Parser:
             if not self.empty() and self.get() in ';)':
                 break
             if not self.empty() and self.get() == '|':
-                parsed.append(Pipe("|"))
                 self.next()
+                parsed.append(Pipe("|" + self.skip(" \t")))
         return parsed
     def parse_group(self):
         parsed = Group()
         self.next()
         parsed.append(GroupStart("("))
-        parsed.append(self.parse(init=False))
+        parsed.append(self.parse(0))
         if self.empty():
             parsed.content[0] = Unterminated("(")
         else:
             if self.get() == ')':
-                parsed.append(GroupStop(")"))
                 self.next()
+                parsed.append(GroupStop(")" + self.skip(" \t")))
+                if not self.empty():
+                    self.read_redirection(parsed)
         return parsed
     def read_comment(self, parsed):
         if (self.get() != '#'

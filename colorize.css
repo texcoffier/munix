@@ -24,7 +24,7 @@
 }
 
 #help {
-    margin-top: 2em ;
+    margin-top: 3em ;
 }
 
 .Parsed {
@@ -77,6 +77,16 @@
     border-bottom-color: rgba(0, 0, 0, 1) ;
 }
 
+.Group {
+    border-bottom-width: 6px ;
+    border-bottom-style: solid ;
+    border-bottom-color: rgba(255, 0, 255, 0.222) ;
+    padding-bottom: 2px ;
+}
+.Group.active {
+    border-bottom-color: rgba(255, 0, 255, 1) ;
+}
+.help_Group { color: #808 ; }
 
 .Command {
     border-bottom-width: 6px ;
