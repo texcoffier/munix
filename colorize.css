@@ -23,10 +23,6 @@
     pointer-events:none;
 }
 
-#help {
-    margin-top: 3em ;
-}
-
 .Parsed {
     font-family: Courier ;
     display: inline-block ;
@@ -55,8 +51,28 @@
     color: #990 ;
 }
 
+.help {
+    border: 1px solid black ;
+    margin-bottom: 1em ;
+}
+
+.link {
+    position: absolute ;
+    opacity: 0.1 ;
+    background: black ;
+}
+
 .Redirection, .Fildes, .Direction {
     color: #0FF ;
+}
+
+#help {
+    margin-top: 1em ;
+}
+
+/*
+#help {
+    margin-top: 3em ;
 }
 
 .Redirection {
@@ -70,7 +86,6 @@
 }
 .help_Redirection { color: #088 ; }
 
-
 .Replacement {
     border-bottom-width: 6px ;
     border-bottom-style: solid ;
@@ -82,9 +97,6 @@
 }
 .help_Replacement { color: #880 ; }
 
-
-
-
 .Argument {
     border-bottom-width: 6px ;
     border-bottom-style: solid ;
@@ -93,17 +105,6 @@
 }
 .Argument.active {
     border-bottom-color: rgba(0, 0, 0, 1) ;
-}
-
-.help {
-    border: 1px solid black ;
-    margin-bottom: 1em ;
-}
-
-.link {
-    position: absolute ;
-    opacity: 0.1 ;
-    background: black ;
 }
 
 .Group {
@@ -139,3 +140,4 @@
 }
 .help_Pipeline { color: #080 ; }
 
+*/
