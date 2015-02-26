@@ -95,6 +95,11 @@
     border-bottom-color: rgba(0, 0, 0, 1) ;
 }
 
+.help {
+    border: 1px solid black ;
+    padding: 1em ;
+}
+
 .Group {
     border-bottom-width: 6px ;
     border-bottom-style: solid ;

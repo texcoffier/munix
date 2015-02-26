@@ -32,14 +32,21 @@ class Chars:
         return 'C' + pad(depth) + self.str() + '\n'
     def html(self, position=-1):
         return ('<div class="Parsed ' + self.active(position) + name(self)
+                + '" id="P' + self.ident
                 + '">' + protect(self.content) + '</div>')
     def nr_arguments(self):
         return 0
-    def init_position(self, i=0):
+    def init_position(self, i=0, ident=0):
         self.start = i
         self.end = i + len(self.content)
+        self.ident = ident
         return self.end
     def help(self, position):
+        return ('<div id="H' + self.ident
+                + '" class="help help_' + name(self) + '">'
+                + self.local_help(position)
+                + '</div>')
+    def local_help(self, position):
         return name(self) + ':' + protect(self.content)
     def active(self, position):
         if self.start < position <= self.end:
@@ -58,13 +65,11 @@ class Chars:
         pass # To easely stop container recursion
     
 class Normal(Chars):
-    def help(self, position):
+    def local_help(self, position):
         return ('Verbatim : ' + protect(self.content))
 class Pattern(Chars):
     def is_a_pattern(self):
         return True
-    def help(self, position):
-        return '<div class="help_Pattern">' + self.local_help() + "</div>"
 class Star(Pattern):
     def local_help(self):
         return ("L'étoile représente une suite quelconque de caractères"
@@ -75,55 +80,51 @@ class QuestionMark(Pattern):
 class Separator(Chars):
     def nice(self, depth):
         return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
-    def help(self, position):
+    def local_help(self, position):
         return ('Un espace ou plus pour séparer les arguments.')
 class Comment(Separator):
-    def help(self, position):
+    def local_help(self, position):
         return ("Un commentaire jusqu'à la fin de la ligne."
                 + " Il n'est pas passé à la commande."
                 + " Ce n'est pas un argument."
                 + " Le shell ne regarde pas dedans.")
 class Pipe(Separator):
-    def help(self, position):
+    def local_help(self, position):
         return ('Le | redirige la sortie standard de la commande de gauche'
                 + " sur l'entrée standard de la commande de droite."
             )
-def _Pipe(x): # RapydScript can not pass class as function argument
-    return Pipe(x)
 class DotComa(Separator):
-    def help(self, position):
-        return ("Le ';' permet de séparer les commandes.")
-def _DotComa(x): # RapydScript can not pass class as function argument
-    return DotComa(x)
+    def local_help(self, position):
+        return "Le ';' permet de séparer les commandes."
 class Variable(Chars):
-    def help(self, position):
+    def local_help(self, position):
         return (self.html()
                 + " est remplacé par le shell par le contenu de la variable «"
                 + self.content[1:] + '».'
                 + ' Le nom de la variable disparaît.'
             )
 class Unterminated(Chars):
-    def help(self, position):
+    def local_help(self, position):
         return "Il manque une suite pour ce symbole : «" + self.content + "»"
 
 class Unexpected(Chars):
-    def help(self, position):
+    def local_help(self, position):
         return "Il est interdit d'avoir «" + self.content + "» à cet endroit"
 
 class Invisible(Chars):
     def text(self, txt):
         return "Le caractère «" + self.content + "» disparaît. " + txt
 class Backslash(Invisible):
-    def help(self, position):
+    def local_help(self, position):
         return self.text("Il annule la signification du caractère suivant.")
 class Quote(Invisible):
-    def help(self, position):
+    def local_help(self, position):
         return self.text("La signification de tous les caractères entres les deux cotes est annulée.")
 class Guillemet(Invisible):
-    def help(self, position):
+    def local_help(self, position):
         return self.text("La signification de tous les caractères entres les 2 guillemets est annullée sauf l'anti-slash et le dollar.")
 class Fildes(Invisible):
-    def help(self, position):
+    def local_help(self, position):
         if self.content[0] == '&':
             c = self.content[1:]
         else:
@@ -136,10 +137,9 @@ class Fildes(Invisible):
             s = "l'entrée standard."
         else:
             s = "???"
-        return ('<div class="help_Redirection">Le fildes «'
-                + self.content + "» représentant " + s + '</div>')
+        return 'Le fildes «' + self.content + "» représentant " + s
 class Direction(Invisible):
-    def help(self, position):
+    def local_help(self, position):
         c = self.content.strip()
         if c == self.content:
             more = ''
@@ -157,7 +157,7 @@ class Direction(Invisible):
             s = "On lit à partir du fichier indiqué."
         else:
             s = 'bug'
-        return '<div class="help_Redirection">' + s + more + '</div>'
+        return s + more
 class SquareBracketStart(Pattern):
     def local_help(self):
         return "Début de la liste des caractères possibles."
@@ -185,15 +185,13 @@ class Equal(Chars):
     def local_help(self):
         return "Affectation dans la variable dont le nom est à gauche de la valeur à droite."
 class And(Chars):
-    def help(self):
-        return ('<div class="help_And">'
-                + "La commande de droite ne s'exécute que"
+    def local_help(self):
+        return ("La commande de droite ne s'exécute que"
                 + " si la commande de gauche s'est terminée sans erreur")
 
 class Background(Chars):
-    def help(self):
-        return ('<div class="help_Background">'
-        + 'La commande de gauche est lancée en arrière plan')
+    def local_help(self):
+        return 'La commande de gauche est lancée en arrière plan'
         
 
 ##############################################################################
@@ -229,24 +227,29 @@ class Container:
             return ""
     def html(self, position=-1):
         return ('<div class="Parsed ' + self.active(position) + name(self)
+                + '" id="P' + self.ident
                 + '">' + ''.join([x.html(position)
                                   for x in self.content
                               ])
                 + '</div>')
-    def init_position(self, i=0):
+    def init_position(self, i=0, ident=0):
         self.start = i
         for content in self.content:
-            i = content.init_position(i)
+            content.init_position(i, ident)
+            i = content.end
+            ident = content.ident + 1
             content.parent = self
+        self.ident = ident
         self.end = i
         return i
     def help(self, position):
-        s = self.local_help()
+        s = ('<div id="H' + self.ident
+             + '" class="help help_' + name(self) + '">')
         for content in self.content:
             if content.start <= position <= content.end:
                 s += content.help(position)
                 break
-        return s
+        return s + self.local_help() + '</div>'
     def local_help(self):
         return name(self) + ':<br>'
     def number_of(self, classe):
@@ -355,31 +358,28 @@ class Line(Container):
     def local_help(self):
         nr = self.number_of(Pipeline)
         if nr == 0:
-            return '<div class="help_Line">Une ligne de commande vide.</div>'
+            return 'Une ligne de commande vide.'
         if nr == 1:
-            return '<div class="help_Line">Une ligne de commande avec une seule commande.</div>'
-        return ('<div class="help_Line">Une ligne de commande avec '
-                + str(nr) + ' commandes.</div>')
+            return 'Une ligne de commande avec une seule commande.'
+        return ('Une ligne de commande avec ' + str(nr) + ' pipeline.')
 class Pipeline(Container):
     def local_help(self):
         nr = self.number_of(Command)
         if nr == 0:
-            return '<div class="help_Pipeline">Un pipeline vide !</div>'
+            return 'Un pipeline vide !'
         if nr == 1:
             return ''
-        return ('<div class="help_Pipeline">'
-                + 'Un pipeline enchainant ' + str(nr) + ' commandes.</div>')
+        return ('Un pipeline enchainant ' + str(nr) + ' commandes.')
 class Command(Container):
     def local_help(self):
         nr = self.number_of(Argument)
         if nr == 0:
-            return '<div class="help_Command">Une commande vide !'
+            return 'Une commande vide !'
         if nr == 1:
-            return ('<div class="help_Command">Commande : '
-                    + self.content[0].html() + ' sans argument</div>')
-        return ('<div class="help_Command">La commande '
+            return 'Commande : ' + self.content[0].html() + ' sans argument'
+        return ('La commande '
                 + self.first_of(Argument).html() + ' avec '
-                + str(nr-1) + ' arguments.</div>')
+                + str(nr-1) + ' arguments.')
 class Argument(Container):
     def append(self, item):
         if (len(self.content) != 0
@@ -416,41 +416,32 @@ class Redirection(Container):
                 m = " de la sortie standard"
             elif self.content[1].content == '<':
                 m = " de l'entrée standard"
-        return ('<div class="help_Redirection">'
-                + "C'est une redirection"
-                + m + ", pas un argument de la commande."
-                + '</div>')
+        return "C'est une redirection" +m+ ", pas un argument de la commande."
 class SquareBracket(Container):
     def local_help(self):
-        return ('<div class="help_Pattern">'
-                + "Les crochets indiquent que l'on veut un seul caractère."
-                + '</div>')
+        return "Les crochets indiquent que l'on veut un seul caractère."
 class Group(Container):
     def local_help(self):
-        return ('<div class="help_Group">'
-                + "Lance un nouveau processus pour évaluer le contenu."
-                + '</div>')
+        return "Lance un nouveau processus pour évaluer le contenu."
 class Replacement(Container):
     def is_a_pattern(self):
         return False
     def local_help(self):
-        return ('<div class="help_Replacement">'
-                + "Lance un nouveau processus pour évaluer le contenu. "
+        return ("Lance un nouveau processus pour évaluer le contenu. "
                 + "Ces caractères sont remplacés par ce qui a été "
                 + "écrit par le processus sur sa sortie standard."
-                + '</div>')
+                )
 class File(Container):
     def local_help(self, position):
-        return ('<div class="help_Redirection">Le fichier dont le nom est : '
-                + self.html() + '</div>')
+        return 'Le fichier dont le nom est : ' + self.html()
 
 class Affectation(Container):
     def local_help(self, position):
         v = ''
         for content in self.content[2:]:
             v += content.html()
-        return ('<div class="help_Affectation">Affectation dans la variable : «'
-                + self.content[0].html() + '» de la valeur «' + v + '»</div>')
+        return ('Affectation dans la variable : «'
+                + self.content[0].html() + '» de la valeur «' + v + '»')
 
 ##############################################################################
 ##############################################################################
