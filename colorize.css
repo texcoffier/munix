@@ -97,7 +97,13 @@
 
 .help {
     border: 1px solid black ;
-    padding: 1em ;
+    margin-bottom: 1em ;
+}
+
+.link {
+    position: absolute ;
+    opacity: 0.1 ;
+    background: black ;
 }
 
 .Group {

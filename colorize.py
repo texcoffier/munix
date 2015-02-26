@@ -31,8 +31,10 @@ class Chars:
     def nice(self, depth):
         return 'C' + pad(depth) + self.str() + '\n'
     def html(self, position=-1):
-        return ('<div class="Parsed ' + self.active(position) + name(self)
-                + '" id="P' + str(self.ident)
+        s = '<div '
+        if position != -1:
+            s += 'id="P' + str(self.ident) + '" '
+        return (s + 'class="Parsed ' + self.active(position) + name(self)
                 + '">' + protect(self.content) + '</div>')
     def nr_arguments(self):
         return 0
@@ -42,10 +44,11 @@ class Chars:
         self.ident = ident
         return self.end
     def help(self, position):
-        return ('<div id="H' + str(self.ident)
-                + '" class="help help_' + name(self) + '">'
-                + self.local_help(position)
-                + '</div>')
+        s = '<div '
+        if position != -1:
+            s += 'id="H' + str(self.ident) + '" '
+        return (s + 'class="help help_' + name(self) + '">'
+                + self.local_help(position) + '</div>')
     def local_help(self, dummy_position):
         return name(self) + ':' + protect(self.content)
     def active(self, position):
@@ -226,8 +229,10 @@ class Container:
         else:
             return ""
     def html(self, position=-1):
-        return ('<div class="Parsed ' + self.active(position) + name(self)
-                + '" id="P' + str(self.ident)
+        s = '<div '
+        if position != -1:
+            s += 'id="P' + str(self.ident) + '" '
+        return (s + 'class="Parsed ' + self.active(position) + name(self)
                 + '">' + ''.join([x.html(position)
                                   for x in self.content
                               ])
@@ -243,13 +248,18 @@ class Container:
         self.end = i
         return i
     def help(self, position):
-        s = ('<div id="H' + str(self.ident)
-             + '" class="help help_' + name(self) + '">')
+        s = ''
         for content in self.content:
             if content.start <= position <= content.end:
                 s += content.help(position)
                 break
-        return s + self.local_help(position) + '</div>'
+        h = self.local_help(position)
+        if h == '':
+            return s
+        s += '<div '
+        if position != -1:
+            s += 'id="H' + str(self.ident) + '" '
+        return s + 'class="help help_' + name(self) + '">' + h + '</div>'
     def local_help(self, dummy_position):
         return name(self) + ':<br>'
     def number_of(self, classe):
@@ -729,3 +739,38 @@ class Parser:
         if isinstance(parsed.content[0], Affectation):
             return parsed.content[0]
         return parsed
+
+def findPos(x):
+    curleft = 0
+    curtop = 0
+    obj = x
+    if obj.offsetParent:
+        while obj:
+            curleft += obj.offsetLeft
+            curtop += obj.offsetTop
+            obj = obj.offsetParent
+
+        while x and x.scrollTop == 0:
+            x = x.parentNode
+        if x and x.tagName != 'HTML' and x.tagName != 'BODY' and x.scrollTop:
+            curleft -= x.scrollLeft
+            curtop -= x.scrollTop
+    return curleft, curtop
+
+def create_links(help):
+    border = 1
+    output = document.getElementById(help)
+    for help_box in output.getElementsByTagName('DIV'):
+        place = document.getElementById('P' + help_box.id[1:])
+        if not place:
+            continue
+        place_pos = findPos(place)
+        n = document.createElement('VAR')
+        n.className = "link " + help_box.className
+        n.id = 'L' + help_box.id[1:]
+        n.style.left = str(place_pos[0]) + "px"
+        top = place_pos[1] + place.offsetHeight + border
+        n.style.top = str(top) + "px"
+        n.style.height = str(findPos(help_box)[1] - top - 2*border) + "px"
+        n.style.width = place.offsetWidth + "px"
+        output.appendChild(n)
