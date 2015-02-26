@@ -4,7 +4,8 @@ import colorize
 
 def check(input, output):
     p = colorize.Parser(input)
-    result = p.parse().str()
+    parsed = p.parse()
+    result = parsed.str()
     if result != output:
         print 'Input   :', input
         print 'Output  :', result
@@ -15,6 +16,9 @@ def check(input, output):
                 break
         print '===>' + result[i:]
         bug
+    for i in range(len(input)):
+        parsed.html(i)
+        parsed.help(i)    
 
 check("", "Line()")
 check("a", "Line(Pipeline(Command(Argument(Normal('a')))))")
