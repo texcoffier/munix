@@ -308,7 +308,7 @@ class Container:
                 or isinstance(self.content[i], Background)
                 ):
                 v = self.content[i].content
-                if i != 0 and isinstance(self.content[i-1], Separator):
+                if i != 0 and name(self.content[i-1]) == 'Separator':
                     v = self.content[i-1].content + v
                     new_content.pop() # Remove the separator before
                 if (i != len(self.content)-1
@@ -348,21 +348,17 @@ class Container:
                 content.replace_empty()
         if self.empty():
             return
-        if (isinstance(self.content[0], Pipe)
-            or isinstance(self.content[0], DotComa)
-            ):
-            self.content[0] = Unterminated(self.content[0].content)
-        if (isinstance(self.content[-1], Pipe)
-            or isinstance(self.content[-1], DotComa)
-            ):
-            self.content[-1] = Unterminated(self.content[-1].content)
-        if (len(self.content) > 1
-            and isinstance(self.content[-1], Comment)
-            and (
-                isinstance(self.content[-2], Pipe)
-                or isinstance(self.content[-2], DotComa)
-            )):
-            self.content[-2] = Unterminated(self.content[-2].content)
+        def separator(x):
+            return (isinstance(x, DotComa)
+                    or isinstance(x, Pipe)
+                    or isinstance(x, And)
+                    or isinstance(x, Comment))
+        for i in range(len(self.content)):
+            if (separator(self.content[i])
+                and (i == len(self.content)-1 or i == 0
+                     or separator(self.content[i+1]))):
+                if not isinstance(self.content[i], Comment):
+                    self.content[i] = Unterminated(self.content[i].content)
 
 class Line(Container):
     def local_help(self, dummy_position):

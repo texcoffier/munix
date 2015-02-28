@@ -88,3 +88,7 @@
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Replacement(GroupStart('$('),Line(Pipeline(Command(Argument(Normal('c'))))),GroupStop(')'))),Separator(' '),Argument(Normal('b')))))"
 'a & b &'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '))),Background('& '),Pipeline(Command(Argument(Normal('b')),Separator(' '))),Background('&'))"
+'a; ;b'
+"Line(Pipeline(Command(Argument(Normal('a')))),Unterminated('; '),DotComa(';'),Pipeline(Command(Argument(Normal('b')))))"
+'a | ; && #'
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' ')),Unterminated('| ')),Unterminated('; '),Unterminated('&& '),Comment('#'))"
