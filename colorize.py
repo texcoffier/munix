@@ -348,12 +348,24 @@ class Container:
 
 class Line(Container):
     def local_help(self, dummy_position):
-        nr = self.number_of(Pipeline)
-        if nr == 0:
+        nr_pipeline = 0
+        nr_command = 0
+        for x in self.content:
+            if isinstance(x, Pipeline):
+                if x.number_of(Command) == 1:
+                    nr_command += 1
+                else:
+                    nr_pipeline += 1
+        if nr_command + nr_pipeline == 0:
             return 'Une ligne de commande vide.'
-        if nr == 1:
-            return 'Une ligne de commande avec une seule commande.'
-        return ('Une ligne de commande avec ' + str(nr) + ' pipeline.')
+        if nr_pipeline == 0:
+            return ('Une ligne de commande avec ' + str(nr_command)
+                    + ' commande.')
+        if nr_command == 0:
+            return ('Une ligne de commande avec ' + str(nr_pipeline)
+                    + ' pipeline.')
+        return ('Une ligne de commande avec ' + str(nr_command)
+                + ' commande et ' + str(nr_pipeline) + ' pipeline.')
 class Pipeline(Container):
     def local_help(self, dummy_position):
         nr = self.number_of(Command)
@@ -412,7 +424,7 @@ class Redirection(Container):
 class SquareBracket(Container):
     def local_help(self, dummy_position):
         return "Les crochets indiquent que l'on veut un seul caractère."
-class Group(Container):
+class Group(Command):
     def local_help(self, dummy_position):
         return "Lance un nouveau processus pour évaluer le contenu."
 class Replacement(Container):
