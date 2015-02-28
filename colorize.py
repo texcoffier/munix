@@ -748,32 +748,6 @@ class Parser:
             return parsed.content[0]
         return parsed
 
-def findPos(x):
-    curleft = 0
-    curtop = 0
-    obj = x
-    if obj.offsetParent:
-        while obj:
-            curleft += obj.offsetLeft
-            curtop += obj.offsetTop
-            obj = obj.offsetParent
-
-        while x and x.scrollTop == 0:
-            x = x.parentNode
-        if x and x.tagName != 'HTML' and x.tagName != 'BODY' and x.scrollTop:
-            curleft -= x.scrollLeft
-            curtop -= x.scrollTop
-    return curleft, curtop
-
-def window_width():
-    if window.innerWidth:
-        return window.innerWidth
-    if document.documentElement and document.documentElement.clientWidth:
-        return document.documentElement.clientWidth
-    if document.body.clientWidth:
-        return document.body.clientWidth
-    return 1024
-    
 link_opacity = "1"
 colors = [
     'rgba(180,255,255,' + link_opacity + ')',
@@ -784,7 +758,7 @@ colors = [
     'rgba(230,230,230,' + link_opacity + ')',
     ]
 
-def create_links(help):
+def create_links(help, scrollLeft):
     border = 0
     output = document.getElementById(help)
     i = 0
@@ -797,36 +771,31 @@ def create_links(help):
     nr_help = len(help_boxes)
     for help_box in help_boxes:
         place = document.getElementById('P' + help_box.id[1:])
-        place_pos = findPos(place)
         n = document.createElement('VAR')
         n.className = "link " + help_box.className
         n.id = 'L' + help_box.id[1:]
-        n.style.left = str(place_pos[0]) + "px"
-        top = place_pos[1] + place.offsetHeight + border
+        n.style.left = place.offsetLeft + "px"
+        top = place.offsetHeight + border
         color = colors[(nr_help+i+100)%len(colors)]
         n.style.top = str(top) + "px"
-        n.style.height = str(findPos(help_box)[1] - top - 2*border + 2) + "px"
+        n.style.height = str(help_box.offsetTop - place.offsetHeight
+                             - 2*border) + "px"
         n.style.width = place.offsetWidth + "px"
         n.style.zIndex = i*2
         n.style.background = color
         n.style.paddingLeft = 0
         help_box.style.zIndex = 2*i - 1
         help_box.style.background = color
-        place_right = place_pos[0] + place.offsetWidth
-        width = help_box.parentNode.offsetWidth
+        editor_width = help_box.parentNode.parentNode.offsetWidth
         slack = (place.offsetWidth - help_box.offsetWidth)/2
-        if slack > 0:
-            left = place_pos[0] + slack + 'px'
-            right = width - place_right - slack + 'px'
-        elif place_pos[0] > window_width()/2:
-            left = "auto"
-            right = (width - place_right) + 'px'
+        left = place.offsetLeft + slack
+        if slack < 0:
             help_box.style.borderTopLeftRadius = '1em'
-        else:
-            left = place_pos[0] + 'px'
-            right = "auto"
             help_box.style.borderTopRightRadius = '1em'
-        help_box.style.marginRight = right
-        help_box.style.marginLeft = left
+        if left < scrollLeft:
+            left = scrollLeft
+        elif left + help_box.offsetWidth > scrollLeft + editor_width:
+            left -= (left + help_box.offsetWidth) - (scrollLeft + editor_width)
+        help_box.style.marginLeft = left + 'px'
         i -= 1
         output.appendChild(n)

@@ -1,6 +1,10 @@
+
 #editor {
     position: relative ;
+    overflow : hidden ;
+    margin: 1em ;
     border: 1px solid black ;
+    padding: 2px ;
 }
 
 #input, #output {
@@ -8,14 +12,18 @@
     font-size: 16pt ;
     width: 100% ;
     padding: 0px ;
-    border: 0px ;
     font-weight: bold ;
+    border: 0px ;
 }
+
+#input, #output , #help {
+    width: 200em ;
+}    
 
 #output {
     position: absolute ;
-    top: 0px ;
-    left: 0px ;
+    top: 2px ;
+    left: 2px ;
     white-space: pre ;
     pointer-events:none;
 }
@@ -40,7 +48,7 @@
 .help {
     margin-bottom: 0.6em ;
     /* border: 1px solid #AAA ; */
-    max-width: 50% ;
+    max-width: 20em ;
     border-bottom-left-radius: 1em ;
     border-bottom-right-radius: 1em ;
     padding-left: 0.5em ;
@@ -54,7 +62,7 @@
 .link {
     position: absolute ;
     border: 0px ;
-    max-width: 100% ;
+    max-width: 200em ;
     background: black ;
     /*
     border-left: 1px solid #AAA ;

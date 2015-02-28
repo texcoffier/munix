@@ -47,8 +47,8 @@
 	     onkeypress="setTimeout(update,1)"
 	     >
       <div id="output"></div>
+      <div id="help"></div>
     </div>
-    <div id="help"></div>
     <pre id="output2"></pre>
     <script>
       function update()
@@ -65,8 +65,8 @@
       document.getElementById("help").innerHTML = p.help(position);
       document.getElementById("output2").innerHTML = (update.debug
                                                       ? p.nice()
-                                                      : '') ;      
-      create_links("help") ;
+                                                      : '') ;
+      create_links("help", document.getElementById("editor").scrollLeft) ;
       }
       update() ;
     </script>
