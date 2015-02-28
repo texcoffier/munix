@@ -1,6 +1,6 @@
 # -*- coding: utf-8
 
-# Missing  && & : message explicites
+# Missing $1 $# && & for while case  and unterminated messages
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
@@ -47,8 +47,8 @@ class Chars:
         s = '<div '
         if position != -1:
             s += 'id="H' + str(self.ident) + '" '
-        return (s + 'class="help help_' + name(self) + '">'
-                + self.local_help(position) + '</div>')
+        return (s + 'class="help help_' + name(self) + '"><div>'
+                + self.local_help(position) + '</div></div>')
     def local_help(self, dummy_position):
         return name(self) + ':' + protect(self.content)
     def active(self, position):
@@ -257,7 +257,7 @@ class Container:
         s += '<div '
         if position != -1:
             s += 'id="H' + str(self.ident) + '" '
-        return s + 'class="help help_' + name(self) + '">' + h + '</div>'
+        return s + 'class="help help_' + name(self) + '"><div>'+h+'</div></div>'
     def local_help(self, dummy_position):
         return name(self) + ':<br>'
     def number_of(self, classe):
@@ -765,6 +765,7 @@ def create_links(help):
         if item.id:
             if document.getElementById('P' + item.id[1:]):
                 help_boxes.append(item)
+                item.style.width = item.firstChild.offsetWidth + 'px'
     nr_help = len(help_boxes)
     for help_box in help_boxes:
         place = document.getElementById('P' + help_box.id[1:])
@@ -792,9 +793,11 @@ def create_links(help):
         elif place_pos[0] > window_width()/2:
             left = "auto"
             right = (width - place_right) + 'px'
+            help_box.style.borderTopLeftRadius = '1em'
         else:
             left = place_pos[0] + 'px'
             right = "auto"
+            help_box.style.borderTopRightRadius = '1em'
         help_box.style.marginRight = right
         help_box.style.marginLeft = left
         i -= 1
