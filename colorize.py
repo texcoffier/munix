@@ -682,10 +682,12 @@ class Parser:
             i = self.i
             sb = SquareBracket()
             sb.append(SquareBracketStart('['))
+            empty = 1
             while not self.empty():
-                if self.get() == ']' and len(sb.content) != 1:
+                if self.get() == ']' and len(sb.content) != empty:
                     break
-                if self.get() == '!' and len(sb.content) == 1:
+                if self.get() == '!' and len(sb.content) == empty and empty==1:
+                    empty = 2
                     sb.append(SquareBracketNegate('!'))
                     self.next()
                     continue
