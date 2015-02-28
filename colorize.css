@@ -3,9 +3,6 @@
     border: 1px solid black ;
 }
 
-#input {
-}
-
 #input, #output {
     font-family: Courier ;
     font-size: 16pt ;
@@ -28,28 +25,17 @@
     display: inline-block ;
 }
 
-.Unterminated {
-    color: #F00 ;
-}
-
-.Backslash, .Quote, .Guillemet {
-    color: #BBB ;
-}
-
 .Star, .QuestionMark,
 .SquareBracketChar, .SquareBracketInterval, .SquareBracketNegate,
 .SquareBracketStart, .SquareBracketStop,
-.help_Pattern {
-    color: #B0B ;
-}
+.help_Pattern { color: #B0B ; }
 
-.Variable {
-    color: #080 ;
-}
+.Backslash, .Quote, .Guillemet { color: #BBB ; }
+.Variable     { color: #080 ; }
+.Equal        { color: #990 ; }
+.Unterminated { color: #F00 ; }
+.Unexpected   { color: #F00 ; }
 
-.Equal {
-    color: #990 ;
-}
 
 .help {
     margin-bottom: 0.6em ;
