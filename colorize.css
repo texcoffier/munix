@@ -53,12 +53,16 @@
 
 .help {
     /* border: 1px solid black ; */
-    margin-bottom: 1em ;
+    margin-bottom: 0.6em ;
     border: 1px solid #AAA ;
     width: 50% ;
     border-bottom-left-radius: 1em ;
     border-bottom-right-radius: 1em ;
+    padding-left: 0.5em ;
+    padding-right: 1em ;
 }
+
+.help .Parsed { background: #FFF }
 
 .link {
     position: absolute ;

@@ -737,6 +737,15 @@ def findPos(x):
             curtop -= x.scrollTop
     return curleft, curtop
 
+def window_width():
+    if window.innerWidth:
+        return window.innerWidth
+    if document.documentElement and document.documentElement.clientWidth:
+        return document.documentElement.clientWidth
+    if document.body.clientWidth:
+        return document.body.clientWidth
+    return 1024
+    
 link_opacity = "1"
 colors = [
     'rgba(180,255,255,' + link_opacity + ')',
@@ -766,21 +775,27 @@ def create_links(help):
         n.style.left = str(place_pos[0]) + "px"
         top = place_pos[1] + place.offsetHeight + border
         color = colors[(i+100)%len(colors)]
-        console.log(color)
         n.style.top = str(top) + "px"
         n.style.height = str(findPos(help_box)[1] - top - 2*border + 2) + "px"
         n.style.width = place.offsetWidth + "px"
         n.style.zIndex = i*2
         n.style.background = color
-        help_box.style.zIndex = 2*i + 1
+        n.style.paddingLeft = 0
+        help_box.style.zIndex = 2*i - 1
         help_box.style.background = color
-        #help_box.style.marginLeft = str(nr_help+i-1) + "em"
-        right = place_pos[0] + place.offsetWidth
-        if right > 600:
-            help_box.style.marginRight = (1280 - right) + 'px'
-            help_box.style.marginLeft = 'auto'
+        place_right = place_pos[0] + place.offsetWidth
+        width = help_box.parentNode.offsetWidth
+        slack = (place.offsetWidth - help_box.offsetWidth)/2
+        if slack > 0:
+            left = place_pos[0] + slack + 'px'
+            right = width - place_right - slack + 'px'
+        elif place_pos[0] > window_width()/2:
+            left = "auto"
+            right = (width - place_right) + 'px'
         else:
-            help_box.style.marginRight = 'auto'
-            help_box.style.marginLeft = place_pos[0] + 'px'
+            left = place_pos[0] + 'px'
+            right = "auto"
+        help_box.style.marginRight = right
+        help_box.style.marginLeft = left
         i -= 1
         output.appendChild(n)
