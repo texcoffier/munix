@@ -787,7 +787,7 @@ def create_links(help):
         n.id = 'L' + help_box.id[1:]
         n.style.left = str(place_pos[0]) + "px"
         top = place_pos[1] + place.offsetHeight + border
-        color = colors[(i+100)%len(colors)]
+        color = colors[(nr_help+i+100)%len(colors)]
         n.style.top = str(top) + "px"
         n.style.height = str(findPos(help_box)[1] - top - 2*border + 2) + "px"
         n.style.width = place.offsetWidth + "px"
