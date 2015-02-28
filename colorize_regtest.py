@@ -1,76 +1,53 @@
 #!/usr/bin/python
+"""
+Expected results are in 'regtest.py'
 
+Run without arguments: check the expected results.
+
+Run with 'rewrite' argument: create the new expected results
+"""
+
+import sys
 import colorize
 
-def check(input, output):
-    p = colorize.Parser(input)
+def check(input_val, expected, write_in):
+    p = colorize.Parser(input_val)
     parsed = p.parse()
     result = parsed.str()
-    if result != output:
-        print 'Input   :', input
-        print 'Output  :', result
-        print 'Expected:', output
+    if write_in:
+        write_in.write(repr(input_val) + '\n')
+        write_in.write(repr(result) + '\n')
+        return
+    if result != expected:
+        print 'Input   :', input_val
+        print 'Expected  :', result
+        print 'Expected:', expected
         print p.parse().nice()
-        for i in range(len(output)):
-            if result[i] != output[i]:
+        i = 0
+        for i in range(len(expected)):
+            if result[i] != expected[i]:
                 break
         print '===>' + result[i:]
         bug
-    for i in range(len(input)):
+    for i in range(len(input_val)):
         parsed.html(i)
-        parsed.help(i)    
+        parsed.help(i)
 
-check("", "Line()")
-check("a", "Line(Pipeline(Command(Argument(Normal('a')))))")
-check("aa", "Line(Pipeline(Command(Argument(Normal('aa')))))")
-check("a aa  a", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('aa')),Separator('  '),Argument(Normal('a')))))")
-check("a\\ a\\ \\   \\    \\", "Line(Pipeline(Command(Argument(Normal('a'),Backslash('\\\\'),Normal(' a'),Backslash('\\\\'),Normal(' '),Backslash('\\\\'),Normal(' ')),Separator('  '),Argument(Backslash('\\\\'),Normal(' ')),Separator('   '),Argument(Unterminated('\\\\')))))")
-check("' ' '  ' '\\' '\\\\' '\\\\\\' '", """Line(Pipeline(Command(Argument(Quote("'"),Normal(' '),Quote("'")),Separator(' '),Argument(Quote("'"),Normal('  '),Quote("'")),Separator(' '),Argument(Quote("'"),Normal('\\\\'),Quote("'")),Separator(' '),Argument(Quote("'"),Normal('\\\\\\\\'),Quote("'")),Separator(' '),Argument(Quote("'"),Normal('\\\\\\\\\\\\'),Quote("'")),Separator(' '),Argument(Unterminated("'")))))""")
-check("a'b", """Line(Pipeline(Command(Argument(Normal('a'),Unterminated("'"),Normal('b')))))""")
-check("$A '$B' \\$B $/ $B1/ $", """Line(Pipeline(Command(Argument(Variable('$A')),Separator(' '),Argument(Quote("'"),Normal('$B'),Quote("'")),Separator(' '),Argument(Backslash('\\\\'),Normal('$B')),Separator(' '),Argument(Normal('$/')),Separator(' '),Argument(Variable('$B1'),Normal('/')),Separator(' '),Argument(Normal('$')))))""")
-check("$A$B", "Line(Pipeline(Command(Argument(Variable('$A'),Variable('$B')))))")
-check('"A $B \\$C \\"" "', """Line(Pipeline(Command(Argument(Guillemet('"'),Normal('A '),Variable('$B'),Normal(' '),Backslash('\\\\'),Normal('$C '),Backslash('\\\\'),Normal('"'),Guillemet('"')),Separator(' '),Argument(Unterminated('"')))))""")
-check('"$" "a', """Line(Pipeline(Command(Argument(Guillemet('"'),Normal('$'),Guillemet('"')),Separator(' '),Argument(Unterminated('"'),Normal('a')))))""")
-check('a>b', "Line(Pipeline(Command(Argument(Normal('a')),Redirection(Fildes(''),Direction('>'),File(Normal('b'))))))")
-check('a >$C >>\\$ <" $A"', """Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Redirection(Fildes(''),Direction('>'),File(Variable('$C'))),Separator(' '),Redirection(Fildes(''),Direction('>>'),File(Backslash('\\\\'),Normal('$'))),Separator(' '),Redirection(Fildes(''),Direction('<'),File(Guillemet('"'),Normal(' '),Variable('$A'),Guillemet('"'))))))""")
-check("22>A B", "Line(Pipeline(Command(Redirection(Fildes('22'),Direction('>'),File(Normal('A'))),Separator(' '),Argument(Normal('B')))))")
-check("a >&23", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Redirection(Fildes(''),Direction('>'),Fildes('&23')))))")
-check("a | b", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')))))")
-check("a|b", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe('|'),Command(Argument(Normal('b')))))")
-check("a | b c | d e f", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')),Separator(' '),Argument(Normal('c'))),Pipe(' | '),Command(Argument(Normal('d')),Separator(' '),Argument(Normal('e')),Separator(' '),Argument(Normal('f')))))")
-check("|a", "Line(Pipeline(Unterminated('|'),Command(Argument(Normal('a')))))")
-check("a | ", "Line(Pipeline(Command(Argument(Normal('a'))),Unterminated(' | ')))")
-check("a;b ; c", "Line(Pipeline(Command(Argument(Normal('a')))),DotComa(';'),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('c')))))")
-check(";a;", "Line(Unterminated(';'),Pipeline(Command(Argument(Normal('a')))),Unterminated(';'))")
-check("a | b ; c | d", "Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('c'))),Pipe(' | '),Command(Argument(Normal('d')))))")
-check("a#b", "Line(Pipeline(Command(Argument(Normal('a#b')))))")
-check("a #b", "Line(Pipeline(Command(Argument(Normal('a')))),Separator(' '),Comment('#b'))")
-check("a | ;", "Line(Pipeline(Command(Argument(Normal('a'))),Unterminated(' | ')),Unterminated(';'))")
-check("a | # b", "Line(Pipeline(Command(Argument(Normal('a'))),Unterminated(' | ')),Comment('# b'))")
-check("a ; # b", "Line(Pipeline(Command(Argument(Normal('a')))),Unterminated(' ; '),Comment('# b'))")
+f = open("regtest.py", "r")
+tests = f.readlines()
+f.close()
 
-check("a [ab]", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),SquareBracketChar('b'),SquareBracketStop(']'))))))")
-check("a [", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Unterminated('[')))))")
-check("a [a-bcd-e]", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketInterval('a-b'),SquareBracketChar('c'),SquareBracketInterval('d-e'),SquareBracketStop(']'))))))")
-check("a []a-c-d]", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketStop(']')),Normal('a-c-d]')))))")
-check("a [!a-]]", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('!'),SquareBracketChar('a'),SquareBracketChar('-'),SquareBracketStop(']')),Normal(']')))))")
-check("a [1*", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Unterminated('['),Normal('1'),Star('*')))))")
+if 'rewrite' in sys.argv:
+    f = open("regtest.py", "w")
+else:
+    f = None
 
-check("(a)", "Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Argument(Normal('a'))))),GroupStop(')'))))")
-check("(a", "Line(Pipeline(Group(Unterminated('('),Line(Pipeline(Command(Argument(Normal('a'))))))))")
-check("a (", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Unexpected('('))))")
-check("( d ; e )", "Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('d')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('e'))))),GroupStop(' )'))))")
-check("a ; ( b ) ; c", "Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('b'))))),GroupStop(' ) '))),DotComa('; '),Pipeline(Command(Argument(Normal('c')))))")
-check("( a ; b ) | ( c ; d )", "Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('b'))))),GroupStop(' ) ')),Pipe('| '),Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('c')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('d'))))),GroupStop(' )'))))")
-
-check("( a ) >b",  "Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('a'))))),GroupStop(' ) '),Redirection(Fildes(''),Direction('>'),File(Normal('b'))))))")
-
-check("A=B", "Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('B')))))")
-check("A=B b c", "Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('B')),Separator(' '),Argument(Normal('b')),Separator(' '),Argument(Normal('c')))))")
-
-check("a $(c) b", "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Replacement(GroupStart('$('),Line(Pipeline(Command(Argument(Normal('c'))))),GroupStop(')'))),Separator(' '),Argument(Normal('b')))))")
-
-check("a & b &", "Line(Pipeline(Command(Argument(Normal('a')))),Background(' & '),Pipeline(Command(Argument(Normal('b')))),Background(' &'))")
-
+for input_value, expected_value in zip(tests[::2], tests[1::2]):
+    input_value = eval(input_value)
+    expected_value = eval(expected_value)
+    check(input_value, expected_value, f)
+    
+if f:
+    f.close()
 
 print "OK"

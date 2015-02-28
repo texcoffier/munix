@@ -60,8 +60,6 @@ class Chars:
         return False
     def empty(self):
         return True # To easely stop container recursion
-    def raise_separator(self):
-        return [self] # To easely stop container recursion
     def merge_separator(self):
         pass # To easely stop container recursion
     def remove_empty(self):
@@ -277,22 +275,6 @@ class Container:
                 return True
     def empty(self):
         return len(self.content) == 0
-    def raise_separator(self):
-        if self.empty():
-            return [self]
-        new_content = []
-        for content in self.content[:]:
-            for i in content.raise_separator():
-                new_content.append(i)
-        self.content = new_content
-        value = []
-        if name(self.content[0]) == 'Separator':
-            value.append(self.content[0]) # pop(0) not working with rapydscript
-            self.content = self.content[1:]
-        value.append(self)
-        if not self.empty() and name(self.content[-1]) == 'Separator':
-            value.append(self.content.pop())
-        return value
     def merge_separator(self):
         for content in self.content:
             content.merge_separator()
@@ -496,9 +478,7 @@ class Parser:
                     parsed.append(Background("&" + self.skip(" \t")))
         if init:
             parsed.raise_comment()
-            parsed.raise_separator()
             parsed.remove_empty()
-            parsed.raise_separator()
             parsed.merge_separator()
             parsed.replace_empty()
             parsed.init_position()
