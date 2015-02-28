@@ -52,9 +52,8 @@
 }
 
 .help {
-    /* border: 1px solid black ; */
     margin-bottom: 0.6em ;
-    border: 1px solid #AAA ;
+    /* border: 1px solid #AAA ; */
     max-width: 50% ;
     border-bottom-left-radius: 1em ;
     border-bottom-right-radius: 1em ;
@@ -71,8 +70,10 @@
     border: 0px ;
     max-width: 100% ;
     background: black ;
+    /*
     border-left: 1px solid #AAA ;
     border-right: 1px solid #AAA ;
+    */
     padding-left: 0px ;
     padding-right: 0px ;
 }
