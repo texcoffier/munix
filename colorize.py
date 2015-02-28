@@ -683,9 +683,9 @@ class Parser:
             sb = SquareBracket()
             sb.append(SquareBracketStart('['))
             while not self.empty():
-                if self.get() == ']' and len(sb.content) != 0:
+                if self.get() == ']' and len(sb.content) != 1:
                     break
-                if self.get() == '!' and len(sb.content) == 0:
+                if self.get() == '!' and len(sb.content) == 1:
                     sb.append(SquareBracketNegate('!'))
                     self.next()
                     continue
