@@ -7,6 +7,16 @@
     <script src="colorize.js"></script>
   </head>
   <body>
+    <noscript><h1>
+	Cette application nécessite l'activation de JavaScript
+	<h1></noscript>
+    <div>
+      Tapez une ligne de commande shell pour voir son interprétation :
+      <div style="position:fixed; right:0; top: 0; color:#888">
+	<a onclick="update.debug = !update.debug;update.last = '';update()">
+	  debug</a>
+      </div>
+    </div>
     <div id="editor">
       <input id="input"
 	     onkeyup="update();setTimeout(update,1)"
@@ -32,7 +42,9 @@
       p = p.parse() ;
       document.getElementById("output").innerHTML = p.html(position) ;
       document.getElementById("help").innerHTML = p.help(position);
-      document.getElementById("output2").innerHTML = p.nice() ;
+      document.getElementById("output2").innerHTML = (update.debug
+                                                      ? p.nice()
+                                                      : '') ;      
       create_links("help") ;
       }
       update() ;
