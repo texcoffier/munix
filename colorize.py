@@ -757,20 +757,50 @@ def findPos(x):
             curtop -= x.scrollTop
     return curleft, curtop
 
+link_opacity = "1"
+colors = [
+    'rgba(180,255,255,' + link_opacity + ')',
+    'rgba(255,255,180,' + link_opacity + ')',
+    'rgba(255,180,255,' + link_opacity + ')',
+    'rgba(180,180,255,' + link_opacity + ')',
+    'rgba(180,255,180,' + link_opacity + ')',
+    'rgba(230,230,230,' + link_opacity + ')',
+    ]
+
 def create_links(help):
-    border = 1
+    border = 0
     output = document.getElementById(help)
-    for help_box in output.getElementsByTagName('DIV'):
+    i = 0
+    help_boxes = []
+    for item in output.childNodes:
+        if item.id:
+            if document.getElementById('P' + item.id[1:]):
+                help_boxes.append(item)
+    nr_help = len(help_boxes)
+    for help_box in help_boxes:
         place = document.getElementById('P' + help_box.id[1:])
-        if not place:
-            continue
         place_pos = findPos(place)
         n = document.createElement('VAR')
         n.className = "link " + help_box.className
         n.id = 'L' + help_box.id[1:]
         n.style.left = str(place_pos[0]) + "px"
         top = place_pos[1] + place.offsetHeight + border
+        color = colors[(i+100)%len(colors)]
+        console.log(color)
         n.style.top = str(top) + "px"
-        n.style.height = str(findPos(help_box)[1] - top - 2*border) + "px"
+        n.style.height = str(findPos(help_box)[1] - top - 2*border + 2) + "px"
         n.style.width = place.offsetWidth + "px"
+        n.style.zIndex = i*2
+        n.style.background = color
+        help_box.style.zIndex = 2*i + 1
+        help_box.style.background = color
+        #help_box.style.marginLeft = str(nr_help+i-1) + "em"
+        right = place_pos[0] + place.offsetWidth
+        if right > 600:
+            help_box.style.marginRight = (1280 - right) + 'px'
+            help_box.style.marginLeft = 'auto'
+        else:
+            help_box.style.marginRight = 'auto'
+            help_box.style.marginLeft = place_pos[0] + 'px'
+        i -= 1
         output.appendChild(n)

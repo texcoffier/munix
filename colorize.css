@@ -52,14 +52,18 @@
 }
 
 .help {
-    border: 1px solid black ;
+    /* border: 1px solid black ; */
     margin-bottom: 1em ;
+    border: 1px solid #AAA ;
+    width: 50% ;
 }
 
 .link {
     position: absolute ;
-    opacity: 0.1 ;
+    border: 0px ;
     background: black ;
+    border-left: 1px solid #AAA ;
+    border-right: 1px solid #AAA ;
 }
 
 .Redirection, .Fildes, .Direction {
