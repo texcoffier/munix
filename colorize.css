@@ -53,6 +53,8 @@
     border-bottom-right-radius: 1em ;
     padding-left: 0.5em ;
     padding-right: 1em ;
+    padding-top: 1px ;
+    padding-bottom: 2px ;
 }
 
 .help .Parsed { background: #FFF }
