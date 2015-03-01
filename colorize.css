@@ -1,5 +1,5 @@
 
-#editor {
+#sheexp_editor {
     position: relative ;
     overflow : hidden ;
     margin: 1em ;
@@ -7,7 +7,7 @@
     padding: 0px ;
 }
 
-#input, #output {
+#sheexp_input, #sheexp_output {
     font-family: Courier ;
     font-size: 16pt ;
     width: 100% ;
@@ -16,11 +16,11 @@
     border: 0px ;
 }
 
-#input, #output , #help {
+#sheexp_input, #sheexp_output , #sheexp_help {
     width: 200em ;
 }    
 
-#output {
+#sheexp_output {
     position: absolute ;
     top: 0px ;
     white-space: pre ;

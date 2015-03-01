@@ -34,45 +34,10 @@
     <div>
       Tapez une ligne de commande Bourne shell pour voir son interprétation :
       <div style="position:fixed; right:0; top: 0; color:#888; font-size:60%">
-	<a onclick="update.debug = !update.debug;update.last = '';update()">
+	<a onclick="update.display_debug = !update.display_debug;update.last = '';update()">
 	  debug</a>
       </div>
     </div>
-    <div id="editor">
-      <input id="input"
-	     onkeyup="update();setTimeout(update,1)"
-	     onkeydown="update();setTimeout(update,1)"
-	     onclick="update();setTimeout(update,1)"
-	     onpaste="update()"
-	     onkeypress="setTimeout(update,1)"
-	     >
-      <div id="output"></div>
-      <div id="help"></div>
-    </div>
-    <pre id="output2"></pre>
-    <script>
-      function update()
-      {
-      var input = document.getElementById("input") ;
-      var position = input.selectionStart ;
-      if ( input.value === update.last && position == update.last_position )
-         return ;
-      update.last = input.value ;
-      update.last_position = position ;
-      var p = new Parser(update.last);
-      p = p.parse() ;
-      document.getElementById("output").innerHTML = p.html(position) ;
-      document.getElementById("help").innerHTML = p.help(position);
-      document.getElementById("output2").innerHTML = (update.debug
-                                                      ? p.nice()
-                                                      : '') ;
-      if ( input.selectionEnd == input.textLength
-           && document.getElementById("editor").scrollLeft != 0 )
-          document.getElementById("editor").scrollLeft += 4 ;
-      create_links("help", document.getElementById("editor").scrollLeft) ;
-      }
-      update() ;
-      document.getElementById("input").focus() ;
-    </script>
+    <script>sheexp()</script>
   </body>
 </html>

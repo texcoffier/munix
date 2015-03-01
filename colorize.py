@@ -748,6 +748,45 @@ class Parser:
             return parsed.content[0]
         return parsed
 
+def sheexp():
+    document.write("""
+      <div id="sheexp_editor">
+          <input id="sheexp_input"
+             onkeyup="update();setTimeout(update,1)"
+             onkeydown="update();setTimeout(update,1)"
+             onclick="update();setTimeout(update,1)"
+             onpaste="update()"
+             onkeypress="setTimeout(update,1)"
+             >
+          <div id="sheexp_output"></div>
+          <div id="sheexp_help"></div>
+          </div>
+    <pre id="sheexp_debug"></pre>
+    """)
+    update.editor  = document.getElementById("sheexp_editor")
+    update.input   = document.getElementById("sheexp_input")
+    update.output  = document.getElementById("sheexp_output")
+    update.help    = document.getElementById("sheexp_help")
+    update.debug   = document.getElementById("sheexp_debug")
+    update.display_debug = False
+    update()
+    update.input.focus()
+
+def update():
+    position = update.input.selectionStart
+    if update.input.value == update.last and position == update.last_position:
+        return
+    update.last = update.input.value
+    update.last_position = position
+    p = Parser(update.last).parse()
+    update.output.innerHTML = p.html(position)
+    update.help.innerHTML = p.help(position)
+    update.debug.innerHTML = update.display_debug and p.nice() or ''
+    if (update.input.selectionEnd == update.input.textLength
+        and update.editor.scrollLeft != 0 ):
+        update.editor.scrollLeft += 4
+    create_links(update.help, update.editor.scrollLeft)
+
 link_opacity = "1"
 colors = [
     'rgba(180,255,255,' + link_opacity + ')',
@@ -758,9 +797,8 @@ colors = [
     'rgba(230,230,230,' + link_opacity + ')',
     ]
 
-def create_links(help, scrollLeft):
+def create_links(output, scrollLeft):
     border = 0
-    output = document.getElementById(help)
     i = 0
     help_boxes = []
     for item in output.childNodes:
