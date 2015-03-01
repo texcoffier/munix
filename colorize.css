@@ -30,6 +30,7 @@
 .Parsed {
     font-family: Courier ;
     display: inline-block ;
+    white-space: pre ;
 }
 
 .Star, .QuestionMark,
