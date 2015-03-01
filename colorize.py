@@ -229,8 +229,7 @@ class And(Chars):
 
 class Background(Chars):
     def local_help(self, dummy_position):
-        return 'La commande de gauche est lancée en arrière plan'
-        
+        return 'Lancement en arrière plan'        
 
 ##############################################################################
 ##############################################################################
@@ -482,6 +481,14 @@ class File(Container):
     def local_help(self, dummy_position):
         return 'Le fichier dont le nom est : ' + self.html()
 
+class Backgrounded(Container):
+    def local_help(self, dummy_position):
+        return 'Lancé en arrière plan'
+
+class Anded(Container):
+    def local_help(self, dummy_position):
+        return "La suite est exécutée seulement si le début s'est bien passé"
+
 class Affectation(Container):
     def local_help(self, dummy_position):
         v = ''
@@ -520,7 +527,10 @@ class Parser:
         while not self.empty():
             if self.get() == ')':
                 break
-            parsed.append(self.parse_pipeline())
+            if not parsed.empty() and isinstance(parsed.content[-1], Anded):
+                parsed.content[-1].append(self.parse_pipeline())
+            else:
+                parsed.append(self.parse_pipeline())
             if not self.empty() and self.get() == ';':
                 self.next()
                 parsed.append(DotComa(";" + self.skip(" \t")))
@@ -528,9 +538,21 @@ class Parser:
                 self.next()
                 if not self.empty() and self.get() == '&':
                     self.next()
-                    parsed.append(And("&&" + self.skip(" \t")))
+                    if parsed.empty():
+                        parsed.append(Unterminated("&&"))
+                    else:
+                        b = Anded()
+                        b.append(parsed.content.pop())
+                        b.append(And("&&" + self.skip(" \t")))
+                        parsed.append(b)
                 else:
-                    parsed.append(Background("&" + self.skip(" \t")))
+                    if parsed.empty():
+                        parsed.append(Unterminated("&"))
+                    else:
+                        b = Backgrounded()
+                        b.append(parsed.content.pop())
+                        b.append(Background("&" + self.skip(" \t")))
+                        parsed.append(b)
         if init:
             parsed.raise_comment()
             parsed.remove_empty()
@@ -782,7 +804,7 @@ class Parser:
         parsed = Argument()
         while not self.empty():
             c = self.get()
-            if c in ' \t><|;)(':
+            if c in ' \t><|;)(&':
                 break
             if (self.read_backslash(parsed)
                 and self.read_dollar(parsed)

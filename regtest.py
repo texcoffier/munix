@@ -87,11 +87,11 @@
 'a $(c) b'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Replacement(GroupStart('$('),Line(Pipeline(Command(Argument(Normal('c'))))),GroupStop(')'))),Separator(' '),Argument(Normal('b')))))"
 'a & b &'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '))),Background('& '),Pipeline(Command(Argument(Normal('b')),Separator(' '))),Background('&'))"
+"Line(Backgrounded(Pipeline(Command(Argument(Normal('a')),Separator(' '))),Background('& ')),Backgrounded(Pipeline(Command(Argument(Normal('b')),Separator(' '))),Background('&')))"
 'a; ;b'
 "Line(Pipeline(Command(Argument(Normal('a')))),Unterminated('; '),DotComa(';'),Pipeline(Command(Argument(Normal('b')))))"
 'a | ; && #'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' ')),Unterminated('| ')),Unterminated('; '),Unterminated('&& '),Comment('#'))"
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' ')),Unterminated('| ')),Anded(Unterminated('; '),Unterminated('&& ')),Comment('#'))"
 '[]a]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar(']'),SquareBracketChar('a'),SquareBracketStop(']'))))))"
 '[!]]'
@@ -104,4 +104,8 @@ r"""Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),Variabl
 r"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),Backslash('\\'),Normal(']'),SquareBracketStop(']'))))))"
 '[a b]'
 "Line(Pipeline(Command(Argument(Normal('[a')),Separator(' '),Argument(Normal('b]')))))"
+"a&&b&"
+"Line(Backgrounded(Anded(Pipeline(Command(Argument(Normal('a')))),And('&&'),Pipeline(Command(Argument(Normal('b'))))),Background('&')))"
+"a&b&&c&"
+"Line(Backgrounded(Pipeline(Command(Argument(Normal('a')))),Background('&')),Backgrounded(Anded(Pipeline(Command(Argument(Normal('b')))),And('&&'),Pipeline(Command(Argument(Normal('c'))))),Background('&')))"
 
