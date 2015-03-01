@@ -144,3 +144,5 @@ r"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBra
 "Line(Pipeline(WhileLoop(Unterminated('while '),Command(Argument(Normal('a')),Separator(' ')),EndOfValues(';'),Unterminated(' '))))"
 "while a "
 "Line(Pipeline(WhileLoop(Unterminated('while '),Command(Argument(Normal('a')),Unterminated(' ')))))"
+"$10$$$#$?"
+"Line(Pipeline(Command(Argument(Variable('$1'),Normal('0'),Variable('$$'),Variable('$#'),Variable('$?')))))"

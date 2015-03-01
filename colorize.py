@@ -115,13 +115,26 @@ class Pipe(Separator):
 class DotComa(Separator):
     def local_help(self, dummy_position):
         return "Le ';' permet de séparer les commandes."
+
+special_variables = {
+    "#": "le nombre d'arguments du script shell",
+    "?": "la valeur de retour du processus précédent",
+    "$": "le PID du shell en train de s'exécuter",
+    "0": "le nom du script shell en train de s'exécuter",
+    "*": "tous les arguments du script shell : <b>ne pas utiliser car cela ne permet pas de manipuler les arguments avec un espace</b>",
+    "@": "tous les arguments du script shell",
+    }
 class Variable(Chars):
     def local_help(self, dummy_position):
-        return (self.html()
-                + " est remplacé par le shell par le contenu de la variable «"
-                + self.content[1:] + '».'
-                + ' Le nom de la variable disparaît.'
-            )
+        if self.content[1:] in special_variables:
+             message = special_variables[self.content[1:]]
+        elif len(self.content[1:]) == 1 and self.content[1:] in digit:
+            message = ("la valeur de l'argument numéro " + self.content[1:]
+                       + " du script shell")
+        else:
+            message = ("le contenu de la variable «" + self.content[1:]
+                       + '». Le nom de la variable disparaît.')
+        return self.html() + " est remplacé par le shell par " + message
 class Unterminated(Chars):
     def local_help(self, dummy_position):
         if '"' in self.content:
@@ -858,6 +871,9 @@ class Parser:
             c = self.get()
             if c in alpha:
                 parsed.append(Variable('$' + self.skip(names)))
+            elif c in special_variables or c in digit:
+                parsed.append(Variable('$' + c))
+                self.next()
             elif c == '(':
                 r = Replacement()
                 for content in self.parse_group(False).content:
