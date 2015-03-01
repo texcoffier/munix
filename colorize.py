@@ -139,10 +139,10 @@ class Unterminated(Chars):
         if ">" in self.content or '<' in self.content:
             return "Indiquez le nom du fichier ou bien «&amp;» et le numéro du fildes"
         if "|" in self.content:
-            if self.parent.content[-1] is self:
-                return "Tapez la commande qui va traiter la sortie standard de la commande de gauche"
-            else:
+            if self.parent.content[0] is self:
                 return "Il manque une commande à gauche du pipe"
+            else:
+                return "Tapez la commande qui va traiter la sortie standard de la commande de gauche"
         return "Il manque une suite pour ce symbole : «" + self.content + "»"
 
 class Unexpected(Chars):
