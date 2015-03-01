@@ -36,9 +36,9 @@ def protect(t):
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 list_stopper = '><|;)(&'
+redirection_stopper = '#<>;|()'
 argument_stopper = ' \t' + list_stopper
 pipeline_stopper = ';)&'
-
 
 ##############################################################################
 ##############################################################################
@@ -836,9 +836,7 @@ class Parser:
         while not self.empty() and self.get() in ' \t#':
             c += self.get()
             self.next()
-        if self.empty() or self.get() in '#<>;|)':
-            if not self.empty():
-                print self.get()
+        if self.empty() or self.get() in redirection_stopper:
             parsed.append(Unterminated(fildes + c))
             return
         redirection = Redirection()
@@ -856,9 +854,13 @@ class Parser:
                 redirection.content[1] = Unterminated(c)
                 redirection.append(Unterminated(''))
         else:
-            f = File()
-            f.content = self.parse_argument().content
-            redirection.append(f)
+            if self.get() in redirection_stopper:
+                redirection.content[1] = Unterminated(c)
+                redirection.append(Unterminated(''))
+            else:
+                f = File()
+                f.content = self.parse_argument().content
+                redirection.append(f)
         parsed.append(redirection)
 
     def read_backslash(self, parsed):

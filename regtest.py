@@ -160,3 +160,7 @@ r"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBra
 "Line(Unexpected(')'))"
 "a >)"
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Unterminated('>'))),Unexpected(')'))"
+"a >#"
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Unterminated('>#'))))"
+">("
+"Line(Pipeline(Command(Unterminated('>'),Unexpected('('))))"
