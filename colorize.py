@@ -35,6 +35,11 @@ def pad(x):
 def protect(t):
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+list_stopper = '><|;)(&'
+argument_stopper = ' \t' + list_stopper
+pipeline_stopper = ';)&'
+
+
 ##############################################################################
 ##############################################################################
 ##############################################################################
@@ -595,6 +600,8 @@ class Parser:
         parsed = Line()
         while not self.empty():
             if self.get() == ')':
+                if init:
+                    parsed.append(Unexpected(")"))
                 break
             pipeline = self.parse_pipeline()
             if not parsed.empty() and isinstance(parsed.content[-1], Anded):
@@ -641,7 +648,7 @@ class Parser:
                 parsed.append(self.parse_command())
                 if isinstance(parsed.content[-1], Done):
                     return parsed
-            if not self.empty() and self.get() in ';)&':
+            if not self.empty() and self.get() in pipeline_stopper:
                 break
             if not self.empty() and self.get() == '|':
                 self.next()
@@ -683,7 +690,6 @@ class Parser:
                 and self.empty()
                 and name(parsed.content[-1]) == 'Command'
                 and name(parsed.content[-1].content[-1]) == 'Separator'):
-                print '***'
                 parsed.content[-1].content[-1] = Unterminated(
                     parsed.content[-1].content[-1].content,
                     "Ajoutez un point-virgule pour finir la liste")
@@ -725,7 +731,7 @@ class Parser:
             v = ForValues()
             parsed.append(v)
             while not self.empty():
-                if self.get() in ';>()&|':
+                if self.get() in list_stopper:
                     break
                 v.append(self.parse_argument())
                 self.read_separator(v)
@@ -824,13 +830,15 @@ class Parser:
             self.i = i
             return True
         self.next()
-        if self.get() == c:
+        if not self.empty() and self.get() == c:
             c += c
             self.next()
-        while self.get() in ' \t#':
+        while not self.empty() and self.get() in ' \t#':
             c += self.get()
             self.next()
         if self.empty() or self.get() in '#<>;|)':
+            if not self.empty():
+                print self.get()
             parsed.append(Unterminated(fildes + c))
             return
         redirection = Redirection()
@@ -1014,7 +1022,7 @@ class Parser:
         parsed = Argument()
         while not self.empty():
             c = self.get()
-            if c in ' \t><|;)(&':
+            if c in argument_stopper:
                 break
             if (self.read_backslash(parsed)
                 and self.read_dollar(parsed)
