@@ -131,6 +131,8 @@ class Variable(Chars):
         elif len(self.content[1:]) == 1 and self.content[1:] in digit:
             message = ("la valeur de l'argument numéro " + self.content[1:]
                        + " du script shell")
+        elif self.content[1] == '{':
+            message = "quelque chose...<br>Cette syntaxe est complexe et rarement utile. Elle n'est pas expliquée par cette application"
         else:
             message = ("le contenu de la variable «" + self.content[1:]
                        + '». Le nom de la variable disparaît.')
@@ -874,6 +876,18 @@ class Parser:
             elif c in special_variables or c in digit:
                 parsed.append(Variable('$' + c))
                 self.next()
+            elif c == '{':
+                v = ""
+                while not self.empty():
+                    c = self.get()
+                    v += c
+                    self.next()
+                    if c == '}':
+                        break
+                if v[-1] != '}':
+                    parsed.append(Unterminated('$' + v))
+                else:
+                    parsed.append(Variable('$' + v))
             elif c == '(':
                 r = Replacement()
                 for content in self.parse_group(False).content:
