@@ -750,17 +750,18 @@ class Parser:
 
 def sheexp():
     document.write("""
-      <div id="sheexp_editor">
-          <input id="sheexp_input"
-             onkeyup="update();setTimeout(update,1)"
-             onkeydown="update();setTimeout(update,1)"
-             onclick="update();setTimeout(update,1)"
-             onpaste="update()"
-             onkeypress="setTimeout(update,1)"
-             >
-          <div id="sheexp_output"></div>
-          <div id="sheexp_help"></div>
-          </div>
+    <link rel="stylesheet" href="colorize.css" type="text/css">
+    <div id="sheexp_editor">
+        <input id="sheexp_input"
+           onkeyup="update();setTimeout(update,1)"
+           onkeydown="update();setTimeout(update,1)"
+           onclick="update();setTimeout(update,1)"
+           onpaste="update()"
+           onkeypress="setTimeout(update,1)"
+           >
+        <div id="sheexp_output"></div>
+        <div id="sheexp_help"></div>
+        </div>
     <pre id="sheexp_debug"></pre>
     """)
     update.editor  = document.getElementById("sheexp_editor")
@@ -769,8 +770,9 @@ def sheexp():
     update.help    = document.getElementById("sheexp_help")
     update.debug   = document.getElementById("sheexp_debug")
     update.display_debug = False
-    update()
     update.input.focus()
+    update()
+    setTimeout("update.last = undefined ; update()", 1)
 
 def update():
     position = update.input.selectionStart
