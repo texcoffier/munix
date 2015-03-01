@@ -40,8 +40,9 @@ def protect(t):
 ##############################################################################
 
 class Chars:
-    def __init__(self, chars):
+    def __init__(self, chars, message=""):
         self.content = chars
+        self.message = message
     def str(self):
         return name(self) + '(' + repr(self.content) + ')'
     def nice(self, depth):
@@ -52,8 +53,6 @@ class Chars:
             s += 'id="P' + str(self.ident) + '" '
         return (s + 'class="Parsed ' + self.active(position) + name(self)
                 + '">' + protect(self.content) + '</div>')
-    def nr_arguments(self):
-        return 0
     def init_position(self, i=0, ident=0):
         self.start = i
         self.end = i + len(self.content)
@@ -64,7 +63,8 @@ class Chars:
         if position != -1:
             s += 'id="H' + str(self.ident) + '" '
         return (s + 'class="help help_' + name(self) + '"><div>'
-                + self.local_help(position) + '</div></div>')
+                + (self.message or self.local_help(position))
+                + '</div></div>')
     def local_help(self, dummy_position):
         return name(self) + ':' + protect(self.content)
     def active(self, position):
@@ -80,6 +80,8 @@ class Chars:
         pass # To easely stop container recursion
     def remove_empty(self):
         pass # To easely stop container recursion
+    def text(self):
+        return self.content # To easely stop container recursion
     
 class Normal(Chars):
     def local_help(self, dummy_position):
@@ -150,17 +152,17 @@ class Unexpected(Chars):
         return "Il est interdit d'avoir «" + self.content + "» à cet endroit"
 
 class Invisible(Chars):
-    def text(self, txt):
+    def itext(self, txt):
         return "Le caractère «" + self.content + "» disparaît. " + txt
 class Backslash(Invisible):
     def local_help(self, dummy_position):
-        return self.text("Il annule la signification du caractère suivant.")
+        return self.itext("Il annule la signification du caractère suivant.")
 class Quote(Invisible):
     def local_help(self, dummy_position):
-        return self.text("La signification de tous les caractères entres les deux cotes est annulée.")
+        return self.itext("La signification de tous les caractères entres les deux cotes est annulée.")
 class Guillemet(Invisible):
     def local_help(self, dummy_position):
-        return self.text("La signification de tous les caractères entres les 2 guillemets est annullée sauf l'anti-slash et le dollar.")
+        return self.itext("La signification de tous les caractères entres les 2 guillemets est annullée sauf l'anti-slash et le dollar.")
 class Fildes(Invisible):
     def local_help(self, dummy_position):
         if self.content[0] == '&':
@@ -231,6 +233,26 @@ class Background(Chars):
     def local_help(self, dummy_position):
         return 'Lancement en arrière plan'        
 
+class For(Chars):
+    def local_help(self, dummy_position):
+        return "Premier argument : le nom de la variable d'indice"
+
+class In(Chars):
+    def local_help(self, dummy_position):
+        return "Indiquer les valeurs que la variable va prendre"
+
+class EndOfValues(Chars):
+    def local_help(self, dummy_position):
+        return "Termine la liste des valeurs prises par la variable"
+
+class Do(Chars):
+    def local_help(self, dummy_position):
+        return "Indiquez les instructions qui seront dans la boucle"
+
+class Done(Chars):
+    def local_help(self, dummy_position):
+        return "Fin de la définition du corps de la boucle"
+  
 ##############################################################################
 ##############################################################################
 ##############################################################################
@@ -252,11 +274,6 @@ class Container:
                            for x in self.content
                        ])
             )
-    def nr_arguments(self):
-        return sum([x.nr_arguments()
-                    for x in self.content
-                    is isinstance(x, Argument)
-                ])
     def active(self, position):
         if self.start < position <= self.end:
             return "active "
@@ -387,6 +404,8 @@ class Container:
                  )):
                 if not isinstance(self.content[i], Comment):
                     self.content[i] = Unterminated(self.content[i].content)
+    def text(self):
+        return ''.join([x.text() for x in self.content])
 
 class Line(Container):
     def local_help(self, dummy_position):
@@ -437,9 +456,9 @@ class Argument(Container):
             self.content.append(item)
     def nice(self, depth=0):
         return 'A' + pad(depth) + ' '.join([x.str() for x in self.content])+'\n'
-    def nr_arguments(self):
-        return 1
     def local_help(self, dummy_position):
+        if isinstance(self.parent, ForValues):
+            return ""
         pos = 0
         for child in self.parent.content:
             if isinstance(child, Argument):
@@ -496,6 +515,25 @@ class Affectation(Container):
             v += content.html()
         return ('Affectation dans la variable : «'
                 + self.content[0].html() + '» de la valeur «' + v + '»')
+class ForLoop(Command):
+    def local_help(self, dummy_position):
+        return "Boucle for"
+
+class ForValues(Command):
+    def local_help(self, dummy_position):
+        return "Les valeurs que va prendre la variable"
+
+class Body(Command):
+    def local_help(self, dummy_position):
+        if isinstance(self.content[-1], Done):
+            return "Les commandes qui sont répétées"
+        else:
+            return "Terminer le bloc de commande avec le mot-clef «done»"
+
+class LoopVariable(Container):
+    def local_help(self, dummy_position):
+        return "Nom de la variable qui va changer de valeur"
+
 
 ##############################################################################
 ##############################################################################
@@ -527,10 +565,13 @@ class Parser:
         while not self.empty():
             if self.get() == ')':
                 break
+            pipeline = self.parse_pipeline()
             if not parsed.empty() and isinstance(parsed.content[-1], Anded):
-                parsed.content[-1].append(self.parse_pipeline())
+                parsed.content[-1].append(pipeline)
             else:
-                parsed.append(self.parse_pipeline())
+                parsed.append(pipeline)
+            if isinstance(pipeline.content[-1], Done):
+                break
             if not self.empty() and self.get() == ';':
                 self.next()
                 parsed.append(DotComa(";" + self.skip(" \t")))
@@ -567,6 +608,8 @@ class Parser:
                 parsed.append(self.parse_group())
             else:
                 parsed.append(self.parse_command())
+                if isinstance(parsed.content[-1], Done):
+                    return parsed
             if not self.empty() and self.get() in ';)&':
                 break
             if not self.empty() and self.get() == '|':
@@ -598,8 +641,96 @@ class Parser:
             return True
         parsed.append(Comment(self.text[self.i:]))
         self.i = self.len
+    def parse_for(self):
+        parsed = ForLoop()
+        parsed.append(For('for' + self.skip(" \t")))
+        ok = not self.empty()
+        if ok:
+            v = LoopVariable()
+            v.append(self.parse_argument())
+            parsed.append(v)
+        else:
+            parsed.content[0] = Unterminated(parsed.content[0].content,
+                                             "Indiquez le nom de la variable")
+        ok &= not self.empty()
+        if ok:
+            self.read_separator(parsed)
+            if self.empty():
+                parsed.content[-1] = Unterminated(parsed.content[-1].content,
+                                                  "Mettre le mot-clef «in»")
+            
+        ok &= not self.empty()
+        if ok:
+            v = self.parse_argument()
+            if v.text() == 'in':
+                parsed.append(In('in' + self.skip(' \t')))
+            else:
+                parsed.append(Unexpected(v.text() + self.skip(' \t'),
+                                         'Il manque le mot-clef «in»'))
+                ok = False
+        ok &= not self.empty()
+        if ok:
+            v = ForValues()
+            parsed.append(v)
+            while not self.empty():
+                if self.get() in ';>()&|':
+                    break
+                v.append(self.parse_argument())
+                self.read_separator(v)
+            if (len(v.content)
+                and self.empty()
+                and name(v.content[-1]) == 'Separator'):
+                v.content[-1] = Unterminated(
+                    v.content[-1].content,
+                    "Ajoutez un point-virgule pour finir la liste")
+        ok &= not self.empty()
+        if ok:
+            if self.get() == ';':
+                self.next()
+                parsed.append(EndOfValues(';'))
+                self.read_separator(parsed)
+                if self.empty() and name(parsed.content[-1]) == 'Separator':
+                    parsed.content[-1] = Unterminated(
+                        parsed.content[-1].content,
+                        "Ajoutez le mot-clef «do»")
+            else:
+                parsed.append(Unexpected(self.get()))
+                self.next()
+                ok = False
+        ok &= not self.empty()
+        if ok:
+            v = self.parse_argument()
+            if v.text() == 'do':
+                b = Body()
+                parsed.append(b)
+                b.append(Do('do' + self.skip(' \t')))
+                ok = True
+            else:
+                parsed.append(Unexpected(v.text() + self.skip(' \t')))
+                ok = False
+
+        ok &= not self.empty()
+        if ok:
+            for content in self.parse(0).content:
+                b.append(content)
+            if (len(b.content) >= 3
+                and b.content[-2].text().strip() == ';'
+                and b.content[-1].text() == 'done'
+                ):
+                b.content[-1] = b.content[-1].content[0]
+            else:
+                ok = False
+        if ok:
+            while (not self.empty()
+                   and (not self.read_separator(parsed)
+                        or not self.read_redirection(parsed))):
+                pass
+        if not ok and not isinstance(parsed.content[0], Unterminated):
+            parsed.content[0] = Unterminated(parsed.content[0].content)
+        return parsed
     def parse_command(self):
         parsed = Command()
+        i = self.i
         while not self.empty():
             while (not self.empty()
                    and (not self.read_separator(parsed)
@@ -615,6 +746,12 @@ class Parser:
                     self.next()
             if not self.empty():
                 parsed.append(self.parse_argument())
+                if parsed.number_of(Argument) == 1:
+                    if parsed.content[-1].text() == 'for':
+                        return self.parse_for()
+                    if parsed.content[-1].text() == 'done':
+                        return Done('done')
+                    
         return parsed
     def read_separator(self, parsed):
         c = self.get()

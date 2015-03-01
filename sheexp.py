@@ -51,9 +51,9 @@ def update():
     update.last = update.input.value
     update.last_position = position
     p = Parser(update.last).parse()
+    update.debug.innerHTML = update.display_debug and p.nice() or ''
     update.output.innerHTML = p.html(position)
     update.help.innerHTML = p.help(position)
-    update.debug.innerHTML = update.display_debug and p.nice() or ''
     if (update.input.selectionEnd == update.input.textLength
         and update.editor.scrollLeft != 0 ):
         update.editor.scrollLeft += 4
