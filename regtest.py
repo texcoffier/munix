@@ -57,7 +57,7 @@
 'a [ab]'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),SquareBracketChar('b'),SquareBracketStop(']'))))))"
 'a ['
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Unterminated('[')))))"
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('[')))))"
 'a [a-bcd-e]'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketInterval('a-b'),SquareBracketChar('c'),SquareBracketInterval('d-e'),SquareBracketStop(']'))))))"
 'a []a-c-d]'
@@ -65,7 +65,7 @@
 'a [!a-]]'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketNegate('!'),SquareBracketChar('a'),SquareBracketChar('-'),SquareBracketStop(']')),Normal(']')))))"
 'a [1*'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Unterminated('['),Normal('1'),Star('*')))))"
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('[1'),Star('*')))))"
 '(a)'
 "Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Argument(Normal('a'))))),GroupStop(')'))))"
 '(a'
@@ -98,3 +98,10 @@
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketNegate('!'),SquareBracketChar(']'),SquareBracketStop(']'))))))"
 ' |a'
 "Line(Pipeline(Separator(' '),Unterminated('|'),Command(Argument(Normal('a')))))"
+'[$a\'$a\'"$a"\\"\\\']'
+r"""Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),Variable('$a'),Quote("'"),Normal('$'),Normal('a'),Quote("'"),Guillemet('"'),Variable('$a'),Guillemet('"'),Backslash('\\'),Normal('"'),Backslash('\\'),Normal("'"),SquareBracketStop(']'))))))"""
+'[a\]]'
+r"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),Backslash('\\'),Normal(']'),SquareBracketStop(']'))))))"
+'[a b]'
+"Line(Pipeline(Command(Argument(Normal('[a')),Separator(' '),Argument(Normal('b]')))))"
+

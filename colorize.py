@@ -466,7 +466,7 @@ class Redirection(Container):
         return "C'est une redirection" +m+ ", pas un argument de la commande."
 class SquareBracket(Container):
     def local_help(self, dummy_position):
-        return "Les crochets indiquent que l'on veut un seul caractère."
+        return "Les crochets indiquent que l'on veut un seul caractère de la liste"
 class Group(Command):
     def local_help(self, dummy_position):
         return "Lance un nouveau processus pour évaluer le contenu."
@@ -710,7 +710,7 @@ class Parser:
         elif self.get() == '[':
             self.next()
             if self.empty():
-                parsed.append(Unterminated('['))
+                parsed.append(Normal('['))
                 return
             i = self.i
             sb = SquareBracket()
@@ -724,10 +724,26 @@ class Parser:
                     sb.append(SquareBracketNegate('!'))
                     self.next()
                     continue
+                if self.get() == '$':
+                    self.read_dollar(sb)
+                    continue
+                if self.get() == '"':
+                    self.read_guillemet(sb)
+                    continue
+                if self.get() == "'":
+                    self.read_quote(sb)
+                    continue
+                if self.get() == "\\":
+                    self.read_backslash(sb)
+                    continue
+                if self.get() in ' \t':
+                    parsed.append(Normal('['))
+                    self.i = i
+                    return
                 c = self.get()
                 self.next()
                 if self.empty():
-                    sb.append(Unterminated(c))
+                    sb.append(Normal(c))
                     break
                 if self.get() == '-':
                     self.next()
@@ -742,7 +758,7 @@ class Parser:
                 else:
                     sb.append(SquareBracketChar(c))
             if self.empty():
-                parsed.append(Unterminated('['))
+                parsed.append(Normal('['))
                 self.i = i
                 return
             sb.append(SquareBracketStop(']'))

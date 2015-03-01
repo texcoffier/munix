@@ -20,7 +20,7 @@ def check(input_val, expected, write_in):
         return
     if result != expected:
         print 'Input   :', input_val
-        print 'Expected  :', result
+        print 'Result  :', result
         print 'Expected:', expected
         print p.parse().nice()
         i = 0
