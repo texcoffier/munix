@@ -2,7 +2,6 @@
 #sheexp_editor {
     position: relative ;
     overflow : hidden ;
-    margin: 1em ;
     border: 1px solid #CCC ;
     padding: 0px ;
 }
