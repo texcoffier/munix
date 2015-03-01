@@ -237,13 +237,24 @@ class For(Chars):
     def local_help(self, dummy_position):
         return "Premier argument : le nom de la variable d'indice"
 
+class While(Chars):
+    def local_help(self, dummy_position):
+        return "Indiquer la commande à exécuter"
+
 class In(Chars):
     def local_help(self, dummy_position):
         return "Indiquer les valeurs que la variable va prendre"
 
 class EndOfValues(Chars):
     def local_help(self, dummy_position):
-        return "Termine la liste des valeurs prises par la variable"
+        if isinstance(self.parent, ForLoop):
+            return "Termine la liste des valeurs prises par la variable"
+        else:
+            return "Termine la commande précédente"
+
+class EndOfCommand(Chars):
+    def local_help(self, dummy_position):
+        return "Termine la commande"
 
 class Do(Chars):
     def local_help(self, dummy_position):
@@ -515,9 +526,14 @@ class Affectation(Container):
             v += content.html()
         return ('Affectation dans la variable : «'
                 + self.content[0].html() + '» de la valeur «' + v + '»')
+
 class ForLoop(Command):
     def local_help(self, dummy_position):
         return "Boucle for"
+        
+class WhileLoop(Command):
+    def local_help(self, dummy_position):
+        return "Boucle while"
 
 class ForValues(Command):
     def local_help(self, dummy_position):
@@ -641,6 +657,27 @@ class Parser:
             return True
         parsed.append(Comment(self.text[self.i:]))
         self.i = self.len
+
+    def parse_while(self):
+        parsed = WhileLoop()
+        parsed.append(While('while' + self.skip(" \t")))
+        ok = not self.empty()
+        if ok:
+            parsed.append(self.parse_command())
+            if (len(parsed.content[-1].content)
+                and self.empty()
+                and name(parsed.content[-1]) == 'Command'
+                and name(parsed.content[-1].content[-1]) == 'Separator'):
+                print '***'
+                parsed.content[-1].content[-1] = Unterminated(
+                    parsed.content[-1].content[-1].content,
+                    "Ajoutez un point-virgule pour finir la liste")
+        else:
+            parsed.content[0] = Unterminated(parsed.content[0].content,
+                                             "Indiquez une commande")
+            ok = False
+        return self.parse_do_done(ok, parsed)
+        
     def parse_for(self):
         parsed = ForLoop()
         parsed.append(For('for' + self.skip(" \t")))
@@ -683,12 +720,16 @@ class Parser:
                 v.content[-1] = Unterminated(
                     v.content[-1].content,
                     "Ajoutez un point-virgule pour finir la liste")
+        return self.parse_do_done(ok, parsed)
+
+    def parse_do_done(self, ok, parsed):
         ok &= not self.empty()
         if ok:
             if self.get() == ';':
                 self.next()
                 parsed.append(EndOfValues(';'))
-                self.read_separator(parsed)
+                if not self.empty():
+                    self.read_separator(parsed)
                 if self.empty() and name(parsed.content[-1]) == 'Separator':
                     parsed.content[-1] = Unterminated(
                         parsed.content[-1].content,
@@ -708,7 +749,6 @@ class Parser:
             else:
                 parsed.append(Unexpected(v.text() + self.skip(' \t')))
                 ok = False
-
         ok &= not self.empty()
         if ok:
             for content in self.parse(0).content:
@@ -728,6 +768,7 @@ class Parser:
         if not ok and not isinstance(parsed.content[0], Unterminated):
             parsed.content[0] = Unterminated(parsed.content[0].content)
         return parsed
+
     def parse_command(self):
         parsed = Command()
         i = self.i
@@ -749,6 +790,8 @@ class Parser:
                 if parsed.number_of(Argument) == 1:
                     if parsed.content[-1].text() == 'for':
                         return self.parse_for()
+                    if parsed.content[-1].text() == 'while':
+                        return self.parse_while()
                     if parsed.content[-1].text() == 'done':
                         return Done('done')
                     
