@@ -30,10 +30,10 @@
   <body>
     <noscript><h1>
 	Cette application nécessite l'activation de JavaScript
-	<h1></noscript>
+	</h1></noscript>
     <div>
       Tapez une ligne de commande Bourne shell pour voir son interprétation :
-      <div style="position:fixed; right:0; top: 0; color:#888">
+      <div style="position:fixed; right:0; top: 0; color:#888; font-size:60%">
 	<a onclick="update.debug = !update.debug;update.last = '';update()">
 	  debug</a>
       </div>
@@ -66,9 +66,13 @@
       document.getElementById("output2").innerHTML = (update.debug
                                                       ? p.nice()
                                                       : '') ;
+      if ( input.selectionEnd == input.textLength
+           && document.getElementById("editor").scrollLeft != 0 )
+          document.getElementById("editor").scrollLeft += 4 ;
       create_links("help", document.getElementById("editor").scrollLeft) ;
       }
       update() ;
+      document.getElementById("input").focus() ;
     </script>
   </body>
 </html>

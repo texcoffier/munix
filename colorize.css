@@ -3,8 +3,8 @@
     position: relative ;
     overflow : hidden ;
     margin: 1em ;
-    border: 1px solid black ;
-    padding: 2px ;
+    border: 1px solid #CCC ;
+    padding: 0px ;
 }
 
 #input, #output {
@@ -22,8 +22,7 @@
 
 #output {
     position: absolute ;
-    top: 2px ;
-    left: 2px ;
+    top: 0px ;
     white-space: pre ;
     pointer-events:none;
 }
