@@ -83,7 +83,7 @@ class Chars:
     
 class Normal(Chars):
     def local_help(self, dummy_position):
-        return 'Verbatim : ' + protect(self.content)
+        return 'Caractères : ' + protect(self.content)
 class Pattern(Chars):
     def is_a_pattern(self):
         return True
@@ -122,6 +122,27 @@ class Variable(Chars):
             )
 class Unterminated(Chars):
     def local_help(self, dummy_position):
+        if '"' in self.content:
+            return ("Pour terminer le texte protégé, il faut mettre"
+                    + " un deuxième guillemet")
+        if "'" in self.content:
+            return ("Pour terminer le texte protégé, il faut mettre"
+                    + " une deuxième cote")
+        if "\\" in self.content:
+            return "Le caractère suivant n'aura pas de signification particulière"
+        if ";" in self.content:
+            return "Vous pouvez taper une autre autre commande ou faire un pipeline"
+        if "&&" in self.content:
+            return "Vous pouvez taper une autre autre commande ou faire un pipeline qui sera exécuter si la précédente se termine bien"
+        if "(" in self.content:
+            return "Les commandes jusqu'à la parenthèse fermante seront exécutées dans un nouveau processus"
+        if ">" in self.content or '<' in self.content:
+            return "Indiquez le nom du fichier ou bien «&amp;» et le numéro du fildes"
+        if "|" in self.content:
+            if self.parent.content[-1] is self:
+                return "Tapez la commande qui va traiter la sortie standard de la commande de gauche"
+            else:
+                return "Il manque une commande à gauche du pipe"
         return "Il manque une suite pour ce symbole : «" + self.content + "»"
 
 class Unexpected(Chars):
@@ -341,7 +362,14 @@ class Container:
                  ))
             ]
     def replace_empty(self):
-        for content in self.content:
+        for i, content in enumerate(self.content):
+            if (isinstance(content, Command)
+                and len(content.content) == 1
+                and isinstance(content.content[0], Separator)
+            ):
+                content = content.content[0]
+                self.content[i] = content
+
             if not content.empty():
                 content.replace_empty()
         if self.empty():
@@ -350,11 +378,14 @@ class Container:
             return (isinstance(x, DotComa)
                     or isinstance(x, Pipe)
                     or isinstance(x, And)
-                    or isinstance(x, Comment))
+                    or isinstance(x, Comment)
+            )
         for i in range(len(self.content)):
             if (separator(self.content[i])
                 and (i == len(self.content)-1 or i == 0
-                     or separator(self.content[i+1]))):
+                     or separator(self.content[i+1])
+                     or name(self.content[i-1]) == 'Separator'
+                 )):
                 if not isinstance(self.content[i], Comment):
                     self.content[i] = Unterminated(self.content[i].content)
 
@@ -582,19 +613,23 @@ class Parser:
         while self.get() in ' \t#':
             c += self.get()
             self.next()
-        if self.empty() or self.get() in '#<>;|':
+        if self.empty() or self.get() in '#<>;|)':
             parsed.append(Unterminated(fildes + c))
             return
         redirection = Redirection()
         redirection.append(Fildes(fildes))
         redirection.append(Direction(c))
         if self.get() == '&':
-            self.next()
-            fildes = self.skip(digit)
-            if fildes:
-                redirection.append(Fildes('&' + fildes))
+            if len(c) == 1:
+                self.next()
+                fildes = self.skip(digit)
+                if fildes:
+                    redirection.append(Fildes('&' + fildes))
+                else:
+                    redirection.append(Unterminated("&"))
             else:
-                redirection.append(Unterminated("&"))
+                redirection.content[1] = Unterminated(c)
+                redirection.append(Unterminated(''))
         else:
             f = File()
             f.content = self.parse_argument().content

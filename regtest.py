@@ -96,3 +96,5 @@
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar(']'),SquareBracketChar('a'),SquareBracketStop(']'))))))"
 '[!]]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketNegate('!'),SquareBracketChar(']'),SquareBracketStop(']'))))))"
+' |a'
+"Line(Pipeline(Separator(' '),Unterminated('|'),Command(Argument(Normal('a')))))"
