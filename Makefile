@@ -1,4 +1,4 @@
-CONVERT = preamble.py colorize.py
+CONVERT = preamble.py colorize.py sheexp.py
 
 %.html:%.rst
 	rst2html $*.rst $*.html
