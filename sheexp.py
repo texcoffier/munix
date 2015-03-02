@@ -41,8 +41,7 @@ def sheexp():
     update.debug   = document.getElementById("sheexp_debug")
     update.display_debug = False
     update.input.focus()
-    update()
-    setTimeout("update.last = undefined ; update()", 1)
+    setInterval(update, 100)
 
 def update():
     position = update.input.selectionStart
