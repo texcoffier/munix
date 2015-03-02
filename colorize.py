@@ -768,7 +768,8 @@ class Parser:
                 b.append(Do('do' + self.skip(' \t')))
                 ok = True
             else:
-                parsed.append(Unexpected(v.text() + self.skip(' \t')))
+                parsed.append(Unexpected(v.text() + self.skip(' \t'),
+                                         "Cela devrait être le mot-clef «do»"))
                 ok = False
         ok &= not self.empty()
         if ok:
