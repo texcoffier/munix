@@ -28,7 +28,7 @@ def check(input_val, expected, write_in):
             if result[i] != expected[i]:
                 break
         print '===>' + result[i:]
-        bug
+        return True
     for i in range(len(input_val)):
         parsed.html(i)
         parsed.help(i)
@@ -42,12 +42,16 @@ if 'rewrite' in sys.argv:
 else:
     f = None
 
+error = False
 for input_value, expected_value in zip(tests[::2], tests[1::2]):
     input_value = eval(input_value)
     expected_value = eval(expected_value)
-    check(input_value, expected_value, f)
+    error = check(input_value, expected_value, f) or error
     
 if f:
     f.close()
+
+if error:
+    sys.exit(1)
 
 print "OK"

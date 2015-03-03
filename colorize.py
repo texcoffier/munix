@@ -280,7 +280,7 @@ class Equal(Chars):
     def color(self):
         return ["#880", "#FFA"]
     def local_help(self, dummy_position):
-        return "Affectation dans la variable dont le nom est à gauche de la valeur à droite."
+        return "Pas d'espace autour !"
 class And(Separator):
     def local_help(self, dummy_position):
         return ("La commande de droite ne s'exécute que"
@@ -291,8 +291,11 @@ class Background(Separator):
         return 'Lancement en arrière plan'        
 
 class For(Normal):
-    def local_help(self, dummy_position):
-        return "Premier argument : le nom de la variable d'indice"
+    def local_help(self, position):
+        if position - self.start == 4:
+            return "Indiquer le nom de la variable d'indice"
+        else:
+            return "Début de boucle"
 
 class While(Normal):
     def local_help(self, dummy_position):
@@ -517,6 +520,9 @@ class Command(Container):
         return ["#000", "#CFC"]
     def local_help(self, dummy_position):
         nr = self.number_of(Argument)
+        if len(self.content) and isinstance(self.content[-1], Command):
+            # Case of the For and While loop
+            return ''
         if nr == 0:
             return 'Une commande vide !'
         if nr == 1:
@@ -870,10 +876,16 @@ class Parser:
                 parsed.append(self.parse_argument())
                 if parsed.number_of(Argument) == 1:
                     if parsed.content[-1].text() == 'for':
-                        return self.parse_for()
+                        parsed.content.pop()
+                        parsed.append(self.parse_for())
+                        return parsed
                     if parsed.content[-1].text() == 'while':
-                        return self.parse_while()
+                        parsed.content.pop()
+                        parsed.append(self.parse_while())
+                        return parsed
                     if parsed.content[-1].text() == 'done':
+                        if len(parsed.content) != 1:
+                            bug
                         return Done('done')
                     
         return parsed
