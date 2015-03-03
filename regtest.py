@@ -120,6 +120,16 @@
 "Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),Separator(' '),Unexpected('ni')))))"
 'for I in'
 "Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in')))))"
+'for I in '
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in ')))))"
+'for I in a'
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),ForValues(Argument(Normal('a')))))))"
+'for I in a '
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),ForValues(Argument(Normal('a')),Unterminated(' '))))))"
+'for I in a ;'
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ;')))))"
+'for I in a ; '
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; ')))))"
 'for I in a $a * ; b'
 "Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),ForValues(Argument(Normal('a')),Separator(' '),Argument(Variable('$a')),Separator(' '),Argument(Star('*'))),EndOfValues(' ; '),Unexpected('b')))))"
 'for I in a b ; do a ; done'
@@ -135,13 +145,13 @@
 'while a ;'
 "Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a'))),EndOfValues(' ;')))))"
 'while a ; do'
-"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do'))))))"
+"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a'))),EndOfValues(' ; '),Do('do')))))"
 'while a ; do a'
 "Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Pipeline(Command(Argument(Normal('a')))))))))"
 'while a ; do a ; done'
 "Line(Pipeline(Command(WhileLoop(While('while '),Command(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Done('done'))))))"
 'while a ; '
-"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a'))),EndOfValues(' ;'),Unterminated(' ')))))"
+"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a'))),EndOfValues(' ; ')))))"
 'while a '
 "Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a')),Unterminated(' '))))))"
 '$10$$$#$?'
@@ -174,4 +184,39 @@
 "Line(Pipeline(Command(Separator(' '),ForLoop(Unterminated('for')))))"
 'for I in ; do ; done'
 "Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),EndOfValues('; '),Body(Do('do '),DotComa('; '),Pipeline(Done('done')))))))"
-
+'if'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if')))))"
+'if '
+"Line(Pipeline(Command(IfThenElse(Unterminated('if ')))))"
+'if a'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a')))))))"
+'if a '
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a')),Unterminated(' '))))))"
+'if a ;'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues(' ;')))))"
+'if a;'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues(';')))))"
+'if a; x'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues('; '),Unexpected('x')))))"
+'if a; then'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then'))))))"
+'if a; then b'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')))))))))"
+'if a; then b c'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')),Separator(' '),Argument(Normal('c')))))))))"
+'if a; then b ;'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')))),DotComa(' ;'))))))"
+'if a; then b ; '
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; '))))))"
+'if a; then b ; fi'
+"Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; ')),Fi('fi')))))"
+'if a; then fi'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Done('fi')))))))"
+'if a; then ; fi'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),DotComa('; '),Pipeline(Done('fi')))))))"
+'if a; then ; a ; fi'
+"Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),DotComa('; '),Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Done('fi')))))))"
+'if a; then b ; else c ; fi'
+"Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; ')),ElseBloc(Else('else'),Pipeline(Command(Separator(' '),Argument(Normal('c')))),DotComa(' ; ')),Fi('fi')))))"
+'if a; then b | ; fi'
+"Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b'))),Separator(' '),Unterminated('| ')),DotComa('; ')),Fi('fi')))))"

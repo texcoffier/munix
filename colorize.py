@@ -55,6 +55,11 @@ def unused_color(element):
         color += "0123456789ABCDEF"[int(c/16)]+"0123456789ABCDEF"[c%16]
     return color
 
+def choices(keywords):
+    return ' ou '.join(['«' + k + '»'
+                        for k in keywords
+                        ])
+    
 list_stopper = '><|;)(&'
 redirection_stopper = '#<>;|()'
 argument_stopper = ' \t' + list_stopper
@@ -302,6 +307,24 @@ class For(Normal):
             return "Le nom de la variable d'indice"
         return "Début de boucle"
 
+class If(Normal):
+    def local_help(self, position):
+        if self.last_position(position):
+            return "La commande à exécuter"
+        return "Si la commande s'exécute sans erreur : alors c'est vrai"
+
+class Then(Normal):
+    def local_help(self, position):
+        return "Les instructions qui seront exécutées si le test est vrai"
+
+class Else(Normal):
+    def local_help(self, position):
+        return "Les instructions qui seront exécutées si le test est faux"
+
+class Fi(Normal):
+    def local_help(self, position):
+        return "Fin du «if»"
+
 class While(Normal):
     def local_help(self, position):
         if self.last_position(position):
@@ -315,7 +338,10 @@ class In(Separator):
 class EndOfValues(Separator):
     def local_help(self, position):
         if self.last_position(position):
-            return "Mettre le mot-clef «do»"
+            if isinstance(self.parent, IfThenElse):
+                return "Mettre le mot-clef «then»"
+            else:
+                return "Mettre le mot-clef «do»"
         if isinstance(self.parent, ForLoop):
             return "Termine la liste des valeurs prises par la variable"
         else:
@@ -327,7 +353,7 @@ class EndOfCommand(Separator):
 
 class Do(Separator):
     def local_help(self, dummy_position):
-        return "Indiquez les instructions qui seront dans la boucle"
+        return "Les instructions qui seront dans la boucle"
 
 class Done(Separator):
     def local_help(self, dummy_position):
@@ -483,6 +509,10 @@ class Container:
             if not content.empty():
                 content.replace_empty()
         if self.empty():
+            return
+        if isinstance(self, ThenBloc):
+            return
+        if isinstance(self, ElseBloc):
             return
         def separator(x):
             return (isinstance(x, DotComa)
@@ -652,6 +682,18 @@ class WhileLoop(Command):
     def local_help(self, dummy_position):
         return "Boucle while"
 
+class IfThenElse(Command):
+    def local_help(self, dummy_position):
+        return "IF"
+
+class ThenBloc(Command):
+    def local_help(self, dummy_position):
+        return "Si vrai"
+
+class ElseBloc(Command):
+    def local_help(self, dummy_position):
+        return "Si faux"
+
 class ForValues(Command):
     def local_help(self, dummy_position):
         return "Les valeurs que va prendre la variable"
@@ -780,11 +822,16 @@ class Parser:
         parsed.append(Comment(self.text[self.i:]))
         self.i = self.len
 
-    def parse_while(self):
-        parsed = WhileLoop()
-        parsed.append(While('while' + self.skip(" \t")))
-        ok = not self.empty()
-        if ok:
+    def error_if_empty(self, error=''):
+        if error != '':
+            return error
+        if self.empty():
+            return 'Fin prématurée de la commande'
+        return ''
+
+    def parse_test(self, parsed):
+        error = self.error_if_empty()
+        if error == '':
             parsed.append(self.parse_command())
             if (len(parsed.content[-1].content)
                 and self.empty()
@@ -792,106 +839,165 @@ class Parser:
                 and name(parsed.content[-1].content[-1]) == 'Separator'):
                 parsed.content[-1].content[-1] = Unterminated(
                     parsed.content[-1].content[-1].content,
-                    "Ajoutez un point-virgule pour finir la liste des valeurs possibles")
+                    "Terminez par un point-virgule")
         else:
             parsed.content[0] = Unterminated(parsed.content[0].content,
                                              "Indiquez une commande")
-            ok = False
-        return self.parse_do_done(ok, parsed)
+            error = "Indiquez une commande"
+        error = self.parse_end_of_command(error, parsed)
+        return self.error_if_empty(error)
+
+    def parse_keyword(self, error, parsed, keyword):
+        error = self.error_if_empty(error)
+        if error == '':
+            self.read_separator(parsed)
+            if self.empty():
+                parsed.content[-1] = Unterminated(
+                    parsed.content[-1].content,
+                    "Mettre le mot-clef «" + keyword + "»")
+                error = "Il manque le mot clef «" + keyword + "»"
+                error = ""
+            
+        error = self.error_if_empty(error)
+        if error == '':
+            v = self.parse_argument()
+            if v.text() == keyword:
+                v = keyword + self.skip(' \t')
+                if keyword == 'in':
+                    v = In(v)
+                elif keyword == 'then':
+                    vv = ThenBloc()
+                    vv.append(Then(v))
+                    v = vv
+                elif keyword == 'do':
+                    v = Do(v)
+                elif keyword == 'done':
+                    v = Done(v)
+                elif keyword == 'else':
+                    v = Else(v)
+                elif keyword == 'fi':
+                    v = Fi(v)
+                parsed.append(v)
+            else:
+                parsed.append(
+                    Unexpected(v.text() + self.skip(' \t'),
+                               'Il manque le mot-clef «' + keyword + '»'))
+                error = 'Il manque le mot-clef «' + keyword + '»'
+        return self.error_if_empty(error)
         
+    def parse_if(self):
+        parsed = IfThenElse()
+        parsed.append(If('if' + self.skip(" \t")))
+        error = self.parse_test(parsed)
+        error = self.parse_keyword(error, parsed.content, "then")
+        if error == '':
+            err = self.parse_until(parsed.content[-1], ['fi','else'], True)
+            if err == 'fi':
+                parsed.append(Fi(err))
+            elif err == 'else':
+                else_block = ElseBloc()
+                parsed.append(else_block)
+                else_block.append(Else(err))
+                err = self.parse_until(else_block, ['fi'], True)
+                if err == 'fi':
+                    parsed.append(Fi(err))
+                else:
+                    error = "Le bloc «else» " + str(err)
+            else:
+                error = "Le bloc «then» " + str(err)
+        if error != '':
+            parsed.content[0] = Unterminated(parsed.content[0].content,
+                                             error)
+        return parsed
+
+    def parse_while(self):
+        parsed = WhileLoop()
+        parsed.append(While('while' + self.skip(" \t")))
+        return self.parse_do_done(self.parse_test(parsed), parsed)
+
     def parse_for(self):
         parsed = ForLoop()
         parsed.append(For('for' + self.skip(" \t")))
-        ok = not self.empty()
-        if ok:
+        error = self.error_if_empty()
+        if error == '':
             v = LoopVariable()
             v.append(self.parse_argument())
             parsed.append(v)
         else:
             parsed.content[0] = Unterminated(parsed.content[0].content,
                                              "Indiquez le nom de la variable")
-        ok &= not self.empty()
-        if ok:
-            self.read_separator(parsed)
-            if self.empty():
-                parsed.content[-1] = Unterminated(parsed.content[-1].content,
-                                                  "Mettre le mot-clef «in»")
-            
-        ok &= not self.empty()
-        if ok:
-            v = self.parse_argument()
-            if v.text() == 'in':
-                parsed.append(In('in' + self.skip(' \t')))
-            else:
-                parsed.append(Unexpected(v.text() + self.skip(' \t'),
-                                         'Il manque le mot-clef «in»'))
-                ok = False
-        ok &= not self.empty()
-        if ok:
+            error = "Il manque le nom de la variable"
+            error = ""
+        error = self.parse_keyword(error, parsed, "in")
+        if error == '':
             v = ForValues()
             parsed.append(v)
             while not self.empty():
                 if self.get() in list_stopper:
                     break
                 v.append(self.parse_argument())
-                self.read_separator(v)
+                if not self.empty():
+                    self.read_separator(v)
             if (len(v.content)
                 and self.empty()
                 and name(v.content[-1]) == 'Separator'):
                 v.content[-1] = Unterminated(
                     v.content[-1].content,
                     "Ajoutez un point-virgule pour finir la liste")
-        return self.parse_do_done(ok, parsed)
+                error =  'Il manque un point virgule pour finir la liste'
+        error = self.error_if_empty(error)
+        error = self.parse_end_of_command(error, parsed)
+        return self.parse_do_done(error, parsed)
 
-    def parse_do_done(self, ok, parsed):
-        error = ''
-        ok &= not self.empty()
-        if ok:
+    def parse_end_of_command(self, error, parsed):
+        error = self.error_if_empty(error)
+        if error == '':
             if self.get() == ';':
                 self.next()
                 parsed.append(EndOfValues(';'))
                 if not self.empty():
                     self.read_separator(parsed)
-                if self.empty() and name(parsed.content[-1]) == 'Separator':
-                    parsed.content[-1] = Unterminated(
-                        parsed.content[-1].content,
-                        "Ajoutez le mot-clef «do»")
             else:
                 parsed.append(Unexpected(self.get()))
-                error = "Il manque le «do»"
+                error = "Il manque le point virgule"
                 self.next()
-                ok = False
-        ok &= not self.empty()
-        if ok:
-            v = self.parse_argument()
-            if v.text() == 'do':
-                b = Body()
-                parsed.append(b)
-                b.append(Do('do' + self.skip(' \t')))
-                ok = True
+        return self.error_if_empty(error)
+
+    def parse_until(self, parsed, keywords, return_keyword=False):
+        for content in self.parse(0).content:
+            parsed.append(content)
+        if (len(parsed.content) > 3
+            and parsed.content[-2].text().strip() == ';'
+            and parsed.content[-1].text() in keywords
+            and parsed.content[1].text() != ''
+            ):
+            if return_keyword:
+                return parsed.content.pop().text()
             else:
-                parsed.append(Unexpected(v.text() + self.skip(' \t'),
-                                         "Cela devrait être le mot-clef «do»"))
-                ok = False
-        ok &= not self.empty()
-        if ok:
-            for content in self.parse(0).content:
-                b.append(content)
-            if (len(b.content) > 3
-                and b.content[-2].text().strip() == ';'
-                and b.content[-1].text() == 'done'
-                and b.content[1].text() != ''
-                ):
-                b.content[-1] = b.content[-1].content[0]
+                parsed.content[-1] = parsed.content[-1].content[0]
+        else:
+            if len(parsed.content) > 3:
+                return " est incomplet, il faut le compléter par " + choices(keywords)
             else:
-                error = "Le «do»...«done» est incomplet ou vide"
-                ok = False
-        if ok:
+                return " est vide, il faut indiquer des commandes"
+        return ''
+
+    def parse_do_done(self, error, parsed):
+        error = self.parse_keyword(error, parsed, "do")
+        if error == '':
+            do_key = parsed.content.pop()
+            b = Body()
+            b.append(do_key)
+            parsed.append(b)
+            err = self.parse_until(b, ['done'])
+            if err != '':
+                error = "Le «do»...«done»" + err
+        if error == '':
             while (not self.empty()
                    and (not self.read_separator(parsed)
                         or not self.read_redirection(parsed))):
                 pass
-        if not ok and not isinstance(parsed.content[0], Unterminated):
+        if error != '' and not isinstance(parsed.content[0], Unterminated):
             parsed.content[0] = Unterminated(parsed.content[0].content, error)
         return parsed
 
@@ -914,18 +1020,23 @@ class Parser:
             if not self.empty():
                 parsed.append(self.parse_argument())
                 if parsed.number_of(Argument) == 1:
-                    if parsed.content[-1].text() == 'for':
+                    text = parsed.content[-1].text()
+                    if text == 'for':
                         parsed.content.pop()
                         parsed.append(self.parse_for())
                         return parsed
-                    if parsed.content[-1].text() == 'while':
+                    if text == 'while':
                         parsed.content.pop()
                         parsed.append(self.parse_while())
                         return parsed
-                    if parsed.content[-1].text() == 'done':
+                    if text == 'if':
+                        parsed.content.pop()
+                        parsed.append(self.parse_if())
+                        return parsed
+                    if text in ['else', 'fi', 'done']:
                         if len(parsed.content) != 1:
                             bug
-                        return Done('done')
+                        return Done(text)
                     
         return parsed
     def read_separator(self, parsed):
