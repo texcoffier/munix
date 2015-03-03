@@ -29,31 +29,31 @@
 'a >&23'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Redirection(Fildes(''),Direction('>'),Fildes('&23')))))"
 'a | b'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' ')),Pipe('| '),Command(Argument(Normal('b')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')))))"
 'a|b'
 "Line(Pipeline(Command(Argument(Normal('a'))),Pipe('|'),Command(Argument(Normal('b')))))"
 'a | b c | d e f'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' ')),Pipe('| '),Command(Argument(Normal('b')),Separator(' '),Argument(Normal('c')),Separator(' ')),Pipe('| '),Command(Argument(Normal('d')),Separator(' '),Argument(Normal('e')),Separator(' '),Argument(Normal('f')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')),Separator(' '),Argument(Normal('c'))),Pipe(' | '),Command(Argument(Normal('d')),Separator(' '),Argument(Normal('e')),Separator(' '),Argument(Normal('f')))))"
 '|a'
 "Line(Pipeline(Unterminated('|'),Command(Argument(Normal('a')))))"
 'a | '
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' ')),Unterminated('| ')))"
+"Line(Pipeline(Command(Argument(Normal('a'))),Separator(' '),Unterminated('| ')))"
 'a;b ; c'
-"Line(Pipeline(Command(Argument(Normal('a')))),DotComa(';'),Pipeline(Command(Argument(Normal('b')),Separator(' '))),DotComa('; '),Pipeline(Command(Argument(Normal('c')))))"
+"Line(Pipeline(Command(Argument(Normal('a')))),DotComa(';'),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('c')))))"
 ';a;'
 "Line(Unterminated(';'),Pipeline(Command(Argument(Normal('a')))),Unterminated(';'))"
 'a | b ; c | d'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' ')),Pipe('| '),Command(Argument(Normal('b')),Separator(' '))),DotComa('; '),Pipeline(Command(Argument(Normal('c')),Separator(' ')),Pipe('| '),Command(Argument(Normal('d')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))),Pipe(' | '),Command(Argument(Normal('b')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('c'))),Pipe(' | '),Command(Argument(Normal('d')))))"
 'a#b'
 "Line(Pipeline(Command(Argument(Normal('a#b')))))"
 'a #b'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '))),Comment('#b'))"
+"Line(Pipeline(Command(Argument(Normal('a')))),Separator(' '),Comment('#b'))"
 'a | ;'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' ')),Unterminated('| ')),Unterminated(';'))"
+"Line(Pipeline(Command(Argument(Normal('a'))),Separator(' '),Unterminated('| ')),Unterminated(';'))"
 'a | # b'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' ')),Unterminated('| ')),Comment('# b'))"
+"Line(Pipeline(Command(Argument(Normal('a'))),Separator(' '),Unterminated('| ')),Comment('# b'))"
 'a ; # b'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '))),Unterminated('; '),Comment('# b'))"
+"Line(Pipeline(Command(Argument(Normal('a')))),Separator(' '),Unterminated('; '),Comment('# b'))"
 'a [ab]'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),SquareBracketChar('b'),SquareBracketStop(']'))))))"
 'a ['
@@ -73,13 +73,13 @@
 'a ('
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Unexpected('('))))"
 '( d ; e )'
-"Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('d')),Separator(' '))),DotComa('; '),Pipeline(Command(Argument(Normal('e')),Separator(' ')))),GroupStop(')'))))"
+"Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('d')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('e'))))),GroupStop(' )'))))"
 'a ; ( b ) ; c'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '))),DotComa('; '),Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('b')),Separator(' ')))),GroupStop(') '))),DotComa('; '),Pipeline(Command(Argument(Normal('c')))))"
+"Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('b'))))),GroupStop(' ) '))),DotComa('; '),Pipeline(Command(Argument(Normal('c')))))"
 '( a ; b ) | ( c ; d )'
-"Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('a')),Separator(' '))),DotComa('; '),Pipeline(Command(Argument(Normal('b')),Separator(' ')))),GroupStop(') ')),Pipe('| '),Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('c')),Separator(' '))),DotComa('; '),Pipeline(Command(Argument(Normal('d')),Separator(' ')))),GroupStop(')'))))"
+"Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('a')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('b'))))),GroupStop(' ) ')),Pipe('| '),Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('c')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('d'))))),GroupStop(' )'))))"
 '( a ) >b'
-"Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('a')),Separator(' ')))),GroupStop(') '),Redirection(Fildes(''),Direction('>'),File(Normal('b'))))))"
+"Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('a'))))),GroupStop(' ) '),Redirection(Fildes(''),Direction('>'),File(Normal('b'))))))"
 'A=B'
 "Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('B')))))"
 'A=B b c'
@@ -87,11 +87,11 @@
 'a $(c) b'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Replacement(GroupStart('$('),Line(Pipeline(Command(Argument(Normal('c'))))),GroupStop(')'))),Separator(' '),Argument(Normal('b')))))"
 'a & b &'
-"Line(Backgrounded(Pipeline(Command(Argument(Normal('a')),Separator(' '))),Background('& ')),Backgrounded(Pipeline(Command(Argument(Normal('b')),Separator(' '))),Background('&')))"
+"Line(Backgrounded(Pipeline(Command(Argument(Normal('a')))),Background(' & ')),Backgrounded(Pipeline(Command(Argument(Normal('b')))),Background(' &')))"
 'a; ;b'
 "Line(Pipeline(Command(Argument(Normal('a')))),Unterminated('; '),DotComa(';'),Pipeline(Command(Argument(Normal('b')))))"
 'a | ; && #'
-"Line(Pipeline(Command(Argument(Normal('a')),Separator(' ')),Unterminated('| ')),Anded(Unterminated('; '),Unterminated('&& ')),Comment('#'))"
+"Line(Pipeline(Command(Argument(Normal('a'))),Separator(' '),Unterminated('| ')),Anded(Unterminated('; '),Unterminated('&& ')),Comment('#'))"
 '[]a]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar(']'),SquareBracketChar('a'),SquareBracketStop(']'))))))"
 '[!]]'
@@ -119,29 +119,29 @@
 'for I ni'
 "Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),Separator(' '),Unexpected('ni')))))"
 'for I in'
-"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),Separator(' '),In('in')))))"
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in')))))"
 'for I in a $a * ; b'
-"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),Separator(' '),In('in '),ForValues(Argument(Normal('a')),Separator(' '),Argument(Variable('$a')),Separator(' '),Argument(Star('*')),Separator(' ')),EndOfValues(';'),Separator(' '),Unexpected('b')))))"
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),ForValues(Argument(Normal('a')),Separator(' '),Argument(Variable('$a')),Separator(' '),Argument(Star('*'))),EndOfValues(' ; '),Unexpected('b')))))"
 'for I in a b ; do a ; done'
-"Line(Pipeline(Command(ForLoop(For('for '),LoopVariable(Argument(Normal('I'))),Separator(' '),In('in '),ForValues(Argument(Normal('a')),Separator(' '),Argument(Normal('b')),Separator(' ')),EndOfValues(';'),Separator(' '),Body(Do('do '),Pipeline(Command(Argument(Normal('a')),Separator(' '))),DotComa('; '),Done('done'))))))"
+"Line(Pipeline(Command(ForLoop(For('for '),LoopVariable(Argument(Normal('I'))),In(' in '),ForValues(Argument(Normal('a')),Separator(' '),Argument(Normal('b'))),EndOfValues(' ; '),Body(Do('do '),Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Done('done'))))))"
 'for I in a >'
-"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),Separator(' '),In('in '),ForValues(Argument(Normal('a')),Separator(' ')),Unexpected('>')))))"
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),ForValues(Argument(Normal('a'))),Separator(' '),Unexpected('>')))))"
 'while'
 "Line(Pipeline(Command(WhileLoop(Unterminated('while')))))"
 'while a'
 "Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a')))))))"
 'for I in a;'
-"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),Separator(' '),In('in '),ForValues(Argument(Normal('a'))),EndOfValues(';')))))"
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(';')))))"
 'while a ;'
-"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a')),Separator(' ')),EndOfValues(';')))))"
+"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a'))),EndOfValues(' ;')))))"
 'while a ; do'
-"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a')),Separator(' ')),EndOfValues(';'),Separator(' '),Body(Do('do'))))))"
+"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do'))))))"
 'while a ; do a'
-"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a')),Separator(' ')),EndOfValues(';'),Separator(' '),Body(Do('do '),Pipeline(Command(Argument(Normal('a')))))))))"
+"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Pipeline(Command(Argument(Normal('a')))))))))"
 'while a ; do a ; done'
-"Line(Pipeline(Command(WhileLoop(While('while '),Command(Argument(Normal('a')),Separator(' ')),EndOfValues(';'),Separator(' '),Body(Do('do '),Pipeline(Command(Argument(Normal('a')),Separator(' '))),DotComa('; '),Done('done'))))))"
+"Line(Pipeline(Command(WhileLoop(While('while '),Command(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Done('done'))))))"
 'while a ; '
-"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a')),Separator(' ')),EndOfValues(';'),Unterminated(' ')))))"
+"Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a'))),EndOfValues(' ;'),Unterminated(' ')))))"
 'while a '
 "Line(Pipeline(Command(WhileLoop(Unterminated('while '),Command(Argument(Normal('a')),Unterminated(' '))))))"
 '$10$$$#$?'
@@ -165,7 +165,7 @@
 '>('
 "Line(Pipeline(Command(Unterminated('>'),Unexpected('('))))"
 ' a;b '
-"Line(Pipeline(Command(Separator(' '),Argument(Normal('a')))),DotComa(';'),Pipeline(Command(Argument(Normal('b')),Separator(' '))))"
+"Line(Pipeline(Command(Separator(' '),Argument(Normal('a')))),DotComa(';'),Pipeline(Command(Argument(Normal('b')))),Separator(' '))"
 'A=5 for'
 "Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('5')),Separator(' '),ForLoop(Unterminated('for')))))"
 ' while'

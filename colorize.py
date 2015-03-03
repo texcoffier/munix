@@ -112,7 +112,9 @@ class Chars:
         pass # To easely stop container recursion
     def text(self):
         return self.content # To easely stop container recursion
-    
+    def raise_separator(self):
+        pass
+
 class Normal(Chars):
     def local_help(self, dummy_position):
         return 'Texte : ' + protect(self.content)
@@ -133,7 +135,7 @@ class Separator(Chars):
         return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
     def local_help(self, dummy_position):
         return 'Un espace ou plus pour séparer les arguments.'
-class Comment(Separator):
+class Comment(Chars):
     def local_help(self, dummy_position):
         return ("Un commentaire jusqu'à la fin de la ligne."
                 + " Il n'est pas passé à la commande."
@@ -280,7 +282,7 @@ class Equal(Chars):
     def color(self):
         return ["#880", "#FFA"]
     def local_help(self, dummy_position):
-        return "Pas d'espace autour !"
+        return "Affectation"
 class And(Separator):
     def local_help(self, dummy_position):
         return ("La commande de droite ne s'exécute que"
@@ -293,13 +295,14 @@ class Background(Separator):
 class For(Normal):
     def local_help(self, position):
         if position - self.start == 4:
-            return "Indiquer le nom de la variable d'indice"
-        else:
-            return "Début de boucle"
+            return "Le nom de la variable d'indice"
+        return "Début de boucle"
 
 class While(Normal):
-    def local_help(self, dummy_position):
-        return "Indiquer la commande à exécuter"
+    def local_help(self, position):
+        if position - self.start == 6:
+            return "La commande à exécuter"
+        return "Début de boucle"
 
 class In(Separator):
     def local_help(self, dummy_position):
@@ -413,12 +416,9 @@ class Container:
         new_content = []
         while i < len(self.content):
             current = self.content[i]
-            if (isinstance(self.content[i], Pipe)
-                or isinstance(self.content[i], DotComa)
-                or isinstance(self.content[i], GroupStop)
+            if (isinstance(self.content[i], Separator)
                 or isinstance(self.content[i], GroupStart)
-                or isinstance(self.content[i], And)
-                or isinstance(self.content[i], Background)
+                or isinstance(self.content[i], GroupStop)
                 ):
                 v = self.content[i].content
                 if i != 0 and name(self.content[i-1]) == 'Separator':
@@ -444,6 +444,16 @@ class Container:
         self.content[-1].raise_comment()
         if isinstance(self.content[-1].content[-1], Comment):
             self.append(self.content[-1].content.pop())
+    def raise_separator(self):
+        new_content = []
+        for content in self.content:
+            content.raise_separator()
+            new_content.append(content)
+            if content.empty():
+                continue
+            if name(content.content[-1]) == 'Separator':
+                new_content.append(content.content.pop())
+        self.content = new_content
     def remove_empty(self):
         for content in self.content:
             content.remove_empty()
@@ -608,8 +618,8 @@ class Affectation(Container):
         v = ''
         for content in self.content[2:]:
             v += content.html()
-        return ('Affectation dans la variable : «'
-                + self.content[0].html() + '» de la valeur «' + v + '»')
+        return ('Enregistre «' + v + '» dans la variable : «'
+                + self.content[0].html() + '»')
 
 class ForLoop(Command):
     def local_help(self, dummy_position):
@@ -702,6 +712,8 @@ class Parser:
             parsed.remove_empty()
             parsed.merge_separator()
             parsed.replace_empty()
+            parsed.raise_separator()
+            parsed.merge_separator()
             parsed.init_position()
         return parsed
     def parse_pipeline(self):
@@ -757,7 +769,7 @@ class Parser:
                 and name(parsed.content[-1].content[-1]) == 'Separator'):
                 parsed.content[-1].content[-1] = Unterminated(
                     parsed.content[-1].content[-1].content,
-                    "Ajoutez un point-virgule pour finir la liste")
+                    "Ajoutez un point-virgule pour finir la liste des valeurs possibles")
         else:
             parsed.content[0] = Unterminated(parsed.content[0].content,
                                              "Indiquez une commande")
