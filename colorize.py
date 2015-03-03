@@ -104,6 +104,8 @@ class Chars:
             return ""
     def is_a_pattern(self):
         return False
+    def last_position(self, position):
+        return len(self.content) == position - self.start
     def empty(self):
         return True # To easely stop container recursion
     def merge_separator(self):
@@ -113,7 +115,7 @@ class Chars:
     def text(self):
         return self.content # To easely stop container recursion
     def raise_separator(self):
-        pass
+        pass # To easely stop container recursion
 
 class Normal(Chars):
     def local_help(self, dummy_position):
@@ -294,13 +296,13 @@ class Background(Separator):
 
 class For(Normal):
     def local_help(self, position):
-        if position - self.start == 4:
+        if self.last_position(position):
             return "Le nom de la variable d'indice"
         return "Début de boucle"
 
 class While(Normal):
     def local_help(self, position):
-        if position - self.start == 6:
+        if self.last_position(position):
             return "La commande à exécuter"
         return "Début de boucle"
 
@@ -309,7 +311,9 @@ class In(Separator):
         return "Indiquer les valeurs que la variable va prendre"
 
 class EndOfValues(Separator):
-    def local_help(self, dummy_position):
+    def local_help(self, position):
+        if self.last_position(position):
+            return "Mettre le mot-clef «do»"
         if isinstance(self.parent, ForLoop):
             return "Termine la liste des valeurs prises par la variable"
         else:
