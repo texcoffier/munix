@@ -35,6 +35,26 @@ def pad(x):
 def protect(t):
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+def unused_color(element):
+    i = 0
+    my_color = element.color()[1]
+    p = element.parent
+    while p:
+        if p.color()[1] == my_color:
+            i += 1
+        p = p.parent
+    if i == 0:
+        return my_color
+    color = "#"
+    for c in my_color[1:]:
+        c = hex_to_int[c]
+        c *= 16
+        if c == 15*16:
+            c = 255
+        c = int(c * 0.9**i)
+        color += "0123456789ABCDEF"[int(c/16)]+"0123456789ABCDEF"[c%16]
+    return color
+
 list_stopper = '><|;)(&'
 redirection_stopper = '#<>;|()'
 argument_stopper = ' \t' + list_stopper
@@ -48,6 +68,8 @@ class Chars:
     def __init__(self, chars, message=""):
         self.content = chars
         self.message = message
+    def color(self):
+        return ["#000", "#FFF"]
     def str(self):
         return name(self) + '(' + repr(self.content) + ')'
     def nice(self, depth):
@@ -57,6 +79,7 @@ class Chars:
         if position != -1:
             s += 'id="P' + str(self.ident) + '" '
         return (s + 'class="Parsed ' + self.active(position) + name(self)
+                + '" style="color:' + self.color()[0]
                 + '">' + protect(self.content) + '</div>')
     def init_position(self, i=0, ident=0):
         self.start = i
@@ -67,7 +90,9 @@ class Chars:
         s = '<div '
         if position != -1:
             s += 'id="H' + str(self.ident) + '" '
-        return (s + 'class="help help_' + name(self) + '"><div>'
+        return (s + 'class="help help_' + name(self)
+                + '" style="background:' + unused_color(self)
+                + '"><div>'
                 + (self.message or self.local_help(position))
                 + '</div></div>')
     def local_help(self, dummy_position):
@@ -90,8 +115,10 @@ class Chars:
     
 class Normal(Chars):
     def local_help(self, dummy_position):
-        return 'Caractères : ' + protect(self.content)
+        return 'Texte : ' + protect(self.content)
 class Pattern(Chars):
+    def color(self):
+        return ["#F0F", "#FAF"]
     def is_a_pattern(self):
         return True
 class Star(Pattern):
@@ -130,6 +157,8 @@ special_variables = {
     "@": "tous les arguments du script shell",
     }
 class Variable(Chars):
+    def color(self):
+        return ["#00F", "#CCF"]
     def local_help(self, dummy_position):
         if self.content[1:] in special_variables:
              message = special_variables[self.content[1:]]
@@ -141,8 +170,10 @@ class Variable(Chars):
         else:
             message = ("le contenu de la variable «" + self.content[1:]
                        + '». Le nom de la variable disparaît.')
-        return self.html() + " est remplacé par le shell par " + message
+        return "«" + self.html() + "» est remplacé par le shell par " + message
 class Unterminated(Chars):
+    def color(self):
+        return ["#F00", "#FAA"]
     def local_help(self, dummy_position):
         if '"' in self.content:
             return ("Pour terminer le texte protégé, il faut mettre"
@@ -167,11 +198,13 @@ class Unterminated(Chars):
                 return "Tapez la commande qui va traiter la sortie standard de la commande de gauche"
         return "Il manque une suite pour ce symbole : «" + self.content + "»"
 
-class Unexpected(Chars):
+class Unexpected(Unterminated):
     def local_help(self, dummy_position):
         return "Il est interdit d'avoir «" + self.content + "» à cet endroit"
 
 class Invisible(Chars):
+    def color(self):
+        return ["#BBB", "#FFF"]
     def itext(self, txt):
         return "Le caractère «" + self.content + "» disparaît. " + txt
 class Backslash(Invisible):
@@ -183,7 +216,9 @@ class Quote(Invisible):
 class Guillemet(Invisible):
     def local_help(self, dummy_position):
         return self.itext("La signification de tous les caractères entres les 2 guillemets est annullée sauf l'anti-slash et le dollar.")
-class Fildes(Invisible):
+class Fildes(Chars):
+    def color(self):
+        return ["#088", "#AFF"]
     def local_help(self, dummy_position):
         if self.content[0] == '&':
             c = self.content[1:]
@@ -198,7 +233,7 @@ class Fildes(Invisible):
         else:
             s = "???"
         return 'Le fildes «' + self.content + "» représentant " + s
-class Direction(Invisible):
+class Direction(Fildes):
     def local_help(self, dummy_position):
         c = self.content.strip()
         if c == self.content:
@@ -235,52 +270,54 @@ class SquareBracketNegate(Pattern):
     def local_help(self, dummy_position):
         return ("Ce caractère indique que les caractères listés"
                 + " sont ceux dont on ne veux pas.")
-class GroupStart(Pattern):
+class GroupStart(Variable):
     def local_help(self, dummy_position):
         return "Début du groupement"
-class GroupStop(Pattern):
+class GroupStop(Variable):
     def local_help(self, dummy_position):
         return "Fin du groupement"
 class Equal(Chars):
+    def color(self):
+        return ["#880", "#FFA"]
     def local_help(self, dummy_position):
         return "Affectation dans la variable dont le nom est à gauche de la valeur à droite."
-class And(Chars):
+class And(Separator):
     def local_help(self, dummy_position):
         return ("La commande de droite ne s'exécute que"
                 + " si la commande de gauche s'est terminée sans erreur")
 
-class Background(Chars):
+class Background(Separator):
     def local_help(self, dummy_position):
         return 'Lancement en arrière plan'        
 
-class For(Chars):
+class For(Normal):
     def local_help(self, dummy_position):
         return "Premier argument : le nom de la variable d'indice"
 
-class While(Chars):
+class While(Normal):
     def local_help(self, dummy_position):
         return "Indiquer la commande à exécuter"
 
-class In(Chars):
+class In(Separator):
     def local_help(self, dummy_position):
         return "Indiquer les valeurs que la variable va prendre"
 
-class EndOfValues(Chars):
+class EndOfValues(Separator):
     def local_help(self, dummy_position):
         if isinstance(self.parent, ForLoop):
             return "Termine la liste des valeurs prises par la variable"
         else:
             return "Termine la commande précédente"
 
-class EndOfCommand(Chars):
+class EndOfCommand(Separator):
     def local_help(self, dummy_position):
         return "Termine la commande"
 
-class Do(Chars):
+class Do(Separator):
     def local_help(self, dummy_position):
         return "Indiquez les instructions qui seront dans la boucle"
 
-class Done(Chars):
+class Done(Separator):
     def local_help(self, dummy_position):
         return "Fin de la définition du corps de la boucle"
   
@@ -288,9 +325,14 @@ class Done(Chars):
 ##############################################################################
 ##############################################################################
 
+hex_to_int = {'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,
+              'A':10,'B':11,'C':12,'D':13,'E':14,'F':15}
+
 class Container:
     def __init__(self):
         self.content = []
+    def color(self):
+        return ["#000", "#F00"]
     def append(self, item):
         self.content.append(item)
     def str(self):
@@ -341,7 +383,9 @@ class Container:
         s += '<div '
         if position != -1:
             s += 'id="H' + str(self.ident) + '" '
-        return s + 'class="help help_' + name(self) + '"><div>'+h+'</div></div>'
+        return (s + 'class="help help_' + name(self)
+                + '" style="background:' + unused_color(self) + '"><div>'
+                + h + '</div></div>')
     def local_help(self, dummy_position):
         return name(self) + ':<br>'
     def number_of(self, classe):
@@ -439,6 +483,8 @@ class Container:
         return ''.join([x.text() for x in self.content])
 
 class Line(Container):
+    def color(self):
+        return ["#000", "#EEE"]
     def local_help(self, dummy_position):
         nr_pipeline = 0
         nr_command = 0
@@ -458,7 +504,7 @@ class Line(Container):
                     + ' pipeline.')
         return ('Une ligne de commande avec ' + str(nr_command)
                 + ' commande et ' + str(nr_pipeline) + ' pipeline.')
-class Pipeline(Container):
+class Pipeline(Line):
     def local_help(self, dummy_position):
         nr = self.number_of(Command)
         if nr == 0:
@@ -467,16 +513,20 @@ class Pipeline(Container):
             return ''
         return 'Un pipeline enchainant ' + str(nr) + ' commandes.'
 class Command(Container):
+    def color(self):
+        return ["#000", "#CFC"]
     def local_help(self, dummy_position):
         nr = self.number_of(Argument)
         if nr == 0:
             return 'Une commande vide !'
         if nr == 1:
-            return 'Commande : ' + self.content[0].html() + ' sans argument'
-        return ('La commande '
-                + self.first_of(Argument).html() + ' avec '
+            return 'Commande : «' + self.content[0].html() + '» sans argument'
+        return ('La commande «'
+                + self.first_of(Argument).html() + '» avec '
                 + str(nr-1) + ' arguments.')
 class Argument(Container):
+    def color(self):
+        return ["#000", "#FFA"]
     def append(self, item):
         if (len(self.content) != 0
             and name(self.content[-1]) == name(item)
@@ -503,8 +553,10 @@ class Argument(Container):
                     + " de fichiers existant qui rentrent dans le moule.")
         else:
             more = ''
-        return 'Argument ' + str(pos) + ' : ' + self.html() + more + '<br>'
+        return 'Argument '+str(pos)+' : «' + self.html() + "»" + more + '<br>'
 class Redirection(Container):
+    def color(self):
+        return ["#000", "#AFF"]
     def local_help(self, dummy_position):
         m = ''
         if self.content[0].content == '':
@@ -514,12 +566,16 @@ class Redirection(Container):
                 m = " de l'entrée standard"
         return "C'est une redirection" +m+ ", pas un argument de la commande."
 class SquareBracket(Container):
+    def color(self):
+        return ["#000", "#FAF"]
     def local_help(self, dummy_position):
         return "Les crochets indiquent que l'on veut un seul caractère de la liste"
 class Group(Command):
     def local_help(self, dummy_position):
-        return "Lance un nouveau processus pour évaluer le contenu."
+        return "Lance un nouveau processus"
 class Replacement(Container):
+    def color(self):
+        return ["#000", "#CCF"]
     def is_a_pattern(self):
         return False
     def local_help(self, dummy_position):
@@ -527,19 +583,21 @@ class Replacement(Container):
                 + "Ces caractères sont remplacés par ce qui a été "
                 + "écrit par le processus sur sa sortie standard."
                 )
-class File(Container):
+class File(Redirection):
     def local_help(self, dummy_position):
         return 'Le fichier dont le nom est : ' + self.html()
 
-class Backgrounded(Container):
+class Backgrounded(Line):
     def local_help(self, dummy_position):
         return 'Lancé en arrière plan'
 
-class Anded(Container):
+class Anded(Line):
     def local_help(self, dummy_position):
         return "La suite est exécutée seulement si le début s'est bien passé"
 
 class Affectation(Container):
+    def color(self):
+        return ["#000", "#FFA"]
     def local_help(self, dummy_position):
         v = ''
         for content in self.content[2:]:
@@ -559,14 +617,14 @@ class ForValues(Command):
     def local_help(self, dummy_position):
         return "Les valeurs que va prendre la variable"
 
-class Body(Command):
+class Body(Line):
     def local_help(self, dummy_position):
         if isinstance(self.content[-1], Done):
             return "Les commandes qui sont répétées"
         else:
             return "Terminer le bloc de commande avec le mot-clef «done»"
 
-class LoopVariable(Container):
+class LoopVariable(Command):
     def local_help(self, dummy_position):
         return "Nom de la variable qui va changer de valeur"
 
@@ -633,6 +691,7 @@ class Parser:
                         b.append(Background("&" + self.skip(" \t")))
                         parsed.append(b)
         if init:
+            parsed.parent = None
             parsed.raise_comment()
             parsed.remove_empty()
             parsed.merge_separator()

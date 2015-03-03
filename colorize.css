@@ -33,22 +33,10 @@
     white-space: pre ;
 }
 
-.Star, .QuestionMark,
-.SquareBracketChar, .SquareBracketInterval, .SquareBracketNegate,
-.SquareBracketStart, .SquareBracketStop,
-.help_Pattern { color: #B0B ; }
-
-.Backslash, .Quote, .Guillemet { color: #BBB ; }
-.Variable     { color: #080 ; }
-.Equal        { color: #990 ; }
-.Unterminated { color: #F00 ; }
-.Unexpected   { color: #F00 ; }
-
-
 .help {
     margin-bottom: 0.6em ;
     /* border: 1px solid #AAA ; */
-    max-width: 20em ;
+    max-width: 25em ;
     border-bottom-left-radius: 1em ;
     border-bottom-right-radius: 1em ;
     padding-left: 0.5em ;
@@ -57,15 +45,12 @@
     padding-bottom: 2px ;
 }
 
-.help .Parsed { background: #FFF }
-
 .help > DIV { display: inline }
 
 .link {
     position: absolute ;
     border: 0px ;
     max-width: 200em ;
-    background: black ;
     /*
     border-left: 1px solid #AAA ;
     border-right: 1px solid #AAA ;

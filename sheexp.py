@@ -58,16 +58,6 @@ def update():
         update.editor.scrollLeft += 4
     create_links(update.help, update.editor.scrollLeft)
 
-link_opacity = "1"
-colors = [
-    'rgba(180,255,255,' + link_opacity + ')',
-    'rgba(255,255,180,' + link_opacity + ')',
-    'rgba(255,180,255,' + link_opacity + ')',
-    'rgba(180,180,255,' + link_opacity + ')',
-    'rgba(180,255,180,' + link_opacity + ')',
-    'rgba(230,230,230,' + link_opacity + ')',
-    ]
-
 def create_links(output, scrollLeft):
     border = 0
     i = 0
@@ -85,16 +75,14 @@ def create_links(output, scrollLeft):
         n.id = 'L' + help_box.id[1:]
         n.style.left = place.offsetLeft + "px"
         top = place.offsetHeight + border
-        color = colors[(nr_help+i+100)%len(colors)]
         n.style.top = str(top) + "px"
         n.style.height = str(help_box.offsetTop - place.offsetHeight
                              - 2*border) + "px"
         n.style.width = place.offsetWidth + "px"
         n.style.zIndex = i*2
-        n.style.background = color
+        n.style.background = help_box.style.background
         n.style.paddingLeft = 0
         help_box.style.zIndex = 2*i - 1
-        help_box.style.background = color
         editor_width = help_box.parentNode.parentNode.offsetWidth
         slack = (place.offsetWidth - help_box.offsetWidth)/2
         left = place.offsetLeft + slack
