@@ -247,13 +247,15 @@ class Direction(Fildes):
                     + "après la redirection car ce n'est pas un opérateur "
                     + "symétrique.</b>")
         if self.parent.content[2].content[0] == '&':
-            s = "On mélange la sortie avec le fildes indiqué."
+            s = "On mélange la sortie avec le fildes indiqué"
         elif c == '>>':
-            s = "On ajoute à la fin du fichier destination."
+            s = "On ajoute à la fin du fichier"
         elif c == '>':
-            s = "On vide le fichier destination."
+            s = "On vide ou crée le fichier"
         elif c == '<':
-            s = "On lit à partir du fichier indiqué."
+            s = "On lit le fichier indiqué"
+        elif c == '<<':
+            s = "On lit le texte partir de la ligne suivant cette commande"
         else:
             s = 'bug'
         return s + more
@@ -579,11 +581,19 @@ class Redirection(Container):
         return ["#000", "#AFF"]
     def local_help(self, dummy_position):
         m = ''
-        if self.content[0].content == '':
-            if self.content[1].content == '>':
-                m = " de la sortie standard"
-            elif self.content[1].content == '<':
-                m = " de l'entrée standard"
+        if self.content[1].content[0] == '>':
+            m = " de la sortie "
+        elif self.content[1].content[0] == '<':
+            m = " de l'entrée "
+        if (self.content[0].content == ""
+            or self.content[0].content == "0"
+            or self.content[0].content == "1"
+        ):
+            m += "standard"
+        elif self.content[0].content[0] == "2":
+            m += "d'erreur"
+        else:
+            m += "dont le fildes a le numéro " + self.content[0].content[0]
         return "C'est une redirection" +m+ ", pas un argument de la commande."
 class SquareBracket(Container):
     def color(self):
@@ -605,7 +615,16 @@ class Replacement(Container):
                 )
 class File(Redirection):
     def local_help(self, dummy_position):
-        return 'Le fichier dont le nom est : ' + self.html()
+        return 'Le fichier dont le nom est : «' + self.html() + "»"
+
+class InputStop(Redirection):
+    def local_help(self, dummy_position):
+        t = self.text()
+        if len(t) > 2 and t[0] == "'" and t[-1] == "'":
+            more = "Le texte est copié sans substitution des variables"
+        else:
+            more = "Mettez ce texte entre cote pour empêcher les substitutions de variable"
+        return "Les lignes suivant cette commande sont lues jusqu'à trouver le texte «" + self.html() + "» seul sur une ligne. " + more
 
 class Backgrounded(Line):
     def local_help(self, dummy_position):
@@ -950,7 +969,10 @@ class Parser:
                 redirection.content[1] = Unterminated(c)
                 redirection.append(Unterminated(''))
             else:
-                f = File()
+                if c != '<<':
+                    f = File()
+                else:
+                    f = InputStop()
                 f.content = self.parse_argument().content
                 redirection.append(f)
         parsed.append(redirection)
