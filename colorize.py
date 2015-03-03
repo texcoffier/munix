@@ -825,6 +825,7 @@ class Parser:
         return self.parse_do_done(ok, parsed)
 
     def parse_do_done(self, ok, parsed):
+        error = ''
         ok &= not self.empty()
         if ok:
             if self.get() == ';':
@@ -838,6 +839,7 @@ class Parser:
                         "Ajoutez le mot-clef «do»")
             else:
                 parsed.append(Unexpected(self.get()))
+                error = "Il manque le «do»"
                 self.next()
                 ok = False
         ok &= not self.empty()
@@ -856,12 +858,14 @@ class Parser:
         if ok:
             for content in self.parse(0).content:
                 b.append(content)
-            if (len(b.content) >= 3
+            if (len(b.content) > 3
                 and b.content[-2].text().strip() == ';'
                 and b.content[-1].text() == 'done'
+                and b.content[1].text() != ''
                 ):
                 b.content[-1] = b.content[-1].content[0]
             else:
+                error = "Le «do»...«done» est incomplet ou vide"
                 ok = False
         if ok:
             while (not self.empty()
@@ -869,7 +873,7 @@ class Parser:
                         or not self.read_redirection(parsed))):
                 pass
         if not ok and not isinstance(parsed.content[0], Unterminated):
-            parsed.content[0] = Unterminated(parsed.content[0].content)
+            parsed.content[0] = Unterminated(parsed.content[0].content, error)
         return parsed
 
     def parse_command(self):

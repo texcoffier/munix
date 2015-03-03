@@ -172,3 +172,6 @@
 "Line(Pipeline(Command(Separator(' '),WhileLoop(Unterminated('while')))))"
 ' for'
 "Line(Pipeline(Command(Separator(' '),ForLoop(Unterminated('for')))))"
+'for I in ; do ; done'
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),EndOfValues('; '),Body(Do('do '),DotComa('; '),Pipeline(Done('done')))))))"
+
