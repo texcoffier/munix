@@ -3,7 +3,7 @@ CONVERT = preamble.py colorize.py sheexp.py
 %.html:%.rst
 	rst2html $*.rst $*.html
 
-all:regtest colorize.js doc_colorize.html
+all:regtest colorize.js doc_colorize.html munix.html
 
 
 colorize.js:licence.txt $(CONVERT)
@@ -11,8 +11,8 @@ colorize.js:licence.txt $(CONVERT)
          cat $(CONVERT) | RapydScript/bin/rapydscript --prettify --bare \
         ) >$@
 
-install:munix.html
-	cp munix.html munix.css colorize.js colorize.css test.html $$HOME/public_html/MUNIX
+install:all
+	cp --update colorize.js colorize.css doc_colorize.html test.html munix.html munix.css ~/public_html/MUNIX
 
 munix.html:munix.rst colorize.js
 
