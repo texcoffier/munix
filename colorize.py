@@ -154,12 +154,12 @@ class Comment(Chars):
                 + " Le shell ne regarde pas dedans.")
 class Pipe(Separator):
     def local_help(self, dummy_position):
-        return ('Le | redirige la sortie standard de la commande de gauche'
+        return ('Le «|» redirige la sortie standard de la commande de gauche'
                 + " sur l'entrée standard de la commande de droite."
             )
 class DotComa(Separator):
     def local_help(self, dummy_position):
-        return "Le ';' permet de séparer les commandes."
+        return "Le «;» permet de séparer les commandes."
 
 special_variables = {
     "#": "le nombre d'arguments du script shell",
@@ -884,7 +884,6 @@ class Parser:
                     parsed.content[-1].content,
                     "Mettre le mot-clef «" + keyword + "»")
                 error = "Il manque le mot clef «" + keyword + "»"
-                error = ""
             
         error = self.error_if_empty(error)
         if error == '':
