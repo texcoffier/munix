@@ -224,7 +224,7 @@ class Quote(Invisible):
         return self.itext("La signification de tous les caractères entres les deux cotes est annulée.")
 class Guillemet(Invisible):
     def local_help(self, dummy_position):
-        return self.itext("La signification de tous les caractères entres les 2 guillemets est annullée sauf l'anti-slash et le dollar.")
+        return self.itext("La signification de tous les caractères entres les 2 guillemets est annulée sauf l'anti-slash et le dollar.")
 class Fildes(Chars):
     def color(self):
         return ["#088", "#AFF"]
@@ -301,37 +301,37 @@ class Background(Separator):
     def local_help(self, dummy_position):
         return 'Lancement en arrière plan'        
 
-class For(Normal):
+class For(Equal):
     def local_help(self, position):
         if self.last_position(position):
             return "Le nom de la variable d'indice"
         return "Début de boucle"
 
-class If(Normal):
+class If(Equal):
     def local_help(self, position):
         if self.last_position(position):
             return "La commande à exécuter"
         return "Si la commande s'exécute sans erreur : alors c'est vrai"
 
-class Then(Normal):
+class Then(Equal):
     def local_help(self, position):
-        return "Les instructions qui seront exécutées si le test est vrai"
+        return "Les instructions qui suivent sont exécutées si le test est vrai"
 
-class Else(Normal):
+class Else(Equal):
     def local_help(self, position):
-        return "Les instructions qui seront exécutées si le test est faux"
+        return "Les instructions qui suivent sont exécutées si le test est faux"
 
-class Fi(Normal):
+class Fi(Equal):
     def local_help(self, position):
         return "Fin du «if»"
 
-class While(Normal):
+class While(Equal):
     def local_help(self, position):
         if self.last_position(position):
             return "La commande à exécuter"
         return "Début de boucle"
 
-class In(Separator):
+class In(Equal):
     def local_help(self, dummy_position):
         return "Indiquer les valeurs que la variable va prendre"
 
@@ -351,11 +351,11 @@ class EndOfCommand(Separator):
     def local_help(self, dummy_position):
         return "Termine la commande"
 
-class Do(Separator):
+class Do(Equal):
     def local_help(self, dummy_position):
         return "Les instructions qui seront dans la boucle"
 
-class Done(Separator):
+class Done(Equal):
     def local_help(self, dummy_position):
         return "Fin de la définition du corps de la boucle"
   
@@ -451,6 +451,7 @@ class Container:
             if (isinstance(self.content[i], Separator)
                 or isinstance(self.content[i], GroupStart)
                 or isinstance(self.content[i], GroupStop)
+                or isinstance(self.content[i], In)
                 ):
                 v = self.content[i].content
                 if i != 0 and name(self.content[i-1]) == 'Separator':
@@ -689,11 +690,11 @@ class IfThenElse(Command):
 
 class ThenBloc(Command):
     def local_help(self, dummy_position):
-        return "Si vrai"
+        return "Exécuté si la commande s'exécute sans erreur"
 
 class ElseBloc(Command):
     def local_help(self, dummy_position):
-        return "Si faux"
+        return "Exécuté si la commande retourne une erreur"
 
 class ForValues(Command):
     def local_help(self, dummy_position):
@@ -967,11 +968,18 @@ class Parser:
     def parse_until(self, parsed, keywords, return_keyword=False):
         for content in self.parse(0).content:
             parsed.append(content)
-        if (len(parsed.content) > 3
-            and parsed.content[-2].text().strip() == ';'
-            and parsed.content[-1].text() in keywords
-            and parsed.content[1].text() != ''
-            ):
+        if (
+                (
+                    len(parsed.content) > 3
+                    and parsed.content[-2].text().strip() == ';'
+                    and parsed.content[1].text() != ''
+                    or
+                    isinstance(parsed.content[-2], Backgrounded)
+                    and parsed.content[-2].text()[0] != '&'
+                )
+                and
+                parsed.content[-1].text() in keywords
+        ):
             if return_keyword:
                 return parsed.content.pop().text()
             else:
