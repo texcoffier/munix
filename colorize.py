@@ -612,21 +612,24 @@ class Argument(Container):
     def nice(self, depth=0):
         return 'A' + pad(depth) + ' '.join([x.str() for x in self.content])+'\n'
     def local_help(self, dummy_position):
-        if isinstance(self.parent, ForValues):
-            return ""
         pos = 0
         for child in self.parent.content:
             if isinstance(child, Argument):
                 if child is self:
                     break
                 pos += 1
-        if pos == 0:
+        if pos == 0 and not isinstance(self.parent, ForValues):
             return ''
         if self.is_a_pattern():
             more = (" c'est un pattern qui est remplacé par tous les noms"
-                    + " de fichiers existant qui rentrent dans le moule.")
+                    + " de fichiers existants qui rentrent dans le moule.")
         else:
             more = ''
+        if isinstance(self.parent, ForValues):
+            if more == '':
+                return '«' + self.html() + "» est une des valeurs possibles"
+            else:
+                return '«' + self.html() + "» :" + more
         return 'Argument '+str(pos)+' : «' + self.html() + "»" + more + '<br>'
 class Redirection(Container):
     def color(self):
