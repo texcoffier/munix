@@ -197,9 +197,9 @@ class Unterminated(Chars):
         if "\\" in self.content:
             return "Le caractère suivant n'aura pas de signification particulière"
         if ";" in self.content:
-            return "Vous pouvez taper une autre autre commande ou faire un pipeline"
+            return "Vous pouvez taper une autre commande ou faire un pipeline"
         if "&&" in self.content:
-            return "Vous pouvez taper une autre autre commande ou faire un pipeline qui sera exécuter si la précédente se termine bien"
+            return "Vous pouvez taper une autre commande ou faire un pipeline qui sera exécuter si la précédente se termine bien"
         if "(" in self.content:
             return "Les commandes jusqu'à la parenthèse fermante seront exécutées dans un nouveau processus"
         if ">" in self.content or '<' in self.content:
@@ -605,7 +605,7 @@ class Command(Container):
             return 'Commande : «' + self.content[0].html() + '» sans argument'
         return ('La commande «'
                 + self.first_of(Argument).html() + '» avec '
-                + str(nr-1) + ' arguments.')
+                + str(nr-1) + ' argument(s).')
 class Argument(Container):
     def color(self):
         return ["#000", "#FFA"]
@@ -709,11 +709,11 @@ class Affectation(Container):
 
 class ForLoop(Command):
     def local_help(self, dummy_position):
-        return "Boucle for"
+        return "Boucle en parcourant les valeurs indiquées"
         
 class WhileLoop(Command):
     def local_help(self, dummy_position):
-        return "Boucle while"
+        return "Boucle tant que la commande s'exécute sans erreur"
 
 class IfThenElse(Command):
     def local_help(self, dummy_position):
