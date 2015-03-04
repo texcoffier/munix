@@ -121,6 +121,9 @@ class Chars:
         return self.content # To easely stop container recursion
     def raise_separator(self, last=True):
         pass # To easely stop container recursion
+    def replace_unexpected(self):
+        pass # To easely stop container recursion
+        
 
 class Normal(Chars):
     def local_help(self, dummy_position):
@@ -477,6 +480,16 @@ class Container:
         self.content[-1].raise_comment()
         if isinstance(self.content[-1].content[-1], Comment):
             self.append(self.content[-1].content.pop())
+    def replace_unexpected(self):
+        for i, content in enumerate(self.content):
+            content.replace_unexpected()
+            if (isinstance(content, Background)
+                and i != len(self.content)-1
+                and isinstance(self.content[i+1], DotComa)
+                ):
+                self.content[i+1] = Unexpected(self.content[i+1].content,
+                                               "Non autorisé après un «&»"
+                                               )            
     def raise_separator(self, last=True):
         new_content = []
         for i, content in enumerate(self.content):
@@ -485,7 +498,13 @@ class Container:
             new_content.append(content)
             if content.empty():
                 continue
-            if name(content.content[-1]) == 'Separator' and not last_i:
+            if (not content.empty()
+                and (name(content.content[-1]) == 'Separator'
+                     or
+                     name(content.content[-1]) == 'Background'
+                     )
+                and not last_i
+                ):
                 new_content.append(content.content.pop())
         self.content = new_content
     def remove_empty(self):
@@ -781,6 +800,9 @@ class Parser:
             parsed.replace_empty()
             parsed.raise_separator()
             parsed.merge_separator()
+            parsed.raise_separator()
+            parsed.merge_separator()
+            parsed.replace_unexpected()
             parsed.init_position()
         return parsed
     def parse_pipeline(self):

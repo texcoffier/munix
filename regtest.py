@@ -89,7 +89,7 @@
 'a $(c) b'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Replacement(GroupStart('$('),Line(Pipeline(Command(Argument(Normal('c'))))),GroupStop(')'))),Separator(' '),Argument(Normal('b')))))"
 'a & b &'
-"Line(Backgrounded(Pipeline(Command(Argument(Normal('a')))),Background(' & ')),Backgrounded(Pipeline(Command(Argument(Normal('b')))),Background(' &')))"
+"Line(Backgrounded(Pipeline(Command(Argument(Normal('a'))))),Background(' & '),Backgrounded(Pipeline(Command(Argument(Normal('b')))),Background(' &')))"
 'a; ;b'
 "Line(Pipeline(Command(Argument(Normal('a')))),Unterminated('; '),DotComa(';'),Pipeline(Command(Argument(Normal('b')))))"
 'a | ; && #'
@@ -109,7 +109,7 @@
 'a&&b&'
 "Line(Backgrounded(Anded(Pipeline(Command(Argument(Normal('a')))),And('&&'),Pipeline(Command(Argument(Normal('b'))))),Background('&')))"
 'a&b&&c&'
-"Line(Backgrounded(Pipeline(Command(Argument(Normal('a')))),Background('&')),Backgrounded(Anded(Pipeline(Command(Argument(Normal('b')))),And('&&'),Pipeline(Command(Argument(Normal('c'))))),Background('&')))"
+"Line(Backgrounded(Pipeline(Command(Argument(Normal('a'))))),Background('&'),Backgrounded(Anded(Pipeline(Command(Argument(Normal('b')))),And('&&'),Pipeline(Command(Argument(Normal('c'))))),Background('&')))"
 'for'
 "Line(Pipeline(Command(ForLoop(Unterminated('for')))))"
 'for '
@@ -222,9 +222,17 @@
 "Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; ')),ElseBloc(Else('else'),Pipeline(Command(Separator(' '),Argument(Normal('c')))),DotComa(' ; ')),Fi('fi')))))"
 'if a; then b | ; fi'
 "Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b'))),Separator(' '),Unterminated('| ')),DotComa('; ')),Fi('fi')))))"
-"for i in a ; do a & done"
-"Line(Pipeline(Command(ForLoop(For('for '),LoopVariable(Argument(Normal('i'))),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Backgrounded(Pipeline(Command(Argument(Normal('a')))),Background(' & ')),Done('done'))))))"
-"for i in a ; do a & b & done"
-"Line(Pipeline(Command(ForLoop(For('for '),LoopVariable(Argument(Normal('i'))),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Backgrounded(Pipeline(Command(Argument(Normal('a')))),Background(' & ')),Backgrounded(Pipeline(Command(Argument(Normal('b')))),Background(' & ')),Done('done'))))))"
-"for i in a ; do & done"
-"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('i'))),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Backgrounded(Background('& ')),Pipeline(Done('done')))))))"
+'for i in a ; do a & done'
+"Line(Pipeline(Command(ForLoop(For('for '),LoopVariable(Argument(Normal('i'))),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Backgrounded(Pipeline(Command(Argument(Normal('a'))))),Background(' & '),Done('done'))))))"
+'for i in a ; do a & b & done'
+"Line(Pipeline(Command(ForLoop(For('for '),LoopVariable(Argument(Normal('i'))),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Backgrounded(Pipeline(Command(Argument(Normal('a'))))),Background(' & '),Backgrounded(Pipeline(Command(Argument(Normal('b'))))),Background(' & '),Done('done'))))))"
+'for i in a ; do & done'
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('i'))),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Backgrounded(),Background('& '),Pipeline(Done('done')))))))"
+'for i in a ; do a&done'
+"Line(Pipeline(Command(ForLoop(For('for '),LoopVariable(Argument(Normal('i'))),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Backgrounded(Pipeline(Command(Argument(Normal('a'))))),Background('&'),Done('done'))))))"
+"while a; do b & done"
+"Line(Pipeline(Command(WhileLoop(While('while '),Command(Argument(Normal('a'))),EndOfValues('; '),Body(Do('do '),Backgrounded(Pipeline(Command(Argument(Normal('b'))))),Background(' & '),Done('done'))))))"
+"a &; b"
+"Line(Backgrounded(Pipeline(Command(Argument(Normal('a'))))),Background(' &'),Unexpected('; '),Pipeline(Command(Argument(Normal('b')))))"
+"while a; do b & ; done"
+"Line(Pipeline(Command(WhileLoop(While('while '),Command(Argument(Normal('a'))),EndOfValues('; '),Body(Do('do '),Backgrounded(Pipeline(Command(Argument(Normal('b'))))),Background(' & '),Unexpected('; '),Done('done'))))))"
