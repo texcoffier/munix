@@ -51,7 +51,7 @@ def unused_color(element):
         c *= 16
         if c == 15*16:
             c = 255
-        c = int(c * 0.9**i)
+        c = int(c * 0.85**i)
         color += "0123456789ABCDEF"[int(c/16)]+"0123456789ABCDEF"[c%16]
     return color
 
@@ -97,6 +97,7 @@ class Chars:
             s += 'id="H' + str(self.ident) + '" '
         return (s + 'class="help help_' + name(self)
                 + '" style="background:' + unused_color(self)
+                + ';border:1px solid black'
                 + '"><div>'
                 + (self.message or self.local_help(position))
                 + '</div></div>')

@@ -81,6 +81,8 @@ def create_links(output, scrollLeft):
         n.style.width = place.offsetWidth + "px"
         n.style.zIndex = i*2
         n.style.background = help_box.style.background
+        n.style.borderLeft = help_box.style.border
+        n.style.borderRight = help_box.style.border
         n.style.paddingLeft = 0
         help_box.style.zIndex = 2*i - 1
         editor_width = help_box.parentNode.parentNode.offsetWidth
