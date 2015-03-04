@@ -1278,9 +1278,9 @@ class Parser:
     def read_equal(self, parsed):
         if len(parsed.content) != 1 or self.get() != '=':
             return True
-        self.next()
         if name(parsed.content[0]) != 'Normal':
             return True
+        self.next()
         a = Affectation()
         a.append(parsed.content.pop())
         a.append(Equal("="))
@@ -1302,6 +1302,6 @@ class Parser:
                 ):
                 parsed.append(Normal(c))
                 self.next()
-        if isinstance(parsed.content[0], Affectation):
+        if not parsed.empty() and isinstance(parsed.content[0], Affectation):
             return parsed.content[0]
         return parsed
