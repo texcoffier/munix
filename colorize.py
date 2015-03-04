@@ -559,22 +559,30 @@ class Line(Container):
     def local_help(self, dummy_position):
         nr_pipeline = 0
         nr_command = 0
+        nr_background = 0
+        nr_anded = 0
         for x in self.content:
-            if isinstance(x, Pipeline):
+            if isinstance(x, Backgrounded):
+                nr_background += 1
+            elif isinstance(x, Anded):
+                nr_anded += 1
+            elif isinstance(x, Pipeline):
                 if x.number_of(Command) == 1:
                     nr_command += 1
                 else:
                     nr_pipeline += 1
-        if nr_command + nr_pipeline == 0:
+        if nr_command + nr_pipeline + nr_background + nr_anded == 0:
             return 'Une ligne de commande vide.'
-        if nr_pipeline == 0:
-            return ('Une ligne de commande avec ' + str(nr_command)
-                    + ' commande.')
-        if nr_command == 0:
-            return ('Une ligne de commande avec ' + str(nr_pipeline)
-                    + ' pipeline.')
-        return ('Une ligne de commande avec ' + str(nr_command)
-                + ' commande et ' + str(nr_pipeline) + ' pipeline.')
+        m = []
+        if nr_background:
+            m.append(str(nr_background) + " lancement(s) en arrière plan")
+        if nr_anded:
+            m.append(str(nr_anded) + " suite(s) de commandes avec arrêt en cas d'erreur")
+        if nr_pipeline:
+            m.append(str(nr_pipeline) + " pipeline(s)")
+        if nr_command:
+            m.append(str(nr_command) + " commande(s) simple(s)")
+        return 'Une ligne comportant : ' + ', '.join(m)
 class Pipeline(Line):
     def local_help(self, dummy_position):
         nr = self.number_of(Command)
