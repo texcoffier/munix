@@ -246,4 +246,15 @@
 "Line(Pipeline(Command(Argument(Replacement(Unterminated('$('),Line(Pipeline(Command(Argument(Normal('a'))))))))))"
 "$(a="
 "Line(Pipeline(Command(Argument(Replacement(Unterminated('$('),Line(Pipeline(Command(Affectation(Normal('a'),Equal('='))))))))))"
-
+"`"
+"Line(Pipeline(Command(Argument(Unterminated('`')))))"
+"`a"
+"Line(Pipeline(Command(Argument(Replacement(Unterminated('`'),Pipeline(Command(Argument(Normal('a')))))))))"
+"`a`"
+"Line(Pipeline(Command(Argument(Replacement(GroupStart('`'),Pipeline(Command(Argument(Normal('a')))),GroupStop('`'))))))"
+"`a'`"
+"Line(Pipeline(Command(Argument(Replacement(Unterminated('`'),Pipeline(Command(Argument(Normal('a'),Unterminated(\"'\"),Normal('`')))))))))"
+'`a"`'
+"Line(Pipeline(Command(Argument(Replacement(Unterminated('`'),Pipeline(Command(Argument(Normal('a'),Unterminated('\"'),Unterminated('`')))))))))"
+"` a `"
+"Line(Pipeline(Command(Argument(Replacement(GroupStart('` '),Pipeline(Command(Argument(Normal('a')))),GroupStop(' `'))))))"

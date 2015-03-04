@@ -751,6 +751,7 @@ class Parser:
     def __init__(self, text):
         self.text = text
         self.len = len(self.text)
+        self.in_back_cote = False
     def empty(self):
         return self.len == self.i
     def get(self):
@@ -781,6 +782,8 @@ class Parser:
             else:
                 parsed.append(pipeline)
             if isinstance(pipeline.content[-1], Done):
+                break
+            if not self.empty() and self.get() == '`' and self.in_back_cote:
                 break
             if not self.empty() and self.get() == ';':
                 self.next()
@@ -827,6 +830,8 @@ class Parser:
                 if isinstance(parsed.content[-1], Done):
                     return parsed
             if not self.empty() and self.get() in pipeline_stopper:
+                break
+            if not self.empty() and self.get() == '`' and self.in_back_cote:
                 break
             if not self.empty() and self.get() == '|':
                 self.next()
@@ -1056,6 +1061,8 @@ class Parser:
                     return parsed
                 if self.get() in '|;)&':
                     return parsed
+                if self.get() == '`' and self.in_back_cote:
+                    return parsed
                 while not self.empty() and self.get() in '(':
                     parsed.append(Unexpected("("))
                     self.next()
@@ -1173,6 +1180,26 @@ class Parser:
                 parsed.append(r)
             else:
                 parsed.append(Normal('$')) # Assume its signification disapear
+    def read_replacement(self, parsed):
+        if self.get() != '`':
+            return True
+        self.next()
+        if self.empty():
+            parsed.append(Unterminated("`"))
+            return
+        r = Replacement()
+        r.append(GroupStart("`" + self.skip(" \t")))
+        self.in_back_cote = True
+        for content in self.parse(0).content:
+            r.append(content)
+        self.in_back_cote = False
+        if self.empty() or self.get() != '`':
+            r.content[0] = Unterminated(r.content[0].content)
+        else:
+            self.next()
+            r.append(GroupStop("`" + self.skip(" \t")))
+        parsed.append(r)
+
     def read_quote(self, parsed):
         if self.get() != "'":
             return True
@@ -1202,7 +1229,8 @@ class Parser:
             parsed.append(Guillemet('"'))
             while not self.empty():
                 if (self.read_backslash(parsed)
-                    and self.read_dollar(parsed)):
+                    and self.read_dollar(parsed)
+                    and self.read_replacement(parsed)):
                     c = self.get()
                     self.next()
                     if c == '"':
@@ -1293,12 +1321,15 @@ class Parser:
             c = self.get()
             if c in argument_stopper:
                 break
+            if c == '`' and self.in_back_cote:
+                break
             if (self.read_backslash(parsed)
                 and self.read_dollar(parsed)
                 and self.read_quote(parsed)
                 and self.read_guillemet(parsed)
                 and self.read_pattern(parsed)
                 and self.read_equal(parsed)
+                and self.read_replacement(parsed)
                 ):
                 parsed.append(Normal(c))
                 self.next()

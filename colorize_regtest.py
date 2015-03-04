@@ -22,7 +22,7 @@ def check(input_val, expected, write_in):
         print 'Input   :', input_val
         print 'Result  :', result
         print 'Expected:', expected
-        print p.parse().nice()
+        print parsed.nice()
         i = 0
         for i in range(len(expected)):
             if result[i] != expected[i]:
