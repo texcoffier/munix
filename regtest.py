@@ -6,6 +6,8 @@
 "Line(Pipeline(Command(Argument(Normal('aa')))))"
 'a aa  a'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('aa')),Separator('  '),Argument(Normal('a')))))"
+'a b '
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('b')),Separator(' '))))"
 'a\\ a\\ \\   \\    \\'
 "Line(Pipeline(Command(Argument(Normal('a'),Backslash('\\\\'),Normal(' a'),Backslash('\\\\'),Normal(' '),Backslash('\\\\'),Normal(' ')),Separator('  '),Argument(Backslash('\\\\'),Normal(' ')),Separator('   '),Argument(Unterminated('\\\\')))))"
 "' ' '  ' '\\' '\\\\' '\\\\\\' '"
@@ -175,7 +177,7 @@
 '>('
 "Line(Pipeline(Command(Unterminated('>'),Unexpected('('))))"
 ' a;b '
-"Line(Pipeline(Command(Separator(' '),Argument(Normal('a')))),DotComa(';'),Pipeline(Command(Argument(Normal('b')))),Separator(' '))"
+"Line(Pipeline(Command(Separator(' '),Argument(Normal('a')))),DotComa(';'),Pipeline(Command(Argument(Normal('b')),Separator(' '))))"
 'A=5 for'
 "Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('5')),Separator(' '),ForLoop(Unterminated('for')))))"
 ' while'

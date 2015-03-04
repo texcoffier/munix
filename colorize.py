@@ -119,7 +119,7 @@ class Chars:
         pass # To easely stop container recursion
     def text(self):
         return self.content # To easely stop container recursion
-    def raise_separator(self):
+    def raise_separator(self, last=True):
         pass # To easely stop container recursion
 
 class Normal(Chars):
@@ -476,14 +476,15 @@ class Container:
         self.content[-1].raise_comment()
         if isinstance(self.content[-1].content[-1], Comment):
             self.append(self.content[-1].content.pop())
-    def raise_separator(self):
+    def raise_separator(self, last=True):
         new_content = []
-        for content in self.content:
-            content.raise_separator()
+        for i, content in enumerate(self.content):
+            last_i = last and (i == len(self.content)-1)
+            content.raise_separator(last_i)
             new_content.append(content)
             if content.empty():
                 continue
-            if name(content.content[-1]) == 'Separator':
+            if name(content.content[-1]) == 'Separator' and not last_i:
                 new_content.append(content.content.pop())
         self.content = new_content
     def remove_empty(self):
