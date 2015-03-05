@@ -28,6 +28,9 @@ def sheexp():
            onclick="update();setTimeout(update,1)"
            onpaste="update()"
            onkeypress="setTimeout(update,1)"
+           spellcheck="off"
+           autocorrect="off"
+           autocapitalize="off"
            >
         <div id="sheexp_output"></div>
         <div id="sheexp_help"></div>

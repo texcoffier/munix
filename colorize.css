@@ -7,13 +7,17 @@
 }
 
 #sheexp_input, #sheexp_output {
-    font-family: Courier ;
-    font-size: 16pt ;
     width: 100% ;
     padding: 0px ;
-    font-weight: bold ;
     border: 0px ;
     margin-bottom: 0.5em ;
+}
+
+#sheexp_input, #sheexp_output, .Parsed {
+    font-family: Courier New;
+    font-size: 14pt ;
+    font-weight: bold ;
+    line-height: 1.6em ;
 }
 
 #sheexp_input, #sheexp_output , #sheexp_help {
@@ -28,7 +32,6 @@
 }
 
 .Parsed {
-    font-family: Courier ;
     display: inline-block ;
     white-space: pre ;
 }
@@ -40,21 +43,23 @@
     border-bottom-left-radius: 1em ;
     border-bottom-right-radius: 1em ;
     padding-left: 0.5em ;
-    padding-right: 1em ;
+    padding-right: 0.5em ;
     padding-top: 1px ;
     padding-bottom: 2px ;
+    font-family: Arial;
 }
 
-.help > DIV { display: inline }
+.help > DIV {
+    display: inline ;
+}
+.help .Parsed {
+    line-height: 1em ;
+}
 
 .link {
     position: absolute ;
     border: 0px ;
     max-width: 200em ;
-    /*
-    border-left: 1px solid #AAA ;
-    border-right: 1px solid #AAA ;
-    */
     padding-left: 0px ;
     padding-right: 0px ;
 }
@@ -68,6 +73,7 @@
 }
 
 /*
+
 #help {
     margin-top: 3em ;
 }

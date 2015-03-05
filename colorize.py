@@ -43,17 +43,14 @@ def unused_color(element):
         if p.color()[1] == my_color:
             i += 1
         p = p.parent
-    if i == 0:
-        return my_color
-    color = "#"
+    color = []
     for c in my_color[1:]:
         c = hex_to_int[c]
         c *= 16
         if c == 15*16:
             c = 255
-        c = int(c * 0.85**i)
-        color += "0123456789ABCDEF"[int(c/16)]+"0123456789ABCDEF"[c%16]
-    return color
+        color.append(str(int(c * 0.85**i)))
+    return 'rgba(' + ','.join(color) + ', 0.8)'
 
 def choices(keywords):
     return ' ou '.join(['«' + k + '»'
@@ -128,7 +125,7 @@ class Chars:
 
 class Normal(Chars):
     def local_help(self, dummy_position):
-        return 'Texte : ' + protect(self.content)
+        return 'Texte : «' + self.html(self.content) + '»'
 class Pattern(Chars):
     def color(self):
         return ["#F0F", "#FAF"]
@@ -219,16 +216,18 @@ class Invisible(Chars):
     def color(self):
         return ["#BBB", "#FFF"]
     def itext(self, txt):
+        if isinstance(self.parent, SquareBracket):
+            txt += ".<br><b>Même le tiret dans ce contexte</b>"
         return "Le caractère «" + self.content + "» disparaît. " + txt
 class Backslash(Invisible):
     def local_help(self, dummy_position):
         return self.itext("Il annule la signification du caractère suivant.")
 class Quote(Invisible):
     def local_help(self, dummy_position):
-        return self.itext("La signification de tous les caractères entres les deux cotes est annulée.")
+        return self.itext("La signification de tous les caractères entre les deux cotes est annulée.")
 class Guillemet(Invisible):
     def local_help(self, dummy_position):
-        return self.itext("La signification de tous les caractères entres les 2 guillemets est annulée sauf l'anti-slash et le dollar.")
+        return self.itext("La signification de tous les caractères entre les 2 guillemets est annulée sauf l'anti-slash et le dollar.")
 class Fildes(Chars):
     def color(self):
         return ["#088", "#AFF"]
