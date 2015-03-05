@@ -60,7 +60,7 @@ def choices(keywords):
                         for k in keywords
                         ])
     
-list_stopper = '><|;)(&'
+list_stopper = '&<>;|()'
 redirection_stopper = '#<>;|()'
 argument_stopper = ' \t' + list_stopper
 pipeline_stopper = ';)&'
@@ -1079,6 +1079,17 @@ class Parser:
                 pass
         if error != '' and not isinstance(parsed.content[0], Unterminated):
             parsed.content[0] = Unterminated(parsed.content[0].content, error)
+        c = ''
+        while (not self.empty()
+               and self.get() not in list_stopper
+               and self.get() not in redirection_stopper):
+            c += self.get()
+            self.next()
+        if c != '':
+            parsed.append(Unexpected(
+                c,
+                "Rien d'autorisé après le «done». "
+                + "Il faut mettre un séparateur ou une redirection"))
         return parsed
 
     def parse_command(self):
