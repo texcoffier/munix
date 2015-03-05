@@ -1096,6 +1096,9 @@ class Parser:
     def read_redirection(self, parsed):
         i = self.i
         fildes = self.skip(digit)
+        if self.empty():
+            self.i = i
+            return True
         c = self.get()
         if c not in '<>':
             self.i = i
