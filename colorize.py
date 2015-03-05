@@ -611,7 +611,7 @@ class Command(Container):
         if nr == 0:
             return 'Une commande vide !'
         if nr == 1:
-            return 'Commande : «' + self.content[0].html() + '» sans argument'
+            return 'Commande : «' + self.first_of(Argument).html() + '» sans argument'
         return ('La commande «'
                 + self.first_of(Argument).html() + '» avec '
                 + str(nr-1) + ' argument(s).')
