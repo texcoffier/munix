@@ -1082,6 +1082,12 @@ class Parser:
                         parsed.content.pop()
                         parsed.append(self.parse_if())
                         return parsed
+                    if text in ['case', '{']:
+                        return Unexpected(
+                            text,
+                            "L'analyse de ce mot clef n'a pas encore été faite"
+                            + " dans ce logiciel. "
+                            + "Vous n'aurez aucune indication")
                     if text in ['else', 'fi', 'done']:
                         if len(parsed.content) != 1:
                             bug
