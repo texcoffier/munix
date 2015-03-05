@@ -298,8 +298,13 @@ class Equal(Chars):
         return "Affectation"
 class And(Separator):
     def local_help(self, dummy_position):
-        return ("La commande de droite ne s'exécute que"
-                + " si la commande de gauche s'est terminée sans erreur")
+        return ("La commande de droite ne s'exécute que si la "
+                + "dernière exécution à gauche s'est terminée sans erreur")
+
+class Or(Separator):
+    def local_help(self, dummy_position):
+        return ("La commande de droite ne s'exécute que si la "
+                + "dernière exécution à gauche s'est terminée avec une erreur")
 
 class Background(Separator):
     def local_help(self, dummy_position):
@@ -564,7 +569,7 @@ class Line(Container):
         for x in self.content:
             if isinstance(x, Backgrounded):
                 nr_background += 1
-            elif isinstance(x, Anded):
+            elif isinstance(x, Conditionnal):
                 nr_anded += 1
             elif isinstance(x, Pipeline):
                 if x.number_of(Command) == 1:
@@ -577,7 +582,7 @@ class Line(Container):
         if nr_background:
             m.append(str(nr_background) + " lancement(s) en arrière plan")
         if nr_anded:
-            m.append(str(nr_anded) + " suite(s) de commandes avec arrêt en cas d'erreur")
+            m.append(str(nr_anded) + " suite(s) de commandes conditionnelles")
         if nr_pipeline:
             m.append(str(nr_pipeline) + " pipeline(s)")
         if nr_command:
@@ -693,9 +698,9 @@ class Backgrounded(Line):
     def local_help(self, dummy_position):
         return 'Lancé en arrière plan'
 
-class Anded(Line):
+class Conditionnal(Line):
     def local_help(self, dummy_position):
-        return "La suite est exécutée seulement si le début s'est bien passé"
+        return "Suite conditionnelle de commandes ou pipelines"
 
 class Affectation(Container):
     def color(self):
@@ -767,6 +772,26 @@ class Parser:
             else:
                 break
         return s
+
+    def add_to_conditionnal(self, parsed, operator):
+        self.next()
+        if parsed.empty():
+            parsed.append(Unterminated(operator))
+        else:
+            if (len(parsed.content) >= 1
+                and isinstance(parsed.content[-1], Conditionnal)):
+                b = parsed.content[-1]
+            else:
+                b = Conditionnal()
+                b.append(parsed.content.pop())
+                parsed.append(b)
+            op = operator + self.skip(" \t")
+            if operator == '&&':
+                op = And(op)
+            else:
+                op = Or(op)
+            b.append(op)
+        
     def parse(self, init=True):
         if init:
             self.i = 0
@@ -777,28 +802,33 @@ class Parser:
                     parsed.append(Unexpected(")"))
                 break
             pipeline = self.parse_pipeline()
-            if not parsed.empty() and isinstance(parsed.content[-1], Anded):
+            if not parsed.empty() and isinstance(parsed.content[-1],
+                                                 Conditionnal):
                 parsed.content[-1].append(pipeline)
             else:
                 parsed.append(pipeline)
             if isinstance(pipeline.content[-1], Done):
                 break
-            if not self.empty() and self.get() == '`' and self.in_back_cote:
+            if self.empty():
                 break
-            if not self.empty() and self.get() == ';':
+            if self.get() == '`' and self.in_back_cote:
+                break
+            if self.get() == ';':
                 self.next()
                 parsed.append(DotComa(";" + self.skip(" \t")))
-            if not self.empty() and self.get() == '&':
+                if self.empty():
+                    break
+            if self.get() == '|':
+                self.next()
+                if self.get() != '|':
+                    bug
+                self.add_to_conditionnal(parsed, '||')
+                if self.empty():
+                    break
+            if self.get() == '&':
                 self.next()
                 if not self.empty() and self.get() == '&':
-                    self.next()
-                    if parsed.empty():
-                        parsed.append(Unterminated("&&"))
-                    else:
-                        b = Anded()
-                        b.append(parsed.content.pop())
-                        b.append(And("&&" + self.skip(" \t")))
-                        parsed.append(b)
+                    self.add_to_conditionnal(parsed, '&&')
                 else:
                     if parsed.empty():
                         parsed.append(Unterminated("&"))
@@ -828,13 +858,16 @@ class Parser:
             else:
                 parsed.append(self.parse_command())
                 if isinstance(parsed.content[-1], Done):
-                    return parsed
+                    break
             if not self.empty() and self.get() in pipeline_stopper:
                 break
             if not self.empty() and self.get() == '`' and self.in_back_cote:
                 break
             if not self.empty() and self.get() == '|':
                 self.next()
+                if not self.empty() and self.get() == '|':
+                    self.i -= 1
+                    break
                 parsed.append(Pipe("|" + self.skip(" \t")))
         return parsed
     def parse_group(self, eat_separator=True):
