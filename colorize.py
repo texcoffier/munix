@@ -978,10 +978,7 @@ class Parser:
                     error = "Le bloc «else» " + str(err)
             else:
                 error = "Le bloc «then» " + str(err)
-        if error != '':
-            parsed.content[0] = Unterminated(parsed.content[0].content,
-                                             error)
-        return parsed
+        return self.parse_after_end_of_bloc(parsed, error, 'fi')
 
     def parse_while(self):
         parsed = WhileLoop()
@@ -1062,16 +1059,7 @@ class Parser:
                 return " est vide, il faut indiquer des commandes"
         return ''
 
-    def parse_do_done(self, error, parsed):
-        error = self.parse_keyword(error, parsed, "do")
-        if error == '':
-            do_key = parsed.content.pop()
-            b = Body()
-            b.append(do_key)
-            parsed.append(b)
-            err = self.parse_until(b, ['done'])
-            if err != '':
-                error = "Le «do»...«done»" + err
+    def parse_after_end_of_bloc(self, parsed, error, keyword):
         if error == '':
             while (not self.empty()
                    and (not self.read_separator(parsed)
@@ -1088,9 +1076,21 @@ class Parser:
         if c != '':
             parsed.append(Unexpected(
                 c,
-                "Rien d'autorisé après le «done». "
+                "Rien d'autorisé après le «" + keyword + "». "
                 + "Il faut mettre un séparateur ou une redirection"))
         return parsed
+
+    def parse_do_done(self, error, parsed):
+        error = self.parse_keyword(error, parsed, "do")
+        if error == '':
+            do_key = parsed.content.pop()
+            b = Body()
+            b.append(do_key)
+            parsed.append(b)
+            err = self.parse_until(b, ['done'])
+            if err != '':
+                error = "Le «do»...«done»" + err
+        return self.parse_after_end_of_bloc(parsed, error, 'done')
 
     def parse_command(self):
         parsed = Command()

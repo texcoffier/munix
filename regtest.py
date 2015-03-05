@@ -268,3 +268,5 @@
 "Line(Pipeline(Command(ForLoop(For('for '),LoopVariable(Argument(Normal('I'))),In(' in '),EndOfValues('; '),Body(Do('do '),Pipeline(Command(Argument(Normal('A')))),DotComa(' ; '),Done('done'))))),Separator(' '),Comment('# D'))"
 "for I in ; do A ; done BC ; D"
 "Line(Pipeline(Command(ForLoop(For('for '),LoopVariable(Argument(Normal('I'))),In(' in '),EndOfValues('; '),Body(Do('do '),Pipeline(Command(Argument(Normal('A')))),DotComa(' ; '),Done('done')),Separator(' '),Unexpected('BC ')))),DotComa('; '),Pipeline(Command(Argument(Normal('D')))))"
+"if a ; then b ; fi >x m"
+"Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues(' ; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; ')),Fi('fi'),Separator(' '),Redirection(Fildes(''),Direction('>'),File(Normal('x'))),Separator(' '),Unexpected('m')))))"
