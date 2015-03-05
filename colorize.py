@@ -487,6 +487,10 @@ class Container:
         if isinstance(self.content[-1].content[-1], Comment):
             self.append(self.content[-1].content.pop())
     def replace_unexpected(self):
+        if (isinstance(self, Pipeline)
+            and isinstance(self.content[0], Done)
+        ):
+            self.content[0] = Unexpected(self.content[0].content)
         for i, content in enumerate(self.content):
             content.replace_unexpected()
             if (isinstance(content, Background)
@@ -801,7 +805,7 @@ class Parser:
                 if init:
                     parsed.append(Unexpected(")"))
                 break
-            pipeline = self.parse_pipeline()
+            pipeline = self.parse_pipeline(init)
             if not parsed.empty() and isinstance(parsed.content[-1],
                                                  Conditionnal):
                 parsed.content[-1].append(pipeline)
@@ -850,7 +854,7 @@ class Parser:
             parsed.replace_unexpected()
             parsed.init_position()
         return parsed
-    def parse_pipeline(self):
+    def parse_pipeline(self, init):
         parsed = Pipeline()
         while not self.empty():
             if self.get() == '(':
@@ -859,11 +863,13 @@ class Parser:
                 parsed.append(self.parse_command())
                 if isinstance(parsed.content[-1], Done):
                     break
-            if not self.empty() and self.get() in pipeline_stopper:
+            if self.empty():
                 break
-            if not self.empty() and self.get() == '`' and self.in_back_cote:
+            if self.get() in pipeline_stopper:
                 break
-            if not self.empty() and self.get() == '|':
+            if self.get() == '`' and self.in_back_cote:
+                break
+            if self.get() == '|':
                 self.next()
                 if not self.empty() and self.get() == '|':
                     self.i -= 1
@@ -1132,11 +1138,10 @@ class Parser:
                             "L'analyse de ce mot clef n'a pas encore été faite"
                             + " dans ce logiciel. "
                             + "Vous n'aurez aucune indication")
-                    if text in ['else', 'fi', 'done']:
+                    if text in ['else', 'fi', 'done', 'do']:
                         if len(parsed.content) != 1:
-                            bug
+                            text = parsed.content[0].text() + text
                         return Done(text)
-                    
         return parsed
     def read_separator(self, parsed):
         c = self.get()
