@@ -605,13 +605,25 @@ class Line(Container):
             return 'Une ligne de commande vide.'
         m = []
         if nr_background:
-            m.append(str(nr_background) + " lancement(s) en arrière plan")
+            if nr_background == 1:
+                m.append("un lancement en arrière plan")
+            else:
+                m.append(str(nr_background) + " lancements en arrière plan")
         if nr_anded:
-            m.append(str(nr_anded) + " suite(s) de commandes conditionnelles")
+            if nr_anded == 1:
+                m.append("une suite de commandes conditionnelles")
+            else:
+                m.append(str(nr_anded)+ " suites de commandes conditionnelles")
         if nr_pipeline:
-            m.append(str(nr_pipeline) + " pipeline(s)")
+            if nr_pipeline == 1:
+                m.append("un pipeline")
+            else:
+                m.append(str(nr_pipeline) + " pipelines")
         if nr_command:
-            m.append(str(nr_command) + " commande(s) simple(s)")
+            if nr_command == 1:
+                m.append("une commande simple")
+            else:
+                m.append(str(nr_command) + " commandes simples")
         return 'Une ligne comportant : ' + ', '.join(m)
 class Pipeline(Line):
     def local_help(self, dummy_position):
@@ -633,9 +645,11 @@ class Command(Container):
             return 'Une commande vide !'
         if nr == 1:
             return 'Commande : «' + self.first_of(Argument).html() + '» sans argument'
-        return ('La commande «'
-                + self.first_of(Argument).html() + '» avec '
-                + str(nr-1) + ' argument(s).')
+        if nr == 2:
+            a = 'un argument.'
+        else:
+            a = str(nr-1) + ' arguments.'
+        return 'La commande «' + self.first_of(Argument).html() + '» avec ' + a
 class Argument(Container):
     def color(self):
         return ["#000", "#FFA"]

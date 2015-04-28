@@ -20,7 +20,8 @@
 
 def sheexp(container):
     e = document.createElement('DIV')
-    e.innerHTML = """<div id="sheexp_editor">
+    e.id = "sheexp_editor"
+    e.innerHTML = """
         <input id="sheexp_input"
            onkeyup="update();setTimeout(update,1)"
            onkeydown="update();setTimeout(update,1)"
@@ -33,8 +34,8 @@ def sheexp(container):
            >
         <div id="sheexp_output"></div>
         <div id="sheexp_help"></div>
-        </div>
-    <pre id="sheexp_debug"></pre>"""
+        <pre id="sheexp_debug"></pre>"""
+    e.style.width = container.offsetWidth
     container.appendChild(e)
     update.editor  = document.getElementById("sheexp_editor")
     update.input   = document.getElementById("sheexp_input")

@@ -1,13 +1,14 @@
 
 #sheexp_editor {
     position: relative ;
-    overflow : hidden ;
+    overflow : auto ;
     border: 1px solid #CCC ;
     padding: 0px ;
+    width: 100% ;
+    min-height: 15em ;
 }
 
 #sheexp_input, #sheexp_output {
-    width: 100% ;
     padding: 0px ;
     border: 0px ;
     margin-bottom: 0.5em ;
