@@ -10,6 +10,7 @@ colorize.js:licence.txt $(CONVERT)
 	(cat licence.txt ; \
          cat $(CONVERT) | RapydScript/bin/rapydscript --prettify --bare \
         ) >$@
+	iconv -f utf-8 -t ISO8859-15 <$@ >colorize-latin1.js
 
 install:all
 	cp --update colorize.js colorize.css doc_colorize.html test.html munix.html munix.css ~/public_html/MUNIX

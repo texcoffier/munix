@@ -67,6 +67,7 @@ pipeline_stopper = ';)&'
 ##############################################################################
 
 class Chars:
+    hide = False
     def __init__(self, chars, message=""):
         self.content = chars
         self.message = message
@@ -76,6 +77,8 @@ class Chars:
         return name(self) + '(' + repr(self.content) + ')'
     def nice(self, depth):
         return 'C' + pad(depth) + self.str() + '\n'
+    def cleanup(self):
+        return name(self) + '(' + repr(self.content) + ')'
     def html(self, position=-1):
         s = '<div '
         if position != -1:
@@ -139,10 +142,12 @@ class QuestionMark(Pattern):
     def local_help(self, dummy_position):
         return "Le point d'intérogation représente un caractère quelconque."
 class Separator(Chars):
+    hide = True
     def nice(self, depth):
         return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
     def local_help(self, dummy_position):
         return 'Un espace ou plus pour séparer les arguments.'
+
 class Comment(Chars):
     def local_help(self, dummy_position):
         return ("Un commentaire jusqu'à la fin de la ligne."
@@ -213,6 +218,7 @@ class Unexpected(Unterminated):
         return "Il est interdit d'avoir «" + self.content + "» à cet endroit"
 
 class Invisible(Chars):
+    hide = True
     def color(self):
         return ["#BBB", "#FFF"]
     def itext(self, txt):
@@ -375,6 +381,7 @@ hex_to_int = {'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,
               'A':10,'B':11,'C':12,'D':13,'E':14,'F':15}
 
 class Container:
+    hide = False
     def __init__(self):
         self.content = []
     def color(self):
@@ -385,6 +392,21 @@ class Container:
         return name(self) + '(' + ','.join([x.str()
                                             for x in self.content
                                         ]) + ')'
+    def cleanup(self):
+        content = [i
+                   for i in self.content
+                   if not i.hide
+               ]
+        i = 0
+        while i < len(content) - 1:
+            if name(content[i]) == 'Normal' and name(content[i+1]) == 'Normal':
+                content[i] = Normal(content[i].content
+                                    + content[i+1].content)
+                del content[i+1]
+            else:
+                i += 1
+        return name(self) + '(' + ''.join([i.cleanup()
+                                           for i in content]) + ')'
     def nice(self, depth=0):
         return ('C'
                 + pad(depth)

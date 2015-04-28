@@ -18,10 +18,9 @@
 #
 #    Contact: Thierry.EXCOFFIER@univ-lyon1.fr
 
-def sheexp():
-    document.write("""
-    <link rel="stylesheet" href="colorize.css" type="text/css">
-    <div id="sheexp_editor">
+def sheexp(container):
+    e = document.createElement('DIV')
+    e.innerHTML = """<div id="sheexp_editor">
         <input id="sheexp_input"
            onkeyup="update();setTimeout(update,1)"
            onkeydown="update();setTimeout(update,1)"
@@ -35,8 +34,8 @@ def sheexp():
         <div id="sheexp_output"></div>
         <div id="sheexp_help"></div>
         </div>
-    <pre id="sheexp_debug"></pre>
-    """)
+    <pre id="sheexp_debug"></pre>"""
+    container.appendChild(e)
     update.editor  = document.getElementById("sheexp_editor")
     update.input   = document.getElementById("sheexp_input")
     update.output  = document.getElementById("sheexp_output")
@@ -63,7 +62,6 @@ def update():
 
 def create_links(output, scrollLeft):
     border = 0
-    i = 0
     help_boxes = []
     for item in output.childNodes:
         if item.id:
@@ -82,12 +80,11 @@ def create_links(output, scrollLeft):
         n.style.height = str(help_box.offsetTop - place.offsetHeight
                              - 2*border) + "px"
         n.style.width = place.offsetWidth + "px"
-        n.style.zIndex = i*2
+        n.style.verticalAlign = "bottom"
         n.style.background = help_box.style.background
         n.style.borderLeft = help_box.style.border
         n.style.borderRight = help_box.style.border
         n.style.paddingLeft = 0
-        help_box.style.zIndex = 2*i - 1
         editor_width = help_box.parentNode.parentNode.offsetWidth
         slack = (place.offsetWidth - help_box.offsetWidth)/2
         left = place.offsetLeft + slack
@@ -99,5 +96,4 @@ def create_links(output, scrollLeft):
         elif left + help_box.offsetWidth > scrollLeft + editor_width:
             left -= (left + help_box.offsetWidth) - (scrollLeft + editor_width)
         help_box.style.marginLeft = left + 'px'
-        i -= 1
-        output.appendChild(n)
+        help_box.parentNode.insertBefore(n, help_box.parentNode.firstChild)
