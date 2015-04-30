@@ -31,6 +31,7 @@ def sheexp(container):
            spellcheck="off"
            autocorrect="off"
            autocapitalize="off"
+           autocomplete="off"
            >
         <div id="sheexp_output"></div>
         <div id="sheexp_help"></div>
@@ -68,7 +69,8 @@ def create_links(output, scrollLeft):
         if item.id:
             if document.getElementById('P' + item.id[1:]):
                 help_boxes.append(item)
-                item.style.width = item.firstChild.offsetWidth + 'px'
+                # + 4 for border width ?
+                item.style.width = item.firstChild.offsetWidth + 4 + 'px'
     nr_help = len(help_boxes)
     for help_box in help_boxes:
         place = document.getElementById('P' + help_box.id[1:])

@@ -74,6 +74,15 @@
     margin-top: 1em ;
 }
 
+.command_help {
+    font-size: 60% ;
+}
+
+.command_help_error {
+    background: #F00 ;
+    color: #FFF ;
+}
+
 /*
 
 #help {

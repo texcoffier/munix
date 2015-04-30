@@ -66,6 +66,47 @@ pipeline_stopper = ';)&'
 ##############################################################################
 ##############################################################################
 
+def define_command():
+    return {
+        "builtin": False,
+        "description": '',
+        "message": '',
+        "syntax": '',
+        "1": '',
+        "unknown": '',
+        }
+
+def define_builtin():
+    d = define_command()
+    d["builtin"] = True
+    return d
+
+def define_cd():
+    d = define_builtin()
+    d['description'] = "<b>C</b>hange <b>D</b>irectory"
+    d['message'] = "Elle permet de changer de répertoire courant"
+    d['syntax'] = "cd chemin_absolu_ou_relatif"
+    d['1'] = "Chemin vers ce qui deviendra le nouveau répertoire courant"
+    d['unknown'] = "Cet argument est inutile et provoquera une erreur"
+    return d
+
+def define_pwd():
+    d = define_builtin()
+    d['description'] = "<b>P</b>rint <b>W</b>orking <b>D</b>irectory"
+    d['message'] = "Elle affiche le chemin absolu du répertoire courant"
+    d['syntax'] = "pwd"
+    d['unknown'] = "Cet argument est complètement inutile"
+    return d
+
+commands = {
+    "cd": define_cd(),
+    "pwd": define_pwd(),
+    }
+
+##############################################################################
+##############################################################################
+##############################################################################
+
 class Chars:
     hide = False
     def __init__(self, chars, message=""):
@@ -644,12 +685,48 @@ class Command(Container):
         if nr == 0:
             return 'Une commande vide !'
         if nr == 1:
-            return 'Commande : «' + self.first_of(Argument).html() + '» sans argument'
+            return ('Commande : «' + self.first_of(Argument).html()
+                    + '» sans argument' + self.contextual_help())
         if nr == 2:
             a = 'un argument.'
         else:
             a = str(nr-1) + ' arguments.'
-        return 'La commande «' + self.first_of(Argument).html() + '» avec ' + a
+        return ('La commande «' + self.first_of(Argument).html()
+                + '» avec ' + a + self.contextual_help())
+    def command_name(self):
+        command = self.first_of(Argument).content[0].cleanup().split("Normal(")
+        if command[0] != '':
+            return None
+        command = command[1][:-1]
+        if command not in commands:
+            return None
+        return command
+    def contextual_help(self):
+        command = self.command_name()
+        if not command:
+            return ''
+        definition = commands[command]
+        s = ['<div class="command_help">',
+             '<b>', command, '</b> : ',  definition["description"]]
+        if definition["builtin"]:
+            s.append(" (builtin)")
+        s.append('<br>')
+        s.append(definition["message"])
+        s.append('<br>')
+        if definition["syntax"]:
+            s.append('Syntaxe : <tt>')
+            s.append(definition["syntax"])
+            s.append("</tt><br>")
+        s.append("Aide : <tt>")
+        if definition["builtin"]:
+            s.append("help")
+        else:
+            s.append("man")
+        s.append(command)
+        s.append("</tt><br>")
+        s.append('</div>')
+        return '\n'.join(s)
+
 class Argument(Container):
     def color(self):
         return ["#000", "#FFA"]
@@ -682,7 +759,48 @@ class Argument(Container):
                 return '«' + self.html() + "» est une des valeurs possibles"
             else:
                 return '«' + self.html() + "» :" + more
-        return 'Argument '+str(pos)+' : «' + self.html() + "»" + more + '<br>'
+        more += self.contextual_help()
+        return 'Argument '+str(pos)+' : «' + self.html() + "»" + more
+    def first_char(self):
+        if not self.content:
+            return ''
+        if name(self.content[0]) != 'Normal':
+            return ''
+        return self.content[0].content[0]
+    def place(self):
+        # Positive is normal argument, negative if an option
+        nr_arg = 0
+        nr_opt = 0
+        for arg in self.parent.content[1:]:
+            if name(arg) == 'Argument':
+                if arg.first_char() == '-':
+                    nr_opt += 1
+                    if arg is self:
+                        return -nr_opt
+                else:
+                    nr_arg += 1
+                    if arg is self:
+                        return nr_arg
+        return 0
+    def contextual_help(self):
+        command = self.parent.command_name()
+        if not command:
+            return ''
+        definition = commands[command]
+        place = self.place()
+        if place <= 0:
+            return ''
+        place = str(place)
+        if definition[place]:
+            text = definition[place]
+        else:
+            if definition["unknown"]:
+                text = ('<div class="command_help_error">'
+                        + definition["unknown"] + '</div>')
+            else:
+                return ''
+        return '<div class="command_help">' + text + '</div>'
+
 class Redirection(Container):
     def color(self):
         return ["#000", "#AFF"]
