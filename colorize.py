@@ -74,6 +74,7 @@ def define_command():
         "syntax": '',
         "1": '',
         "unknown": '',
+        "section": '1',
         }
 
 def define_builtin():
@@ -83,25 +84,44 @@ def define_builtin():
 
 def define_cd():
     d = define_builtin()
+    d['name'] = 'cd'
     d['description'] = "<b>C</b>hange <b>D</b>irectory"
     d['message'] = "Elle permet de changer de répertoire courant"
-    d['syntax'] = "cd chemin_absolu_ou_relatif"
+    d['syntax'] = "cd <var>chemin_absolu_ou_relatif</var>"
     d['1'] = "Chemin vers ce qui deviendra le nouveau répertoire courant"
     d['unknown'] = "Cet argument est inutile et provoquera une erreur"
     return d
 
 def define_pwd():
     d = define_builtin()
+    d['name'] = 'pwd'
     d['description'] = "<b>P</b>rint <b>W</b>orking <b>D</b>irectory"
     d['message'] = "Elle affiche le chemin absolu du répertoire courant"
     d['syntax'] = "pwd"
-    d['unknown'] = "Cet argument est complètement inutile"
+    d['unknown'] = "Cet argument est complètement inutile et peut éventuellement provoquer des erreurs"
     return d
 
-commands = {
-    "cd": define_cd(),
-    "pwd": define_pwd(),
-    }
+def define_ls():
+    d = define_command()
+    d['name'] = 'ls'
+    d['description'] = "<b>L</b>i<b>S</b>te directory"
+    d['message'] = "Elle permet de lister le contenu de répertoires"
+    d['syntax'] = "ls <var>dir1</var> <var>dir2</var>..."
+    return d
+
+commands = {}
+for x in [define_cd(), define_pwd(), define_ls()]:
+    if x['name'] in commands:
+        duplicate_name
+    commands[x['name']] = x
+
+def format_help(definition):
+    return "help " + definition["name"]
+
+def format_man(definition):
+    return ('<a target="_blank" href="http://linux.die.net/man/' +
+            definition["section"] + '/' + definition["name"]
+            + '">man ' + definition["name"] + "</a>")
 
 ##############################################################################
 ##############################################################################
@@ -718,11 +738,9 @@ class Command(Container):
             s.append(definition["syntax"])
             s.append("</tt><br>")
         s.append("Aide : <tt>")
-        if definition["builtin"]:
-            s.append("help")
-        else:
-            s.append("man")
-        s.append(command)
+        s.append(definition["builtin"]
+                 and format_help(definition)
+                 or format_man(definition))
         s.append("</tt><br>")
         s.append('</div>')
         return '\n'.join(s)
