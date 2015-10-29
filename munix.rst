@@ -82,6 +82,8 @@ Ccommandes :
 
    * Autre : date, man
 
+Notion d'option de commande (et de paramètre d'option ?)
+
 Edition de l'historique avec les touches curseurs.
    
 Et la complétion de commande.

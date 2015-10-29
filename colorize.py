@@ -73,8 +73,10 @@ def define_command():
         "message": '',
         "syntax": '',
         "1": '',
+        "$": '',
         "unknown": '',
         "section": '1',
+        "min_arg": 0,
         }
 
 def define_builtin():
@@ -109,8 +111,27 @@ def define_ls():
     d['syntax'] = "ls <var>dir1</var> <var>dir2</var>..."
     return d
 
+def define_cat():
+    d = define_command()
+    d['name'] = 'cat'
+    d['description'] = "Con<b>cat</b>ène des fichiers"
+    d['message'] = "Elle affiche les contenu des fichiers"
+    d['syntax'] = "cat <var>file1</var> <var>file2</var>..."
+    return d
+
+def define_cp():
+    d = define_command()
+    d['name'] = 'cp'
+    d['description'] = "<b>c</b>o<b>p</b>ie de fichiers et répertoires"
+    d['message'] = "Elle crée ou écrase des fichiers si c'est nécessaire"
+    d['syntax'] = "cp <var>source</var> <var>destination</var>"
+    d['1'] = "Nom du premier fichier à copier ailleurs"
+    d['$'] = "Le fichier ou répertoire destination de la copie"
+    d['min_arg'] = 2
+    return d
+
 commands = {}
-for x in [define_cd(), define_pwd(), define_ls()]:
+for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp()]:
     if x['name'] in commands:
         duplicate_name
     commands[x['name']] = x
@@ -742,6 +763,9 @@ class Command(Container):
                  and format_help(definition)
                  or format_man(definition))
         s.append("</tt><br>")
+        if self.number_of(Argument) < definition["min_arg"] + 1:
+            s.append('<span class="command_help_error">'
+                     + 'Votre commande manque d\'argument !</span><br>')
         s.append('</div>')
         return '\n'.join(s)
 
@@ -805,12 +829,14 @@ class Argument(Container):
         if not command:
             return ''
         definition = commands[command]
-        place = self.place()
-        if place <= 0:
+        place_int = self.place()
+        if place_int <= 0:
             return ''
-        place = str(place)
+        place = str(place_int)
         if definition[place]:
             text = definition[place]
+        elif definition["$"] and place_int==self.parent.number_of(Argument) -1:
+            text = definition["$"]
         else:
             if definition["unknown"]:
                 text = ('<div class="command_help_error">'

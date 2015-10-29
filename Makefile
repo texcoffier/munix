@@ -8,11 +8,13 @@ all:regtest colorize.js doc_colorize.html munix.html
 
 colorize.js:licence.txt $(CONVERT)
 	(cat licence.txt ; \
+         git log --pretty=format:'// GIT commit %H' -n 1 ; \
+	 echo ; \
          cat $(CONVERT) | RapydScript/bin/rapydscript --prettify --bare \
         ) >$@
-	iconv -f utf-8 -t ISO8859-15 <$@ >colorize-latin1.js
+	sed 's/ՐՏ/JS/g' <$@ | iconv -f utf-8 -t ISO8859-15 >colorize-latin1.js
 
-install:all
+install:clean all
 	cp --update colorize.js colorize.css doc_colorize.html test.html munix.html munix.css ~/public_html/MUNIX
 
 munix.html:munix.rst colorize.js
@@ -26,4 +28,4 @@ regtest:
 
 clean:
 	@echo "CLEANING"
-	-rm *~ *.pyc munix.html 2>/dev/null
+	-rm colorize.js *~ *.pyc munix.html 2>/dev/null
