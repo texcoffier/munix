@@ -278,3 +278,7 @@
 "Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),EndOfValues('; '),Body(Do('do '),Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Unexpected('fi')))))))"
 "  done"
 "Line(Pipeline(Unexpected('  done')))"
+'cp --recursive'
+"Line(Pipeline(Command(Argument(Normal('cp')),Separator(' '),Argument(Normal('-r')))))"
+'cd --recursive'
+"Line(Pipeline(Command(Argument(Normal('cd')),Separator(' '),Argument(Normal('--recursive')))))"

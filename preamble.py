@@ -30,7 +30,7 @@ def sum(t):
     return v
 
 def repr(o):
-    return o.toString()
+    return JSON.stringify(o)
 str = repr
 
 def __join__(t):

@@ -77,6 +77,7 @@ def define_command():
         "unknown": '',
         "section": '1',
         "min_arg": 0,
+        "options": None
         }
 
 def define_builtin():
@@ -109,6 +110,12 @@ def define_ls():
     d['description'] = "<b>L</b>i<b>S</b>te directory"
     d['message'] = "Elle permet de lister le contenu de répertoires"
     d['syntax'] = "ls <var>dir1</var> <var>dir2</var>..."
+    d['options'] = {
+        '-l': ['-l',
+               "(l=long) affiche plein d'informations"],
+        '--all': ['-a',
+               "affiche les fichiers dont le nom commence par '.'"],
+        }
     return d
 
 def define_cat():
@@ -128,6 +135,10 @@ def define_cp():
     d['1'] = "Nom du premier fichier à copier ailleurs"
     d['$'] = "Le fichier ou répertoire destination de la copie"
     d['min_arg'] = 2
+    d['options'] = {
+        '--recursive': ['-r',
+                        "copie récursive de répertoire : tout le contenu"],
+        }
     return d
 
 commands = {}
@@ -718,7 +729,7 @@ class Pipeline(Line):
 class Command(Container):
     def color(self):
         return ["#000", "#CFC"]
-    def local_help(self, dummy_position):
+    def local_help(self, position):
         nr = self.number_of(Argument)
         if len(self.content) and isinstance(self.content[-1], Command):
             # Case of the For and While loop
@@ -727,22 +738,22 @@ class Command(Container):
             return 'Une commande vide !'
         if nr == 1:
             return ('Commande : «' + self.first_of(Argument).html()
-                    + '» sans argument' + self.contextual_help())
+                    + '» sans argument' + self.contextual_help(position))
         if nr == 2:
             a = 'un argument.'
         else:
             a = str(nr-1) + ' arguments.'
         return ('La commande «' + self.first_of(Argument).html()
-                + '» avec ' + a + self.contextual_help())
+                + '» avec ' + a + self.contextual_help(position))
     def command_name(self):
         command = self.first_of(Argument).content[0].cleanup().split("Normal(")
         if command[0] != '':
             return None
-        command = command[1][:-1]
+        command = command[1][1:-2]
         if command not in commands:
             return None
         return command
-    def contextual_help(self):
+    def contextual_help(self, dummy_position):
         command = self.command_name()
         if not command:
             return ''
@@ -758,6 +769,18 @@ class Command(Container):
             s.append('Syntaxe : <tt>')
             s.append(definition["syntax"])
             s.append("</tt><br>")
+        if definition["options"]:
+            s.append("Options : ")
+            options = definition["options"]
+            for k in options:
+                short = options[k][0]
+                message = options[k][1]
+                s.append("<br>   <tt>" + k + "</tt> ")
+                if k != short:
+                    s.append("(<tt>" + short + "</tt>) ")
+                s.append(" : ")
+                s.append(message)
+            s.append("<br>")
         s.append("Aide : <tt>")
         s.append(definition["builtin"]
                  and format_help(definition)
@@ -782,7 +805,7 @@ class Argument(Container):
             self.content.append(item)
     def nice(self, depth=0):
         return 'A' + pad(depth) + ' '.join([x.str() for x in self.content])+'\n'
-    def local_help(self, dummy_position):
+    def local_help(self, position):
         pos = 0
         for child in self.parent.content:
             if isinstance(child, Argument):
@@ -801,8 +824,8 @@ class Argument(Container):
                 return '«' + self.html() + "» est une des valeurs possibles"
             else:
                 return '«' + self.html() + "» :" + more
-        more += self.contextual_help()
-        return 'Argument '+str(pos)+' : «' + self.html() + "»" + more
+        more += self.contextual_help(position)
+        return 'Argument ' + str(pos) + ' : «' + self.html() + "»" + more
     def first_char(self):
         if not self.content:
             return ''
@@ -824,14 +847,18 @@ class Argument(Container):
                     if arg is self:
                         return nr_arg
         return 0
-    def contextual_help(self):
+    def contextual_help(self, position):
         command = self.parent.command_name()
         if not command:
             return ''
         definition = commands[command]
         place_int = self.place()
         if place_int <= 0:
-            return ''
+            option = self.option_definition(position)
+            if option:
+                return '<div class="command_help">' + option[0] + " : " + option[1][1] + '</div>'
+            else:
+                return ''
         place = str(place_int)
         if definition[place]:
             text = definition[place]
@@ -844,6 +871,31 @@ class Argument(Container):
             else:
                 return ''
         return '<div class="command_help">' + text + '</div>'
+    def option_definition(self, position=None):
+        c = Container.str(self)
+        command = self.parent.command_name()
+        if not command:
+            return
+        definition = commands[command]
+        if not definition['options']:
+            return
+        options = definition['options']
+        option = c.replace('"', "'").replace('"', "'").split("'") # XXX
+        value = option[1]
+        if value[0] == '-' and value[1] != "-":
+            value = "-" + value.substr(position - self.start - 1, 1)
+        if value in options:
+            return value, options[value]
+        for k in options:
+            if options[k][0] == value:
+                return value, options[k]
+        return
+    def str(self):
+        c = Container.str(self)
+        option = self.option_definition()
+        if option:
+            c = c.replace(option[0], option[1][0])
+        return c
 
 class Redirection(Container):
     def color(self):
