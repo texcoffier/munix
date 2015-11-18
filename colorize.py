@@ -114,7 +114,7 @@ def define_ls():
         '-l': ['-l',
                "(l=long) affiche plein d'informations"],
         '--all': ['-a',
-               "affiche les fichiers dont le nom commence par '.'"],
+               "affiche aussi les fichiers dont le nom commence par '.'"],
         }
     return d
 
@@ -366,6 +366,8 @@ class Direction(Fildes):
         else:
             s = 'bug'
         return s + more
+    def cleanup(self):
+        return name(self) + '(' + repr(self.content.strip()) + ')'
 class SquareBracketStart(Pattern):
     def local_help(self, dummy_position):
         return "Début de la liste des caractères possibles."
@@ -386,7 +388,9 @@ class SquareBracketNegate(Pattern):
 class GroupStart(Variable):
     def local_help(self, dummy_position):
         return "Début du groupement"
-class GroupStop(Variable):
+    def cleanup(self):
+        return name(self) + ' '
+class GroupStop(GroupStart):
     def local_help(self, dummy_position):
         return "Fin du groupement"
 class Equal(Chars):
@@ -394,51 +398,59 @@ class Equal(Chars):
         return ["#880", "#FFA"]
     def local_help(self, dummy_position):
         return "Affectation"
-class And(Separator):
+class And(Chars):
     def local_help(self, dummy_position):
         return ("La commande de droite ne s'exécute que si la "
                 + "dernière exécution à gauche s'est terminée sans erreur")
+    def cleanup(self):
+        return '&&'
 
-class Or(Separator):
+class Or(Chars):
     def local_help(self, dummy_position):
         return ("La commande de droite ne s'exécute que si la "
                 + "dernière exécution à gauche s'est terminée avec une erreur")
+    def cleanup(self):
+        return '||'
 
 class Background(Separator):
     def local_help(self, dummy_position):
         return 'Lancement en arrière plan'        
+    def cleanup(self):
+        return '&'
 
 class For(Equal):
     def local_help(self, position):
         if self.last_position(position):
             return "Le nom de la variable d'indice"
         return "Début de boucle"
+    def cleanup(self):
+        return '' # Not necessary because implied by the container
 
-class If(Equal):
+class If(For):
     def local_help(self, position):
         if self.last_position(position):
             return "La commande à exécuter"
         return "Si la commande s'exécute sans erreur : alors c'est vrai"
 
-class Then(Equal):
+class Then(For):
     def local_help(self, position):
         return "Les instructions qui suivent sont exécutées si le test est vrai"
 
-class Else(Equal):
+class Else(For):
     def local_help(self, position):
         return "Les instructions qui suivent sont exécutées si le test est faux"
 
-class Fi(Equal):
+class Fi(For):
     def local_help(self, position):
         return "Fin du «if»"
 
-class While(Equal):
+class While(For):
     def local_help(self, position):
         if self.last_position(position):
             return "La commande à exécuter"
         return "Début de boucle"
 
-class In(Equal):
+class In(For):
     def local_help(self, dummy_position):
         return "Indiquer les valeurs que la variable va prendre"
 
@@ -458,11 +470,11 @@ class EndOfCommand(Separator):
     def local_help(self, dummy_position):
         return "Termine la commande"
 
-class Do(Equal):
+class Do(For):
     def local_help(self, dummy_position):
         return "Les instructions qui seront dans la boucle"
 
-class Done(Equal):
+class Done(For):
     def local_help(self, dummy_position):
         return "Fin de la définition du corps de la boucle"
   
@@ -749,7 +761,11 @@ class Command(Container):
         command = self.first_of(Argument).content[0].cleanup().split("Normal(")
         if command[0] != '':
             return None
-        command = eval(command[1][:-1])
+        command = command[1]
+        if command[0] == 'u':
+            command = command[2:-2]
+        else:
+            command = command[1:-2]
         if command not in commands:
             return None
         return command
@@ -890,8 +906,8 @@ class Argument(Container):
             if options[k][0] == value:
                 return value, options[k]
         return
-    def str(self):
-        c = Container.str(self)
+    def cleanup(self):
+        c = Container.cleanup(self)
         option = self.option_definition()
         if option:
             c = c.replace(option[0], option[1][0])
