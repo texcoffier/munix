@@ -47,7 +47,11 @@ for input_value, expected_value in zip(tests[::2], tests[1::2]):
     input_value = eval(input_value)
     expected_value = eval(expected_value)
     error = check(input_value, expected_value, f) or error
-    
+
+if colorize.Parser(u'cp --recursive').parse().str() != "Line(Pipeline(Command(Argument(Normal(u'cp')),Separator(u' '),Argument(Normal(u'-r')))))":
+    there_is_an_unicode_problem
+
+
 if f:
     f.close()
 

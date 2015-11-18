@@ -749,7 +749,7 @@ class Command(Container):
         command = self.first_of(Argument).content[0].cleanup().split("Normal(")
         if command[0] != '':
             return None
-        command = command[1][1:-2]
+        command = eval(command[1][:-1])
         if command not in commands:
             return None
         return command
@@ -882,8 +882,8 @@ class Argument(Container):
         options = definition['options']
         option = c.replace('"', "'").replace('"', "'").split("'") # XXX
         value = option[1]
-        if value[0] == '-' and value[1] != "-":
-            value = "-" + value.substr(position - self.start - 1, 1)
+        if value[0] == '-' and value[1] != "-" and position is not None:
+            value = "-" + value[position - self.start - 1]
         if value in options:
             return value, options[value]
         for k in options:
