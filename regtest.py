@@ -436,3 +436,24 @@
 '"$(a")'
 'Line(Pipeline(Command(Argument(Unterminated(\'"\'),Replacement(Unterminated(\'$(\'),Line(Pipeline(Command(Argument(Normal(\'a\'),Unterminated(\'"\'),Normal(\')\'))))))))))'
 'Line(Pipeline(Command(Argument(Unterminated(\'"\')Replacement(Unterminated(\'$(\')Line(Pipeline(Command(Argument(Normal(\'a\')Unterminated(\'"\')Normal(\')\'))))))))))'
+'a ~'
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Home('~')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(Home('~')))))"
+'a "~"'
+'Line(Pipeline(Command(Argument(Normal(\'a\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'~\'),Guillemet(\'"\')))))'
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(Normal('~')))))"
+'a ~b'
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Home('~b')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(Home('~b')))))"
+'a ~b/c'
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Home('~b'),Normal('/c')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(Home('~b')Normal('/c')))))"
+'a ~/b'
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Home('~'),Normal('/b')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(Home('~')Normal('/b')))))"
+'a ~b*'
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Unterminated('~b'),Star('*')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(Unterminated('~b')Star('*')))))"
+'a b~c'
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('b~c')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(Normal('b~c')))))"

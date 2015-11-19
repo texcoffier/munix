@@ -234,13 +234,21 @@ class Star(Pattern):
 class QuestionMark(Pattern):
     def local_help(self, dummy_position):
         return "Le point d'intérogation représente un caractère quelconque."
+class Home(Pattern):
+    def local_help(self, dummy_position):
+        if self.content == '~':
+            return "Le tilde représente votre répertoire de connexion"
+        else:
+            return ("C'est le répertoire de connexion de l'utilisateur «"
+                    + self.content[1:] + '»')
+            
 class Separator(Chars):
     hide = True
     def nice(self, depth):
         return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
     def local_help(self, dummy_position):
         return 'Un espace ou plus pour séparer les arguments.'
-
+    
 class Comment(Chars):
     def local_help(self, dummy_position):
         return ("Un commentaire jusqu'à la fin de la ligne."
@@ -306,6 +314,8 @@ class Unterminated(Chars):
                 return "Il manque une commande à gauche du pipe"
             else:
                 return "Tapez la commande qui va traiter la sortie standard de la commande de gauche"
+        if self.content[0] == '~':
+            return "Le nom de login après le tilde doit être suivi par un «/»"
         return "Il manque une suite pour ce symbole : «" + self.content + "»"
 
 class Unexpected(Unterminated):
@@ -1657,6 +1667,15 @@ class Parser:
         for content in self.parse_argument().content:
             a.append(content)
         parsed.append(a)
+    def read_home(self, parsed):
+        if len(parsed.content) != 0  or  self.get() != '~':
+            return True
+        self.next()
+        n = self.skip(names)
+        if self.empty() or self.get() == '/':
+            parsed.append(Home("~" + n))
+        else:
+            parsed.append(Unterminated("~" + n))
     def parse_argument(self):
         parsed = Argument()
         while not self.empty():
@@ -1672,6 +1691,7 @@ class Parser:
                 and self.read_pattern(parsed)
                 and self.read_equal(parsed)
                 and self.read_replacement(parsed)
+                and self.read_home(parsed)
                 ):
                 parsed.append(Normal(c))
                 self.next()
