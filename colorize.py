@@ -279,6 +279,8 @@ class Variable(Chars):
             message = ("le contenu de la variable «" + self.content[1:]
                        + '». Le nom de la variable disparaît.')
         return "«" + self.html() + "» est remplacé par le shell par " + message
+class VariableProtected(Variable):
+    pass
 class Unterminated(Chars):
     def color(self):
         return ["#F00", "#FAA"]
@@ -498,18 +500,33 @@ class Container:
                                             for x in self.content
                                         ]) + ')'
     def cleanup(self):
-        content = [i
-                   for i in self.content
-                   if not i.hide
-               ]
+        content = self.content[:]
         i = 0
-        while i < len(content) - 1:
-            if name(content[i]) == 'Normal' and name(content[i+1]) == 'Normal':
-                content[i] = Normal(content[i].content
-                                    + content[i+1].content)
-                del content[i+1]
-            else:
-                i += 1
+        protected = False
+        while i < len(content):
+            n = name(content[i])
+            if content[i].hide:
+                if n == 'Guillemet':
+                    protected = not protected
+                del content[i]
+                continue
+            if n == 'Variable':
+                if protected:
+                    content[i] = VariableProtected(content[i].content)
+            if n == 'Replacement':
+                if protected:
+                    r = ReplacementProtected()
+                    r.content = content[i].content
+                    content[i] = r
+            elif (n == 'Normal'
+                  and i != 0
+                  and name(content[i-1]) == 'Normal'
+                  ):
+                content[i-1] = Normal(content[i-1].content
+                                    + content[i].content)
+                del content[i]
+                continue
+            i += 1
         return name(self) + '(' + ''.join([i.cleanup()
                                            for i in content]) + ')'
     def nice(self, depth=0):
@@ -950,6 +967,8 @@ class Replacement(Container):
                 + "Ces caractères sont remplacés par ce qui a été "
                 + "écrit par le processus sur sa sortie standard."
                 )
+class ReplacementProtected(Container):
+    pass
 class File(Redirection):
     def local_help(self, dummy_position):
         return 'Le fichier dont le nom est : «' + self.html() + "»"

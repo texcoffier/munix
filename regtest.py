@@ -30,7 +30,7 @@
 "Line(Pipeline(Command(Argument(Variable('$A')Variable('$B')))))"
 '"A $B \\$C \\"" "'
 'Line(Pipeline(Command(Argument(Guillemet(\'"\'),Normal(\'A \'),Variable(\'$B\'),Normal(\' \'),Backslash(\'\\\\\'),Normal(\'$C \'),Backslash(\'\\\\\'),Normal(\'"\'),Guillemet(\'"\')),Separator(\' \'),Argument(Unterminated(\'"\')))))'
-'Line(Pipeline(Command(Argument(Normal(\'A \')Variable(\'$B\')Normal(\' $C "\'))Argument(Unterminated(\'"\')))))'
+'Line(Pipeline(Command(Argument(Normal(\'A \')VariableProtected(\'$B\')Normal(\' $C "\'))Argument(Unterminated(\'"\')))))'
 '"$" "a'
 'Line(Pipeline(Command(Argument(Guillemet(\'"\'),Normal(\'$\'),Guillemet(\'"\')),Separator(\' \'),Argument(Unterminated(\'"\'),Normal(\'a\')))))'
 'Line(Pipeline(Command(Argument(Normal(\'$\'))Argument(Unterminated(\'"\')Normal(\'a\')))))'
@@ -39,7 +39,7 @@
 "Line(Pipeline(Command(Argument(Normal('a'))Redirection(Fildes('')Direction('>')File(Normal('b'))))))"
 'a >$C >>\\$ <" $A"'
 'Line(Pipeline(Command(Argument(Normal(\'a\')),Separator(\' \'),Redirection(Fildes(\'\'),Direction(\'>\'),File(Variable(\'$C\'))),Separator(\' \'),Redirection(Fildes(\'\'),Direction(\'>>\'),File(Backslash(\'\\\\\'),Normal(\'$\'))),Separator(\' \'),Redirection(Fildes(\'\'),Direction(\'<\'),File(Guillemet(\'"\'),Normal(\' \'),Variable(\'$A\'),Guillemet(\'"\'))))))'
-"Line(Pipeline(Command(Argument(Normal('a'))Redirection(Fildes('')Direction('>')File(Variable('$C')))Redirection(Fildes('')Direction('>>')File(Normal('$')))Redirection(Fildes('')Direction('<')File(Normal(' ')Variable('$A'))))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Redirection(Fildes('')Direction('>')File(Variable('$C')))Redirection(Fildes('')Direction('>>')File(Normal('$')))Redirection(Fildes('')Direction('<')File(Normal(' ')VariableProtected('$A'))))))"
 '22>A B'
 "Line(Pipeline(Command(Redirection(Fildes('22'),Direction('>'),File(Normal('A'))),Separator(' '),Argument(Normal('B')))))"
 "Line(Pipeline(Command(Redirection(Fildes('22')Direction('>')File(Normal('A')))Argument(Normal('B')))))"
@@ -153,7 +153,7 @@
 "Line(Pipeline(Unterminated('|')Command(Argument(Normal('a')))))"
 '[$a\'$a\'"$a"\\"\\\']'
 'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\'),Variable(\'$a\'),Quote("\'"),Normal(\'$\'),Normal(\'a\'),Quote("\'"),Guillemet(\'"\'),Variable(\'$a\'),Guillemet(\'"\'),Backslash(\'\\\\\'),Normal(\'"\'),Backslash(\'\\\\\'),Normal("\'"),SquareBracketStop(\']\'))))))'
-'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\')Variable(\'$a\')Normal(\'$a\')Variable(\'$a\')Normal(\'"\\\'\')SquareBracketStop(\']\'))))))'
+'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\')Variable(\'$a\')Normal(\'$a\')VariableProtected(\'$a\')Normal(\'"\\\'\')SquareBracketStop(\']\'))))))'
 '[a\\]]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),Backslash('\\\\'),Normal(']'),SquareBracketStop(']'))))))"
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar('a')Normal(']')SquareBracketStop(']'))))))"
@@ -424,3 +424,15 @@
 'cd --recursive'
 "Line(Pipeline(Command(Argument(Normal('cd')),Separator(' '),Argument(Normal('--recursive')))))"
 "Line(Pipeline(Command(Argument(Normal('cd'))Argument(Normal('--recursive')))))"
+'$A'
+"Line(Pipeline(Command(Argument(Variable('$A')))))"
+"Line(Pipeline(Command(Argument(Variable('$A')))))"
+'"$A"'
+'Line(Pipeline(Command(Argument(Guillemet(\'"\'),Variable(\'$A\'),Guillemet(\'"\')))))'
+"Line(Pipeline(Command(Argument(VariableProtected('$A')))))"
+'$($A "$B") "$($C "$D")"'
+'Line(Pipeline(Command(Argument(Replacement(GroupStart(\'$(\'),Line(Pipeline(Command(Argument(Variable(\'$A\')),Separator(\' \'),Argument(Guillemet(\'"\'),Variable(\'$B\'),Guillemet(\'"\'))))),GroupStop(\')\'))),Separator(\' \'),Argument(Guillemet(\'"\'),Replacement(GroupStart(\'$(\'),Line(Pipeline(Command(Argument(Variable(\'$C\')),Separator(\' \'),Argument(Guillemet(\'"\'),Variable(\'$D\'),Guillemet(\'"\'))))),GroupStop(\')\')),Guillemet(\'"\')))))'
+"Line(Pipeline(Command(Argument(Replacement(GroupStart Line(Pipeline(Command(Argument(Variable('$A'))Argument(VariableProtected('$B')))))GroupStop ))Argument(ReplacementProtected(GroupStart Line(Pipeline(Command(Argument(Variable('$C'))Argument(VariableProtected('$D')))))GroupStop )))))"
+'"$(a")'
+'Line(Pipeline(Command(Argument(Unterminated(\'"\'),Replacement(Unterminated(\'$(\'),Line(Pipeline(Command(Argument(Normal(\'a\'),Unterminated(\'"\'),Normal(\')\'))))))))))'
+'Line(Pipeline(Command(Argument(Unterminated(\'"\')Replacement(Unterminated(\'$(\')Line(Pipeline(Command(Argument(Normal(\'a\')Unterminated(\'"\')Normal(\')\'))))))))))'
