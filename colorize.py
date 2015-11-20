@@ -141,8 +141,19 @@ def define_cp():
         }
     return d
 
+def define_mkdir():
+    d = define_command()
+    d['name'] = 'mkdir'
+    d['description'] = "<em><b>m</b>a<b>k</b>e <b>dir</b>ectory</em> : création de répertoires"
+    d['message'] = "Elle crée les répertoires dans les noms sont indiqués"
+    d['syntax'] = "mkdir <var>chemin_du_répertoire_à_créer</var>"
+    d['1'] = "chemin vers le répertoire qui va être créé"
+    d['min_arg'] = 1
+    return d
+
 commands = {}
-for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp()]:
+for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
+          define_mkdir()]:
     if x['name'] in commands:
         duplicate_name
     commands[x['name']] = x
