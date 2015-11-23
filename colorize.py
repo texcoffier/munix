@@ -845,6 +845,13 @@ class Command(Container):
                      + 'Votre commande manque d\'argument !</span><br>')
         s.append('</div>')
         return '\n'.join(s)
+    def nr_non_options(self):
+        nr = -1 # Do not count command name
+        for arg in self.content:
+            if name(arg) == 'Argument':
+                if arg.first_char() != '-':
+                    nr += 1
+        return nr
 
 class Argument(Container):
     def color(self):
@@ -888,9 +895,9 @@ class Argument(Container):
         return self.content[0].content[0]
     def place(self):
         # Positive is normal argument, negative if an option
-        nr_arg = 0
+        nr_arg = -1 # Do not count command name
         nr_opt = 0
-        for arg in self.parent.content[1:]:
+        for arg in self.parent.content:
             if name(arg) == 'Argument':
                 if arg.first_char() == '-':
                     nr_opt += 1
@@ -916,7 +923,7 @@ class Argument(Container):
         place = str(place_int)
         if definition[place]:
             text = definition[place]
-        elif definition["$"] and place_int==self.parent.number_of(Argument) -1:
+        elif definition["$"] and place_int == self.parent.nr_non_options():
             text = definition["$"]
         else:
             if definition["unknown"]:
