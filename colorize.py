@@ -141,6 +141,19 @@ def define_cp():
         }
     return d
 
+def define_rm():
+    d = define_command()
+    d['name'] = 'rm'
+    d['description'] = "<b>r</b>e<b>m</b>ove : destruction de fichiers et répertoires"
+    d['message'] = "La destruction est définitive sans confirmation"
+    d['syntax'] = "rm <var>chemin_vers_fichier</var> <var>autre_fichier</var> ..."
+    d['min_arg'] = 1
+    d['options'] = {
+        '--recursive': ['-r',
+                        "destruction récursive de répertoire : tout le contenu"],
+        }
+    return d
+
 def define_mkdir():
     d = define_command()
     d['name'] = 'mkdir'
@@ -153,7 +166,7 @@ def define_mkdir():
 
 commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
-          define_mkdir()]:
+          define_mkdir(), define_rm()]:
     if x['name'] in commands:
         duplicate_name
     commands[x['name']] = x
