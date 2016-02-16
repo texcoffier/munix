@@ -14,7 +14,7 @@ def check(input_val, expected_str, expected_cleanup, write_in):
     p = colorize.Parser(input_val)
     parsed         = p.parse()
     result_str     = parsed.str()
-    result_cleanup = parsed.cleanup()
+    result_cleanup = parsed.cleanup(True)
     if write_in:
         write_in.write(repr(input_val) + '\n')
         write_in.write(repr(result_str) + '\n')
@@ -57,7 +57,7 @@ for input_value, expected_value, expected_cleanup in zip(tests[::3],
     expected_cleanup = eval(expected_cleanup)
     error = check(input_value, expected_value, expected_cleanup, f) or error
 
-if colorize.Parser(u'cp --recursive').parse().cleanup() != "Line(Pipeline(Command(Argument(Normal('cp'))Argument(Normal('-r')))))":
+if colorize.Parser(u'cp --recursive').parse().cleanup(True) != "Line(Pipeline(Command(Argument(Normal('cp'))Argument(Normal('-r')))))":
     there_is_an_unicode_problem
 
 

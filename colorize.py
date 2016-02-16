@@ -172,7 +172,7 @@ def define_ln():
     d['name'] = 'ln'
     d['description'] = "(<b>l</b>i<b>n</b>k) création de liens physique ou symbolique"
     d['syntax'] = "ln -s <var>source</var> <var>destination</var>"
-    d['1'] = "Nom du fichier vers lequel créer le lien"
+    d['1'] = "Nom du fichier vers lequel le lien pointera"
     d['$'] = "L'endroit où va être créé le lien"
     d['min_arg'] = 2
     d['options'] = {
@@ -189,13 +189,28 @@ def define_less():
     d['syntax'] = "less <var>fichier1</var> <var>fichier2</var>"
     return d
 
+def define_man():
+    d = define_command()
+    d['name'] = 'man'
+    d['description'] = "(<b>man</b>uel) affiche la documentation"
+    d['syntax'] = "man commande"
+    d['1'] = "Nom de la commande à expliquer"
+    d['min_arg'] = 1
+    d['options'] = {
+        '--apropos': ['-k',
+                      "Liste les commandes avec le mot clef indiqué"],
+        }
+    return d
+
+
 command_aliases = {
     'more': 'less',
 }
 
 commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
-          define_mkdir(), define_rm(), define_ln(), define_less()]:
+          define_mkdir(), define_rm(), define_ln(), define_less(),
+          define_man()]:
     if x['name'] in commands:
         duplicate_name
     commands[x['name']] = x
@@ -223,7 +238,7 @@ class Chars:
         return name(self) + '(' + string(self.content) + ')'
     def nice(self, depth):
         return 'C' + pad(depth) + self.str() + '\n'
-    def cleanup(self):
+    def cleanup(self, replace_option):
         return name(self) + "(" + string(self.content) + ")"
     def html(self, position=-1):
         s = '<div '
@@ -434,7 +449,7 @@ class Direction(Fildes):
         else:
             s = 'bug'
         return s + more
-    def cleanup(self):
+    def cleanup(self, replace_option):
         return name(self) + '(' + string(self.content.strip()) + ')'
 class SquareBracketStart(Pattern):
     def local_help(self, dummy_position):
@@ -456,7 +471,7 @@ class SquareBracketNegate(Pattern):
 class GroupStart(Variable):
     def local_help(self, dummy_position):
         return "Début du groupement"
-    def cleanup(self):
+    def cleanup(self, replace_option):
         return name(self) + ' '
 class GroupStop(GroupStart):
     def local_help(self, dummy_position):
@@ -470,20 +485,20 @@ class And(Chars):
     def local_help(self, dummy_position):
         return ("La commande de droite ne s'exécute que si la "
                 + "dernière exécution à gauche s'est terminée sans erreur")
-    def cleanup(self):
+    def cleanup(self, replace_option):
         return '&&'
 
 class Or(Chars):
     def local_help(self, dummy_position):
         return ("La commande de droite ne s'exécute que si la "
                 + "dernière exécution à gauche s'est terminée avec une erreur")
-    def cleanup(self):
+    def cleanup(self, replace_option):
         return '||'
 
 class Background(Separator):
     def local_help(self, dummy_position):
         return 'Lancement en arrière plan'        
-    def cleanup(self):
+    def cleanup(self, replace_option):
         return '&'
 
 class For(Equal):
@@ -491,7 +506,7 @@ class For(Equal):
         if self.last_position(position):
             return "Le nom de la variable d'indice"
         return "Début de boucle"
-    def cleanup(self):
+    def cleanup(self, replace_option):
         return '' # Not necessary because implied by the container
 
 class If(For):
@@ -565,38 +580,34 @@ class Container:
         return name(self) + '(' + ','.join([x.str()
                                             for x in self.content
                                         ]) + ')'
-    def cleanup(self):
-        content = self.content[:]
-        i = 0
+    def cleanup(self, replace_option):
         protected = False
-        while i < len(content):
-            n = name(content[i])
-            if content[i].hide:
+        content = []
+        for c in self.content:
+            n = name(c)
+            if c.hide:
                 if n == 'Guillemet':
                     protected = not protected
-                del content[i]
                 continue
             if n == 'Variable':
                 if protected:
-                    content[i] = VariableProtected(content[i].content)
+                    c = VariableProtected(c.content)
             elif n == 'Replacement':
                 if protected:
                     r = ReplacementProtected()
-                    r.content = content[i].content
-                    content[i] = r
+                    r.content = c.content
+                    c = r
             elif (n == 'Normal'
-                  and i != 0
-                  and name(content[i-1]) == 'Normal'
+                  and len(content) != 0
+                  and name(content[-1]) == 'Normal'
                   ):
-                content[i-1] = Normal(content[i-1].content
-                                    + content[i].content)
-                del content[i]
+                content[-1] = Normal(content[-1].content + c.content)
                 continue
-            i += 1
+            content.append(c)
         first_argument = True
         clean = []
         for c in content:
-            txt = c.cleanup()
+            txt = c.cleanup(replace_option)
             if name(c) == 'Argument':
                 if first_argument:
                     first_argument = False
@@ -852,7 +863,8 @@ class Command(Container):
         return ('La commande «' + self.first_of(Argument).html()
                 + '» avec ' + a + self.contextual_help(position))
     def command_name(self):
-        command = self.first_of(Argument).content[0].cleanup().split("Normal(")
+        command = self.first_of(Argument).content[0].cleanup(False
+        ).split("Normal(")
         if command[0] != '':
             return None
         command = command[1][1:-2]
@@ -902,7 +914,7 @@ class Command(Container):
         nr = -1 # Do not count command name
         for arg in self.content:
             if name(arg) == 'Argument':
-                if arg.first_char() != '-':
+                if not arg.is_an_option():
                     nr += 1
         return nr
 
@@ -940,19 +952,23 @@ class Argument(Container):
                 return '«' + self.html() + "» :" + more
         more += self.contextual_help(position)
         return 'Argument ' + str(pos) + ' : «' + self.html() + "»" + more
-    def first_char(self):
-        if not self.content:
+    def text_content(self):
+        c = self.cleanup(False).split("Normal('")
+        if len(c) == 1:
             return ''
-        if name(self.content[0]) != 'Normal':
-            return ''
-        return self.content[0].content[0]
+        return c[1].split("'")[0]
+    def is_an_option(self):
+        c = self.text_content()
+        if len(c) == 0 or c[0] != '-':
+            return
+        return True
     def place(self):
         # Positive is normal argument, negative if an option
         nr_arg = -1 # Do not count command name
         nr_opt = 0
         for arg in self.parent.content:
             if name(arg) == 'Argument':
-                if arg.first_char() == '-':
+                if arg.is_an_option():
                     nr_opt += 1
                     if arg is self:
                         return -nr_opt
@@ -974,9 +990,9 @@ class Argument(Container):
             else:
                 return ''
         place = str(place_int)
-        if definition[place]:
+        if place in definition:
             text = definition[place]
-        elif definition["$"] and place_int == self.parent.nr_non_options():
+        elif "$" in definition and place_int == self.parent.nr_non_options():
             text = definition["$"]
         else:
             if definition["unknown"]:
@@ -986,7 +1002,6 @@ class Argument(Container):
                 return ''
         return '<div class="command_help">' + text + '</div>'
     def option_definition(self, position=None):
-        c = Container.str(self)
         command = self.parent.command_name()
         if not command:
             return
@@ -994,9 +1009,10 @@ class Argument(Container):
         if not definition['options']:
             return
         options = definition['options']
-        option = c.replace('"', "'").replace('"', "'").split("'") # XXX
-        value = option[1]
-        if value[0] == '-' and value[1] != "-" and position is not None:
+        value = self.text_content()
+        if (len(value) > 2
+            and value[0] == '-' and value[1] != "-" and position is not None):
+            # Single letter option: take the good one
             value = "-" + value[position - self.start - 1]
         if value in options:
             return value, options[value]
@@ -1004,8 +1020,10 @@ class Argument(Container):
             if options[k][0] == value:
                 return value, options[k]
         return
-    def cleanup(self):
-        c = Container.cleanup(self)
+    def cleanup(self, replace_option):
+        c = Container.cleanup(self, replace_option)
+        if not replace_option:
+            return c
         option = self.option_definition()
         if option:
             c = c.replace(option[0], option[1][0])

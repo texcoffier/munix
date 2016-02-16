@@ -463,3 +463,18 @@
 'more a'
 "Line(Pipeline(Command(Argument(Normal('more')),Separator(' '),Argument(Normal('a')))))"
 "Line(Pipeline(Command(Argument(Normal('less'))Argument(Normal('a')))))"
+'man -k l'
+"Line(Pipeline(Command(Argument(Normal('man')),Separator(' '),Argument(Normal('-k')),Separator(' '),Argument(Normal('l')))))"
+"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-k'))Argument(Normal('l')))))"
+'man ""-k ls'
+'Line(Pipeline(Command(Argument(Normal(\'man\')),Separator(\' \'),Argument(Guillemet(\'""\'),Normal(\'-k\')),Separator(\' \'),Argument(Normal(\'ls\')))))'
+"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-k'))Argument(Normal('ls')))))"
+'man "-k" ls'
+'Line(Pipeline(Command(Argument(Normal(\'man\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-k\'),Guillemet(\'"\')),Separator(\' \'),Argument(Normal(\'ls\')))))'
+"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-k'))Argument(Normal('ls')))))"
+'man "-" ls'
+'Line(Pipeline(Command(Argument(Normal(\'man\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-\'),Guillemet(\'"\')),Separator(\' \'),Argument(Normal(\'ls\')))))'
+"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-'))Argument(Normal('ls')))))"
+'man "-"k ls'
+'Line(Pipeline(Command(Argument(Normal(\'man\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-\'),Guillemet(\'"\'),Normal(\'k\')),Separator(\' \'),Argument(Normal(\'ls\')))))'
+"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-k'))Argument(Normal('ls')))))"
