@@ -186,6 +186,9 @@ def define_less():
     d['syntax'] = "less <var>fichier1</var> <var>fichier2</var>"
     return d
 
+command_aliases = {
+    'more': 'less',
+}
 
 commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
@@ -570,7 +573,7 @@ class Container:
             if n == 'Variable':
                 if protected:
                     content[i] = VariableProtected(content[i].content)
-            if n == 'Replacement':
+            elif n == 'Replacement':
                 if protected:
                     r = ReplacementProtected()
                     r.content = content[i].content
@@ -584,8 +587,19 @@ class Container:
                 del content[i]
                 continue
             i += 1
-        return name(self) + '(' + ''.join([i.cleanup()
-                                           for i in content]) + ')'
+        first_argument = True
+        clean = []
+        for c in content:
+            txt = c.cleanup()
+            if name(c) == 'Argument':
+                if first_argument:
+                    first_argument = False
+                    command = txt.replace(
+                        "Argument(Normal('", "").replace("'))", "")
+                    if command in command_aliases:
+                        txt ="Argument(Normal('"+command_aliases[command]+"'))"
+            clean.append(txt)
+        return name(self) + '(' + ''.join(clean) + ')'
     def nice(self, depth=0):
         return ('C'
                 + pad(depth)

@@ -460,4 +460,6 @@
 "u'a'"
 'Line(Pipeline(Command(Argument(Normal(\'u\'),Quote("\'"),Normal(\'a\'),Quote("\'")))))'
 "Line(Pipeline(Command(Argument(Normal('ua')))))"
-"more a"
+'more a'
+"Line(Pipeline(Command(Argument(Normal('more')),Separator(' '),Argument(Normal('a')))))"
+"Line(Pipeline(Command(Argument(Normal('less'))Argument(Normal('a')))))"
