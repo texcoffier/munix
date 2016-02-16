@@ -238,15 +238,16 @@ class Chars:
         self.ident = ident
         return self.end
     def help(self, position):
+        message = self.message or self.local_help(position)
+        if len(message) == 0:
+            return ''
         s = '<div '
         if position != -1:
             s += 'id="H' + str(self.ident) + '" '
         return (s + 'class="help help_' + name(self)
                 + '" style="background:' + unused_color(self)
                 + ';border:1px solid black'
-                + '"><div>'
-                + (self.message or self.local_help(position))
-                + '</div></div>')
+                + '"><div>' + message + '</div></div>')
     def local_help(self, dummy_position):
         return name(self) + ':' + protect(self.content)
     def active(self, position):
@@ -406,6 +407,8 @@ class Fildes(Chars):
             s = "la sortie d'erreur."
         elif c == '0':
             s = "l'entrée standard."
+        elif c == '':
+            return ''
         else:
             s = "???"
         return 'Le fildes «' + self.content + "» représentant " + s
