@@ -50,8 +50,8 @@ else:
 
 error = False
 for input_value, expected_value, expected_cleanup in zip(tests[::3],
-                                                         tests[1::3],
-                                                         tests[2::3]):
+                                                         tests[1::3]+['""'],
+                                                         tests[2::3]+['""']):
     input_value = eval(input_value)
     expected_value = eval(expected_value)
     expected_cleanup = eval(expected_cleanup)

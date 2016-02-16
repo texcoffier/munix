@@ -457,3 +457,7 @@
 'a b~c'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('b~c')))))"
 "Line(Pipeline(Command(Argument(Normal('a'))Argument(Normal('b~c')))))"
+"u'a'"
+'Line(Pipeline(Command(Argument(Normal(\'u\'),Quote("\'"),Normal(\'a\'),Quote("\'")))))'
+"Line(Pipeline(Command(Argument(Normal('ua')))))"
+"more a"

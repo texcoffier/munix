@@ -53,7 +53,7 @@ Utilisation d'unix pour ceux qui ne l'ont pas chez eux :
    * Via un live CD : il faut graver un CD et on a plus accès à windows
    * Via une machine virtuelle : c'est plus compliqué à lancer.
    * Via cygwin : c'est pas sous unix :-(
-   * Via son téléphone android (c'est dangereux)
+   * Via son téléphone android (c'est dangereux de rooter)
 
 =============================================================================
                                       PROGRAMME
@@ -72,15 +72,17 @@ Intro : Pourquoi ce cours. Histoire. Comment accéder à unix et au shell.
 
 Concepts : hiérarchie, répertoire, fichier, chemin, répertoire courant
 
-Ccommandes :
+Commandes :
 
    * Navigation : cd, pwd, ls
 
-   * Manipulation : cp, rm, mv, ln, mkdir, gzip, iconv, convert?, avconv?
+   * Fichier : cp, rm, mv, ln, mkdir
 
-   * Affichage : cat, zcat, more, sort, du
+   * Transformation : sort, gzip, gunzip, iconv?, convert?, avconv?
+   
+   * Affichage : cat, less, tail, zcat, diff
 
-   * Autre : date, man
+   * Pratique : date, man, du, df
 
 Notion d'option de commande (et de paramètre d'option ?)
 
@@ -147,7 +149,7 @@ Concepts : utilisateur, groupe, droits
 Commandes : chown, chgrp, chmod
 
 Concepts : Périphérique, disque, TTY, liaison série, clavier, souris, écran
-Commandes : mount, df, find, tar, sshfs, récupérer les fichiers perdus.
+Commandes : mount, find, tar, sshfs, récupérer les fichiers perdus.
 
 Concepts : client, serveur, nom machine, adresse IP, clefs privés/publiques
 Commandes : ssh, scp, rsync, wget, sendmail
@@ -169,7 +171,7 @@ La notion de compilation séparée.
 
 Le Makefile
 
-Les commandes diff et patch.
+La commande patch.
 
 La notion de gestionnaire de version. GIT ? Forge UCBL (mercurial) ?
 

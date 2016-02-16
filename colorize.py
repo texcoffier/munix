@@ -1,6 +1,6 @@
 # -*- coding: utf-8
 #    SHEEXP: SHEll EXPlainer
-#    Copyright (C) 2015 Thierry EXCOFFIER, Universite Claude Bernard
+#    Copyright (C) 2015-2016 Thierry EXCOFFIER, Universite Claude Bernard
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -164,9 +164,32 @@ def define_mkdir():
     d['min_arg'] = 1
     return d
 
+def define_ln():
+    d = define_command()
+    d['name'] = 'ln'
+    d['description'] = "(<b>l</b>i<b>n</b>k) création de liens physique ou symbolique"
+    d['syntax'] = "ln -s <var>source</var> <var>destination</var>"
+    d['1'] = "Nom du fichier vers lequel créer le lien"
+    d['$'] = "L'endroit où va être créé le lien"
+    d['min_arg'] = 2
+    d['options'] = {
+        '--symbolic': ['-s',
+                        "création d'un lien symbolique"],
+        }
+    return d
+
+def define_less():
+    d = define_command()
+    d['name'] = 'less'
+    d['description'] = "affichage de fichier page par page"
+    d['comment'] = "Si aucun nom de fichier n'est donné c'est un filtre"
+    d['syntax'] = "less <var>fichier1</var> <var>fichier2</var>"
+    return d
+
+
 commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
-          define_mkdir(), define_rm()]:
+          define_mkdir(), define_rm(), define_ln(), define_less()]:
     if x['name'] in commands:
         duplicate_name
     commands[x['name']] = x
@@ -813,7 +836,7 @@ class Command(Container):
         if command[0] != '':
             return None
         command = command[1]
-        if command[0] == 'u':
+        if command[0] == 'u': # unicode string
             command = command[2:-2]
         else:
             command = command[1:-2]
@@ -830,8 +853,9 @@ class Command(Container):
         if definition["builtin"]:
             s.append(" (builtin)")
         s.append('<br>')
-        s.append(definition["message"])
-        s.append('<br>')
+        if len(definition["message"]):
+            s.append(definition["message"])
+            s.append('<br>')
         if definition["syntax"]:
             s.append('Syntaxe : <tt>')
             s.append(definition["syntax"])
@@ -853,7 +877,7 @@ class Command(Container):
                  and format_help(definition)
                  or format_man(definition))
         s.append("</tt><br>")
-        if self.number_of(Argument) < definition["min_arg"] + 1:
+        if self.nr_non_options() < definition["min_arg"]:
             s.append('<span class="command_help_error">'
                      + 'Votre commande manque d\'argument !</span><br>')
         s.append('</div>')
