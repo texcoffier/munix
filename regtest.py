@@ -17,13 +17,13 @@
 "Line(Pipeline(Command(Argument(Normal('a'),Backslash('\\\\'),Normal(' a'),Backslash('\\\\'),Normal(' '),Backslash('\\\\'),Normal(' ')),Separator('  '),Argument(Backslash('\\\\'),Normal(' ')),Separator('   '),Argument(Unterminated('\\\\')))))"
 "Line(Pipeline(Command(Argument(Normal('a a  '))Argument(Normal(' '))Argument(Unterminated('\\\\')))))"
 "' ' '  ' '\\' '\\\\' '\\\\\\' '"
-'Line(Pipeline(Command(Argument(Quote("\'"),Normal(\' \'),Quote("\'")),Separator(\' \'),Argument(Quote("\'"),Normal(\'  \'),Quote("\'")),Separator(\' \'),Argument(Quote("\'"),Normal(\'\\\\\'),Quote("\'")),Separator(\' \'),Argument(Quote("\'"),Normal(\'\\\\\\\\\'),Quote("\'")),Separator(\' \'),Argument(Quote("\'"),Normal(\'\\\\\\\\\\\\\'),Quote("\'")),Separator(\' \'),Argument(Unterminated("\'")))))'
-'Line(Pipeline(Command(Argument(Normal(\' \'))Argument(Normal(\'  \'))Argument(Normal(\'\\\\\'))Argument(Normal(\'\\\\\\\\\'))Argument(Normal(\'\\\\\\\\\\\\\'))Argument(Unterminated("\'")))))'
+"Line(Pipeline(Command(Argument(Quote('\\''),Normal(' '),Quote('\\'')),Separator(' '),Argument(Quote('\\''),Normal('  '),Quote('\\'')),Separator(' '),Argument(Quote('\\''),Normal('\\\\'),Quote('\\'')),Separator(' '),Argument(Quote('\\''),Normal('\\\\\\\\'),Quote('\\'')),Separator(' '),Argument(Quote('\\''),Normal('\\\\\\\\\\\\'),Quote('\\'')),Separator(' '),Argument(Unterminated('\\'')))))"
+"Line(Pipeline(Command(Argument(Normal(' '))Argument(Normal('  '))Argument(Normal('\\\\'))Argument(Normal('\\\\\\\\'))Argument(Normal('\\\\\\\\\\\\'))Argument(Unterminated('\\'')))))"
 "a'b"
-'Line(Pipeline(Command(Argument(Normal(\'a\'),Unterminated("\'"),Normal(\'b\')))))'
-'Line(Pipeline(Command(Argument(Normal(\'a\')Unterminated("\'")Normal(\'b\')))))'
+"Line(Pipeline(Command(Argument(Normal('a'),Unterminated('\\''),Normal('b')))))"
+"Line(Pipeline(Command(Argument(Normal('a')Unterminated('\\'')Normal('b')))))"
 "$A '$B' \\$B $/ $B1/ $"
-'Line(Pipeline(Command(Argument(Variable(\'$A\')),Separator(\' \'),Argument(Quote("\'"),Normal(\'$B\'),Quote("\'")),Separator(\' \'),Argument(Backslash(\'\\\\\'),Normal(\'$B\')),Separator(\' \'),Argument(Normal(\'$/\')),Separator(\' \'),Argument(Variable(\'$B1\'),Normal(\'/\')),Separator(\' \'),Argument(Normal(\'$\')))))'
+"Line(Pipeline(Command(Argument(Variable('$A')),Separator(' '),Argument(Quote('\\''),Normal('$B'),Quote('\\'')),Separator(' '),Argument(Backslash('\\\\'),Normal('$B')),Separator(' '),Argument(Normal('$/')),Separator(' '),Argument(Variable('$B1'),Normal('/')),Separator(' '),Argument(Normal('$')))))"
 "Line(Pipeline(Command(Argument(Variable('$A'))Argument(Normal('$B'))Argument(Normal('$B'))Argument(Normal('$/'))Argument(Variable('$B1')Normal('/'))Argument(Normal('$')))))"
 '$A$B'
 "Line(Pipeline(Command(Argument(Variable('$A'),Variable('$B')))))"
@@ -152,7 +152,7 @@
 "Line(Pipeline(Separator(' '),Unterminated('|'),Command(Argument(Normal('a')))))"
 "Line(Pipeline(Unterminated('|')Command(Argument(Normal('a')))))"
 '[$a\'$a\'"$a"\\"\\\']'
-'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\'),Variable(\'$a\'),Quote("\'"),Normal(\'$\'),Normal(\'a\'),Quote("\'"),Guillemet(\'"\'),Variable(\'$a\'),Guillemet(\'"\'),Backslash(\'\\\\\'),Normal(\'"\'),Backslash(\'\\\\\'),Normal("\'"),SquareBracketStop(\']\'))))))'
+'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\'),Variable(\'$a\'),Quote(\'\\\'\'),Normal(\'$\'),Normal(\'a\'),Quote(\'\\\'\'),Guillemet(\'"\'),Variable(\'$a\'),Guillemet(\'"\'),Backslash(\'\\\\\'),Normal(\'"\'),Backslash(\'\\\\\'),Normal(\'\\\'\'),SquareBracketStop(\']\'))))))'
 'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\')Variable(\'$a\')Normal(\'$a\')VariableProtected(\'$a\')Normal(\'"\\\'\')SquareBracketStop(\']\'))))))'
 '[a\\]]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),Backslash('\\\\'),Normal(']'),SquareBracketStop(']'))))))"
@@ -380,8 +380,8 @@
 "Line(Pipeline(Command(Argument(Replacement(GroupStart('`'),Pipeline(Command(Argument(Normal('a')))),GroupStop('`'))))))"
 "Line(Pipeline(Command(Argument(Replacement(GroupStart Pipeline(Command(Argument(Normal('a'))))GroupStop )))))"
 "`a'`"
-'Line(Pipeline(Command(Argument(Replacement(Unterminated(\'`\'),Pipeline(Command(Argument(Normal(\'a\'),Unterminated("\'"),Normal(\'`\')))))))))'
-'Line(Pipeline(Command(Argument(Replacement(Unterminated(\'`\')Pipeline(Command(Argument(Normal(\'a\')Unterminated("\'")Normal(\'`\')))))))))'
+"Line(Pipeline(Command(Argument(Replacement(Unterminated('`'),Pipeline(Command(Argument(Normal('a'),Unterminated('\\''),Normal('`')))))))))"
+"Line(Pipeline(Command(Argument(Replacement(Unterminated('`')Pipeline(Command(Argument(Normal('a')Unterminated('\\'')Normal('`')))))))))"
 '`a"`'
 'Line(Pipeline(Command(Argument(Replacement(Unterminated(\'`\'),Pipeline(Command(Argument(Normal(\'a\'),Unterminated(\'"\'),Unterminated(\'`\')))))))))'
 'Line(Pipeline(Command(Argument(Replacement(Unterminated(\'`\')Pipeline(Command(Argument(Normal(\'a\')Unterminated(\'"\')Unterminated(\'`\')))))))))'
@@ -410,7 +410,7 @@
 "Line(Pipeline(Unexpected('fi')))"
 "Line(Pipeline(Unexpected('fi')))"
 '\'do\';"done"'
-'Line(Pipeline(Command(Argument(Quote("\'"),Normal(\'do\'),Quote("\'")))),DotComa(\';\'),Pipeline(Command(Argument(Guillemet(\'"\'),Normal(\'done\'),Guillemet(\'"\')))))'
+'Line(Pipeline(Command(Argument(Quote(\'\\\'\'),Normal(\'do\'),Quote(\'\\\'\')))),DotComa(\';\'),Pipeline(Command(Argument(Guillemet(\'"\'),Normal(\'done\'),Guillemet(\'"\')))))'
 "Line(Pipeline(Command(Argument(Normal('do'))))Pipeline(Command(Argument(Normal('done')))))"
 'for I in ; do a ; fi'
 "Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable(Argument(Normal('I'))),In(' in '),EndOfValues('; '),Body(Do('do '),Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Unexpected('fi')))))))"
@@ -458,7 +458,7 @@
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('b~c')))))"
 "Line(Pipeline(Command(Argument(Normal('a'))Argument(Normal('b~c')))))"
 "u'a'"
-'Line(Pipeline(Command(Argument(Normal(\'u\'),Quote("\'"),Normal(\'a\'),Quote("\'")))))'
+"Line(Pipeline(Command(Argument(Normal('u'),Quote('\\''),Normal('a'),Quote('\\'')))))"
 "Line(Pipeline(Command(Argument(Normal('ua')))))"
 'more a'
 "Line(Pipeline(Command(Argument(Normal('more')),Separator(' '),Argument(Normal('a')))))"

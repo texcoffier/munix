@@ -35,6 +35,9 @@ def pad(x):
 def protect(t):
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+def string(t):
+    return "'" + t.replace("\\", "\\\\").replace("'", "\\'") + "'"
+
 def unused_color(element):
     i = 0
     my_color = element.color()[1]
@@ -217,11 +220,11 @@ class Chars:
     def color(self):
         return ["#000", "#FFF"]
     def str(self):
-        return name(self) + '(' + repr(self.content) + ')'
+        return name(self) + '(' + string(self.content) + ')'
     def nice(self, depth):
         return 'C' + pad(depth) + self.str() + '\n'
     def cleanup(self):
-        return name(self) + '(' + repr(self.content) + ')'
+        return name(self) + "(" + string(self.content) + ")"
     def html(self, position=-1):
         s = '<div '
         if position != -1:
@@ -295,7 +298,7 @@ class Home(Pattern):
 class Separator(Chars):
     hide = True
     def nice(self, depth):
-        return  'S' + pad(depth) + name(self) + '(' +repr(self.content)+ ')\n'
+        return  'S' + pad(depth) + name(self) + '('+string(self.content)+')\n'
     def local_help(self, dummy_position):
         return 'Un espace ou plus pour séparer les arguments.'
     
@@ -429,7 +432,7 @@ class Direction(Fildes):
             s = 'bug'
         return s + more
     def cleanup(self):
-        return name(self) + '(' + repr(self.content.strip()) + ')'
+        return name(self) + '(' + string(self.content.strip()) + ')'
 class SquareBracketStart(Pattern):
     def local_help(self, dummy_position):
         return "Début de la liste des caractères possibles."
@@ -849,11 +852,7 @@ class Command(Container):
         command = self.first_of(Argument).content[0].cleanup().split("Normal(")
         if command[0] != '':
             return None
-        command = command[1]
-        if command[0] == 'u': # unicode string
-            command = command[2:-2]
-        else:
-            command = command[1:-2]
+        command = command[1][1:-2]
         if command not in commands:
             return None
         return command

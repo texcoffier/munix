@@ -57,7 +57,7 @@ for input_value, expected_value, expected_cleanup in zip(tests[::3],
     expected_cleanup = eval(expected_cleanup)
     error = check(input_value, expected_value, expected_cleanup, f) or error
 
-if colorize.Parser(u'cp --recursive').parse().cleanup() != "Line(Pipeline(Command(Argument(Normal(u'cp'))Argument(Normal(u'-r')))))":
+if colorize.Parser(u'cp --recursive').parse().cleanup() != "Line(Pipeline(Command(Argument(Normal('cp'))Argument(Normal('-r')))))":
     there_is_an_unicode_problem
 
 
