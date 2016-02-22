@@ -478,3 +478,21 @@
 'man "-"k ls'
 'Line(Pipeline(Command(Argument(Normal(\'man\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-\'),Guillemet(\'"\'),Normal(\'k\')),Separator(\' \'),Argument(Normal(\'ls\')))))'
 "Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-k'))Argument(Normal('ls')))))"
+'rm -ri'
+"Line(Pipeline(Command(Argument(Normal('rm')),Separator(' '),Argument(Normal('-ri')))))"
+"Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir')))))"
+'rm -r -i'
+"Line(Pipeline(Command(Argument(Normal('rm')),Separator(' '),Argument(Normal('-r')),Separator(' '),Argument(Normal('-i')))))"
+"Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir')))))"
+'rm -i -r'
+"Line(Pipeline(Command(Argument(Normal('rm')),Separator(' '),Argument(Normal('-i')),Separator(' '),Argument(Normal('-r')))))"
+"Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir')))))"
+'rm --recursive --interactive'
+"Line(Pipeline(Command(Argument(Normal('rm')),Separator(' '),Argument(Normal('--recursive')),Separator(' '),Argument(Normal('--interactive')))))"
+"Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir')))))"
+'rm -r --interactive'
+"Line(Pipeline(Command(Argument(Normal('rm')),Separator(' '),Argument(Normal('-r')),Separator(' '),Argument(Normal('--interactive')))))"
+"Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir')))))"
+'rm --recursive -i'
+"Line(Pipeline(Command(Argument(Normal('rm')),Separator(' '),Argument(Normal('--recursive')),Separator(' '),Argument(Normal('-i')))))"
+"Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir')))))"

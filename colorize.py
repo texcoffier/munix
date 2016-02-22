@@ -76,6 +76,7 @@ def define_command():
         "message": '',
         "syntax": '',
         "1": '',
+        "*": '',
         "$": '',
         "unknown": '',
         "section": '1',
@@ -151,9 +152,11 @@ def define_rm():
     d['message'] = "La destruction est définitive sans confirmation"
     d['syntax'] = "rm <var>chemin_vers_fichier</var> <var>autre_fichier</var> ..."
     d['min_arg'] = 1
+    d['*'] = "Entité à détruire"
     d['options'] = {
-        '--recursive': ['-r',
-                        "destruction récursive de répertoire : tout le contenu"],
+        '--recursive': ['-r', "détruit tout le contenu et le répertoire"],
+        '--interactive': ['-i', "demande l'autorisation avant de détruire"],
+        '--force': ['-f', ''],
         }
     return d
 
@@ -606,6 +609,21 @@ class Container:
                   ):
                 content[-1] = Normal(content[-1].content + c.content)
                 continue
+            elif (getattr(c, 'is_an_option', False)
+                  and len(content) != 0
+                  and getattr(content[-1], 'is_an_option', False)
+                  and content[-1].cleanup_bare(True).startswith('-')
+                  and c.cleanup_bare(True).startswith('-')
+                  and not content[-1].cleanup_bare(True).startswith('--')
+                  and not c.cleanup_bare(True).startswith('--')
+              ):
+                # option joining
+                old = content[-1].cleanup_bare(True)
+                content[-1] = Argument()
+                content[-1].is_an_option = True
+                content[-1].content = [Normal(old + c.cleanup_bare(True)[1:])]
+                content[-1].parent = self
+                continue
             content.append(c)
         first_argument = True
         clean = []
@@ -620,6 +638,14 @@ class Container:
                         txt ="Argument(Normal('"+command_aliases[command]+"'))"
             clean.append(txt)
         return name(self) + '(' + ''.join(clean) + ')'
+
+    def cleanup_bare(self, replace_option):
+        c = self.cleanup(replace_option)
+        d = c.split("Argument(Normal('")
+        if len(d) == 2 and len(d[0]) == 0:
+            return d[1][:-3]
+        return c
+
     def nice(self, depth=0):
         return ('C'
                 + pad(depth)
@@ -885,8 +911,8 @@ class Command(Container):
             if '=' in c:
                 return []
             if c in options and len(options[c]) >= 3 and options[c][2]:
-                    return [c + ' : ' + options[c][2]]
-            return 0
+                return [c + ' : ' + options[c][2]]
+            return []
 
         opts = []
         for k in options:
@@ -948,6 +974,8 @@ class Command(Container):
             for k in options:
                 short = options[k][0]
                 message = options[k][1]
+                if len(message) == 0:
+                    continue
                 s.append("<br>   <tt>" + k + "</tt> ")
                 if k != short:
                     s.append("(<tt>" + short + "</tt>) ")
@@ -1019,11 +1047,13 @@ class Argument(Container):
             return ('<div class="command_help">Argument de '
                     + self.is_an_option_argument + '</div>')
         place = str(self.argument_position)
-        if place in definition:
+        if place in definition and len(definition[place]):
             text = definition[place]
-        elif ("$" in definition
+        elif (len(definition['$'])
               and self.argument_position == self.parent.nr_argument):
             text = definition["$"]
+        elif len(definition["*"]):
+            text = definition["*"]
         else:
             if definition["unknown"]:
                 text = ('<div class="command_help_error">'
@@ -1052,11 +1082,27 @@ class Argument(Container):
         return
     def cleanup(self, replace_option):
         c = Container.cleanup(self, replace_option)
-        if not replace_option:
+        if not replace_option or not self.is_an_option:
             return c
         option = self.option_definition()
         if option:
             c = c.replace(option[0], option[1][0])
+        else:
+            if not c.startswith("Argument(Normal('--"):
+                c = self.text_content()
+                # Reorder one letter options.
+                without_arg = []
+                with_arg = []
+                for i in range(len(c)-1):
+                    opt = self.parent.get_option('-' + c[i+1])
+                    if len(opt) == 0:
+                        without_arg.append(c[i+1])
+                    else:
+                        with_arg.append(c[i+1])
+                without_arg.sort()
+                # XXX Full failure if there is an ' option
+                c = ("Argument(Normal('-" + ''.join(without_arg)
+                     + ''.join(with_arg) + "'))")
         return c
 
 class Redirection(Container):
