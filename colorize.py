@@ -198,7 +198,8 @@ def define_man():
     d['min_arg'] = 1
     d['options'] = {
         '--apropos': ['-k',
-                      "Liste les commandes avec le mot clef indiqué"],
+                      "Liste les commandes avec le mot clef indiqué",
+                      'Mot clef à rechercher'],
         }
     return d
 
@@ -285,6 +286,8 @@ class Chars:
     def raise_separator(self, last=True):
         pass # To easely stop container recursion
     def replace_unexpected(self):
+        pass # To easely stop container recursion
+    def check_options(self):
         pass # To easely stop container recursion
         
 
@@ -649,6 +652,9 @@ class Container:
         self.ident = ident
         self.end = i
         return i
+    def check_options(self):
+        for content in self.content:
+            content.check_options()
     def help(self, position):
         s = ''
         for content in self.content:
@@ -862,22 +868,70 @@ class Command(Container):
             a = str(nr-1) + ' arguments.'
         return ('La commande «' + self.first_of(Argument).html()
                 + '» avec ' + a + self.contextual_help(position))
-    def command_name(self):
-        command = self.first_of(Argument).content[0].cleanup(False
-        ).split("Normal(")
-        if command[0] != '':
-            return None
-        command = command[1][1:-2]
-        if command not in commands:
-            return None
-        return command
+
+    def get_option(self, c):
+        """Return False if it is not an option or
+        an array of help about option argument (one per argument)"""
+        if len(c) <= 1 or c[0] != '-':
+            return False
+        if not self.command:
+            return []
+        definition = commands[self.command]
+        if not definition['options']:
+            return []
+        options = definition['options']
+        if c[1] == "-":
+            # Long option
+            if '=' in c:
+                return []
+            if c in options and len(options[c]) >= 3 and options[c][2]:
+                    return [c + ' : ' + options[c][2]]
+            return 0
+
+        opts = []
+        for k in options:
+            if options[k][0][1] in c and len(options[k]) >= 3 and options[k][2]:
+                opts.append('-' + options[k][0][1] + ' : ' + options[k][2])
+        return opts
+    def check_options(self):
+        arg_number = 0
+        argument_for_option = []
+        self.command = False
+        for content in self.content:
+            content.check_options()
+            content.is_an_option = False
+            content.argument_position = 0
+            content.is_an_option_argument = False
+            if not isinstance(content, Argument):
+                continue
+            if arg_number == 0:
+                # Compute command name
+                self.command = None
+                command = content.content[0].cleanup(False).split("Normal(")
+                if command[0] == '': # XXX why ?
+                    command = command[1][1:-2]
+                    if command in commands:
+                        self.command = command
+                arg_number += 1
+                continue
+            if len(argument_for_option) != 0:
+                content.is_an_option_argument = argument_for_option[0]
+                argument_for_option = argument_for_option[1:]
+                continue
+            opt = self.get_option(content.text_content())
+            if opt is not False:
+                content.is_an_option = True
+                argument_for_option = opt
+                continue
+            content.argument_position = arg_number
+            arg_number += 1
+        self.nr_argument = arg_number # Real one, not option argument
     def contextual_help(self, dummy_position):
-        command = self.command_name()
-        if not command:
+        if not self.command:
             return ''
-        definition = commands[command]
+        definition = commands[self.command]
         s = ['<div class="command_help">',
-             '<b>', command, '</b> : ',  definition["description"]]
+             '<b>', self.command, '</b> : ',  definition["description"]]
         if definition["builtin"]:
             s.append(" (builtin)")
         s.append('<br>')
@@ -905,18 +959,11 @@ class Command(Container):
                  and format_help(definition)
                  or format_man(definition))
         s.append("</tt><br>")
-        if self.nr_non_options() < definition["min_arg"]:
+        if self.nr_argument < definition["min_arg"]:
             s.append('<span class="command_help_error">'
                      + 'Votre commande manque d\'argument !</span><br>')
         s.append('</div>')
         return '\n'.join(s)
-    def nr_non_options(self):
-        nr = -1 # Do not count command name
-        for arg in self.content:
-            if name(arg) == 'Argument':
-                if not arg.is_an_option():
-                    nr += 1
-        return nr
 
 class Argument(Container):
     def color(self):
@@ -957,42 +1004,25 @@ class Argument(Container):
         if len(c) == 1:
             return ''
         return c[1].split("'")[0]
-    def is_an_option(self):
-        c = self.text_content()
-        if len(c) == 0 or c[0] != '-':
-            return
-        return True
-    def place(self):
-        # Positive is normal argument, negative if an option
-        nr_arg = -1 # Do not count command name
-        nr_opt = 0
-        for arg in self.parent.content:
-            if name(arg) == 'Argument':
-                if arg.is_an_option():
-                    nr_opt += 1
-                    if arg is self:
-                        return -nr_opt
-                else:
-                    nr_arg += 1
-                    if arg is self:
-                        return nr_arg
-        return 0
     def contextual_help(self, position):
-        command = self.parent.command_name()
+        command = self.parent.command
         if not command:
             return ''
         definition = commands[command]
-        place_int = self.place()
-        if place_int <= 0:
+        if self.is_an_option:
             option = self.option_definition(position)
             if option:
                 return '<div class="command_help">' + option[0] + " : " + option[1][1] + '</div>'
             else:
                 return ''
-        place = str(place_int)
+        if self.is_an_option_argument:
+            return ('<div class="command_help">Argument de '
+                    + self.is_an_option_argument + '</div>')
+        place = str(self.argument_position)
         if place in definition:
             text = definition[place]
-        elif "$" in definition and place_int == self.parent.nr_non_options():
+        elif ("$" in definition
+              and self.argument_position == self.parent.nr_argument):
             text = definition["$"]
         else:
             if definition["unknown"]:
@@ -1002,7 +1032,7 @@ class Argument(Container):
                 return ''
         return '<div class="command_help">' + text + '</div>'
     def option_definition(self, position=None):
-        command = self.parent.command_name()
+        command = self.parent.command
         if not command:
             return
         definition = commands[command]
@@ -1236,6 +1266,7 @@ class Parser:
             parsed.merge_separator()
             parsed.replace_unexpected()
             parsed.init_position()
+            parsed.check_options()
         return parsed
     def parse_pipeline(self, init):
         parsed = Pipeline()
