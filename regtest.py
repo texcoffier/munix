@@ -465,19 +465,19 @@
 "Line(Pipeline(Command(Argument(Normal('less'))Argument(Normal('a')))))"
 'man -k l'
 "Line(Pipeline(Command(Argument(Normal('man')),Separator(' '),Argument(Normal('-k')),Separator(' '),Argument(Normal('l')))))"
-"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-k'))Argument(Normal('l')))))"
+"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-kl')))))"
 'man ""-k ls'
 'Line(Pipeline(Command(Argument(Normal(\'man\')),Separator(\' \'),Argument(Guillemet(\'""\'),Normal(\'-k\')),Separator(\' \'),Argument(Normal(\'ls\')))))'
-"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-k'))Argument(Normal('ls')))))"
+"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-kls')))))"
 'man "-k" ls'
 'Line(Pipeline(Command(Argument(Normal(\'man\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-k\'),Guillemet(\'"\')),Separator(\' \'),Argument(Normal(\'ls\')))))'
-"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-k'))Argument(Normal('ls')))))"
+"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-kls')))))"
 'man "-" ls'
 'Line(Pipeline(Command(Argument(Normal(\'man\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-\'),Guillemet(\'"\')),Separator(\' \'),Argument(Normal(\'ls\')))))'
 "Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-'))Argument(Normal('ls')))))"
 'man "-"k ls'
 'Line(Pipeline(Command(Argument(Normal(\'man\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-\'),Guillemet(\'"\'),Normal(\'k\')),Separator(\' \'),Argument(Normal(\'ls\')))))'
-"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-k'))Argument(Normal('ls')))))"
+"Line(Pipeline(Command(Argument(Normal('man'))Argument(Normal('-kls')))))"
 'rm -ri'
 "Line(Pipeline(Command(Argument(Normal('rm')),Separator(' '),Argument(Normal('-ri')))))"
 "Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir')))))"
@@ -499,3 +499,12 @@
 'a b=c'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('b=c')))))"
 "Line(Pipeline(Command(Argument(Normal('a'))Argument(Normal('b=c')))))"
+'tail --lines 5'
+"Line(Pipeline(Command(Argument(Normal('tail')),Separator(' '),Argument(Normal('--lines')),Separator(' '),Argument(Normal('5')))))"
+"Line(Pipeline(Command(Argument(Normal('tail'))Argument(Normal('-n5')))))"
+'tail --lines=5'
+"Line(Pipeline(Command(Argument(Normal('tail')),Separator(' '),Argument(Normal('--lines=5')))))"
+"Line(Pipeline(Command(Argument(Normal('tail'))Argument(Normal('-n5')))))"
+'tail -n 5'
+"Line(Pipeline(Command(Argument(Normal('tail')),Separator(' '),Argument(Normal('-n')),Separator(' '),Argument(Normal('5')))))"
+"Line(Pipeline(Command(Argument(Normal('tail'))Argument(Normal('-n5')))))"

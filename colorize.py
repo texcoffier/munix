@@ -629,13 +629,19 @@ class Container:
                 content[-1] = Normal(content[-1].content + c.content)
                 continue
             elif (len(content) != 0
+                  and replace_option
                   and getattr(content[-1], 'concatenable_right', False)
-                  and getattr(c, 'concatenable_left', False)
+                  and (getattr(c, 'concatenable_left', False)
+                       or getattr(c, 'is_an_option_argument', False))
               ):
                 # option joining
-                old = content[-1].option_canon
+                left = content[-1].option_canon
+                if c.is_an_option:
+                    right = c.option_canon[1:]
+                else:
+                    right = c.text_content()
                 content[-1] = Argument()
-                content[-1].content = [Normal(old + c.option_canon[1:])]
+                content[-1].content = [Normal(left + right)]
                 content[-1].parent = self
                 content[-1].parse_option()
                 continue
@@ -1069,8 +1075,8 @@ class Argument(Container):
             and value[0] == '-' and value[1] != "-" and position is not None):
             # Single letter option: take the good one
             value = "-" + value[position - self.start - 1]
-        if value in options:
-            return value, options[value]
+        if value.split("=")[0] in options:
+            return value, options[value.split("=")[0]]
         options_long = definition['options_long']
         if value[1] in options_long:
             return value, options[options_long[value[1]]]
@@ -1099,11 +1105,13 @@ class Argument(Container):
             if d in options:
                 option = options[d]
                 if len(option) >= 3 and option[2]:
-                    self.concatenable_right = False
                     self.option_argument_help = d + ' : ' + option[2]
+                    self.option_canon = option[0]
                     if d == c:
                         self.option_argument_after = True
-                        self.option_canon = option[0]
+                    else:
+                        self.option_canon += c[self.option_argument_position+1:]
+                        self.concatenable_right = False
                 else:
                     self.option_canon = option[0]
             else:
@@ -1118,18 +1126,19 @@ class Argument(Container):
                 continue
             option = options[options_long[letter]]
             if len(option) >= 3 and option[2]:
-                self.concatenable_right = False
                 self.option_argument_help = ('-' + option[0][1] + ' : '
                                              + option[2])
                 self.option_argument_position = i+2
                 if len(c) == i+2:
                     self.option_argument_after = True
+                else:
+                    self.concatenable_right = False
                 break
         opts.sort()
         self.option_canon = ('-' + ''.join(opts)
                              + c[self.option_argument_position:])
     def cleanup(self, replace_option):
-        if not self.is_an_option:
+        if not self.is_an_option or not replace_option:
             return Container.cleanup(self, replace_option)
         return "Argument(Normal('" + self.option_canon + "'))"
 
