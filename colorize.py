@@ -1605,7 +1605,8 @@ class Parser:
                     parsed.append(Unexpected("("))
                     self.next()
             if not self.empty():
-                parsed.append(self.parse_argument())
+                before_command = parsed.number_of(Argument)==0
+                parsed.append(self.parse_argument(parse_equal = before_command))
                 if parsed.number_of(Argument) == 1:
                     text = parsed.content[-1].text()
                     if text == 'for':
@@ -1870,7 +1871,7 @@ class Parser:
             parsed.append(Home("~" + n))
         else:
             parsed.append(Unterminated("~" + n))
-    def parse_argument(self):
+    def parse_argument(self, parse_equal=True):
         parsed = Argument()
         while not self.empty():
             c = self.get()
@@ -1883,12 +1884,12 @@ class Parser:
                 and self.read_quote(parsed)
                 and self.read_guillemet(parsed)
                 and self.read_pattern(parsed)
-                and self.read_equal(parsed)
                 and self.read_replacement(parsed)
                 and self.read_home(parsed)
                 ):
-                parsed.append(Normal(c))
-                self.next()
+                if not parse_equal or self.read_equal(parsed):
+                    parsed.append(Normal(c))
+                    self.next()
         if not parsed.empty() and isinstance(parsed.content[0], Affectation):
             return parsed.content[0]
         return parsed

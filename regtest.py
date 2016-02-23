@@ -496,3 +496,6 @@
 'rm --recursive -i'
 "Line(Pipeline(Command(Argument(Normal('rm')),Separator(' '),Argument(Normal('--recursive')),Separator(' '),Argument(Normal('-i')))))"
 "Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir')))))"
+'a b=c'
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('b=c')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(Normal('b=c')))))"
