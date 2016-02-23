@@ -10,7 +10,8 @@ colorize.js:licence.txt $(CONVERT)
 	(cat licence.txt ; \
          git log --pretty=format:'// GIT commit %H' -n 1 ; \
 	 echo ; \
-         cat $(CONVERT) | RapydScript/bin/rapydscript --prettify --bare \
+         cat $(CONVERT) | tee xxx.py | \
+         RapydScript/bin/rapydscript --prettify --bare \
         ) >$@
 	sed 's/ՐՏ/JS/g' <$@ | iconv -f utf-8 -t ISO8859-15 >colorize-latin1.js
 

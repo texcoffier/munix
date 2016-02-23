@@ -59,6 +59,44 @@ def choices(keywords):
     return ' ou '.join(['«' + k + '»'
                         for k in keywords
                         ])
+
+class Option:
+    def __init__(self, option , short, message, argument=False, display=True):
+        self.option   = option
+        self.short    = short
+        self.message  = message
+        self.argument = argument
+        self.display  = display
+
+class Options:
+    def __init__(self, *options):
+        self.options = options
+        self.long_opt = {}
+        for option in options:
+            self.long_opt[option.option] = option
+        self.short_opt = {}
+        for option in options:
+            self.short_opt[option.short] = option
+
+    def get_option(self, value):
+        if value.split("=")[0] in self.long_opt:
+            return value, self.long_opt[value.split("=")[0]]
+        if value in self.short_opt:
+            return value, self.short_opt[value]
+        return
+
+    def html(self):
+        s = []
+        for option in self.options:
+            if not option.display:
+                continue
+            s.append("   <tt>" + option.option + "</tt> ")
+            if option.option != option.short:
+                s.append("(<tt>" + option.short + "</tt>) ")
+            s.append(" : ")
+            s.append(option.message)
+            s.append("<br>")
+        return ''.join(s)
     
 list_stopper = '&<>;|()'
 redirection_stopper = '#<>;|()'
@@ -114,12 +152,11 @@ def define_ls():
     d['description'] = "<b>L</b>i<b>S</b>te directory"
     d['message'] = "Elle permet de lister le contenu de répertoires"
     d['syntax'] = "ls <var>dir1</var> <var>dir2</var>..."
-    d['options'] = {
-        '-l': ['-l',
-               "(l=long) affiche plein d'informations"],
-        '--all': ['-a',
-               "affiche aussi les fichiers dont le nom commence par '.'"],
-        }
+    d['options'] = Options(
+        Option('-l', '-l', "(l=long) affiche plein d'informations"),
+        Option('--all', '-a',
+               "affiche aussi les fichiers dont le nom commence par '.'")
+    )
     return d
 
 def define_cat():
@@ -139,10 +176,10 @@ def define_cp():
     d['1'] = "Nom du premier fichier à copier ailleurs"
     d['$'] = "Le fichier ou répertoire destination de la copie"
     d['min_arg'] = 2
-    d['options'] = {
-        '--recursive': ['-r',
-                        "copie récursive de répertoire : tout le contenu"],
-        }
+    d['options'] = Options(
+        Option('--recursive', '-r',
+               "copie récursive de répertoire : tout le contenu")
+        )
     return d
 
 def define_rm():
@@ -153,11 +190,13 @@ def define_rm():
     d['syntax'] = "rm <var>chemin_vers_fichier</var> <var>autre_fichier</var> ..."
     d['min_arg'] = 1
     d['*'] = "Entité à détruire"
-    d['options'] = {
-        '--recursive': ['-r', "détruit tout le contenu et le répertoire"],
-        '--interactive': ['-i', "demande l'autorisation avant de détruire"],
-        '--force': ['-f', ''],
-        }
+    d['options'] = Options(
+        Option('--recursive', '-r',
+               "détruit tout le contenu et le répertoire"),
+        Option('--interactive', '-i',
+               "demande l'autorisation avant de détruire"),
+        Option('--force', '-f', 'détruit sans jamais poser de question')
+        )
     return d
 
 def define_mkdir():
@@ -178,10 +217,9 @@ def define_ln():
     d['1'] = "Nom du fichier vers lequel le lien pointera"
     d['$'] = "L'endroit où va être créé le lien"
     d['min_arg'] = 2
-    d['options'] = {
-        '--symbolic': ['-s',
-                        "création d'un lien symbolique"],
-        }
+    d['options'] = Options(
+        Option('--symbolic', '-s', "création d'un lien symbolique")
+        )
     return d
 
 def define_less():
@@ -199,11 +237,11 @@ def define_man():
     d['syntax'] = "man commande"
     d['1'] = "Nom de la commande à expliquer"
     d['min_arg'] = 1
-    d['options'] = {
-        '--apropos': ['-k',
-                      "Liste les commandes avec le mot clef indiqué",
-                      'Mot clef à rechercher'],
-        }
+    d['options'] = Options(
+        Option('--apropos', '-k',
+               "Liste les commandes avec le mot clef indiqué",
+               'Mot clef à rechercher')
+        )
     return d
 
 def define_tail():
@@ -212,13 +250,13 @@ def define_tail():
     d['description'] = "(queue) affiche la fin de fichier"
     d['syntax'] = "tail fichier1 fichier2"
     d['*'] = "Affiche la fin de ce fichier"
-    d['options'] = {
-        '--lines': ['-n',
-                      "Choisir le nombre de lignes",
-                      'Le nombre de lignes à afficher'],
-        '--follow': ['-f',
-                     "Affiche la suite si le fichier grossi"],
-        }
+    d['options'] = Options(
+        Option('--lines', '-n', "Choisir le nombre de lignes",
+               'Nombre de lignes à afficher'),
+        Option('--follow', '-f', "Affiche la suite si le fichier grossi"),
+        Option('--bytes', '-c', "Choisir le nombre d'octets à afficher",
+               "Nombre d'octets à afficher", False)
+    )
     return d
 
 command_aliases = {
@@ -231,10 +269,6 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_man(), define_tail()]:
     if x['name'] in commands:
         duplicate_name
-    x["options_long"] = {}
-    if x["options"]:
-        for option_long in x["options"]:
-            x["options_long"][x["options"][option_long][0][1]] = option_long
         
     commands[x['name']] = x
 
@@ -959,19 +993,8 @@ class Command(Container):
             s.append(definition["syntax"])
             s.append("</tt><br>")
         if definition["options"]:
-            s.append("Options : ")
-            options = definition["options"]
-            for k in options:
-                short = options[k][0]
-                message = options[k][1]
-                if len(message) == 0:
-                    continue
-                s.append("<br>   <tt>" + k + "</tt> ")
-                if k != short:
-                    s.append("(<tt>" + short + "</tt>) ")
-                s.append(" : ")
-                s.append(message)
-            s.append("<br>")
+            s.append("Options :<br>")
+            s.append(definition["options"].html())
         s.append("Aide : <tt>")
         s.append(definition["builtin"]
                  and format_help(definition)
@@ -1031,16 +1054,17 @@ class Argument(Container):
             option = self.option_definition(position)
             if option:
                 return ('<div class="command_help">' + option[0] + " : "
-                        + option[1][1] + '</div>')
+                        + option[1].message + '</div>')
             else:
                 if position <= self.option_argument_position:
                     return ''
                 else:
                     option = self.option_definition(
                         self.start + self.option_argument_position)
-                    if option and len(option[1]) > 2:
+                    if option and option[1].argument:
                         return (
-                            '<div class="command_help">' + option[1][2] + " : "
+                            '<div class="command_help">' + option[1].argument
+                            + " : "
                             + self.option_canon[self.option_argument_position:]
                             + '</div>')
                     return ''
@@ -1075,12 +1099,7 @@ class Argument(Container):
             and value[0] == '-' and value[1] != "-" and position is not None):
             # Single letter option: take the good one
             value = "-" + value[position - self.start - 1]
-        if value.split("=")[0] in options:
-            return value, options[value.split("=")[0]]
-        options_long = definition['options_long']
-        if value[1] in options_long:
-            return value, options[options_long[value[1]]]
-        return
+        return options.get_option(value)
     def parse_option(self):
         self.is_an_option = False
         self.option_argument_help = ''
@@ -1102,32 +1121,31 @@ class Argument(Container):
         if c[1] == "-":
             d = c.split("=")[0]
             self.option_argument_position = len(d)
-            if d in options:
-                option = options[d]
-                if len(option) >= 3 and option[2]:
-                    self.option_argument_help = d + ' : ' + option[2]
-                    self.option_canon = option[0]
+            if d in options.long_opt:
+                option = options.long_opt[d]
+                if option.argument:
+                    self.option_argument_help = d + ' : ' + option.argument
+                    self.option_canon = option.short
                     if d == c:
                         self.option_argument_after = True
                     else:
                         self.option_canon += c[self.option_argument_position+1:]
                         self.concatenable_right = False
                 else:
-                    self.option_canon = option[0]
+                    self.option_canon = option.short
             else:
                 self.concatenable_right = False
                 self.concatenable_left = False
             return
-        options_long = definition['options_long']
         opts = []
         for i, letter in enumerate(c[1:]):
             opts.append(letter)
-            if letter not in options_long:
+            if ('-' + letter) not in options.short_opt:
                 continue
-            option = options[options_long[letter]]
-            if len(option) >= 3 and option[2]:
-                self.option_argument_help = ('-' + option[0][1] + ' : '
-                                             + option[2])
+            option = options.short_opt['-' + letter]
+            if option and option.argument:
+                self.option_argument_help = ('-' + option.short[1] + ' : '
+                                             + option.argument)
                 self.option_argument_position = i+2
                 if len(c) == i+2:
                     self.option_argument_after = True
