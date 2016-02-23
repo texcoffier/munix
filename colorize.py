@@ -206,6 +206,20 @@ def define_man():
         }
     return d
 
+def define_tail():
+    d = define_command()
+    d['name'] = 'tail'
+    d['description'] = "(queue) affiche la fin de fichier"
+    d['syntax'] = "tail fichier1 fichier2"
+    d['*'] = "Affiche la fin de ce fichier"
+    d['options'] = {
+        '--lines': ['-n',
+                      "Choisir le nombre de lignes",
+                      'Le nombre de lignes à afficher'],
+        '--follow': ['-f',
+                     "Affiche la suite si le fichier grossi"],
+        }
+    return d
 
 command_aliases = {
     'more': 'less',
@@ -214,9 +228,14 @@ command_aliases = {
 commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_mkdir(), define_rm(), define_ln(), define_less(),
-          define_man()]:
+          define_man(), define_tail()]:
     if x['name'] in commands:
         duplicate_name
+    x["options_long"] = {}
+    if x["options"]:
+        for option_long in x["options"]:
+            x["options_long"][x["options"][option_long][0][1]] = option_long
+        
     commands[x['name']] = x
 
 def format_help(definition):
@@ -609,20 +628,16 @@ class Container:
                   ):
                 content[-1] = Normal(content[-1].content + c.content)
                 continue
-            elif (getattr(c, 'is_an_option', False)
-                  and len(content) != 0
-                  and getattr(content[-1], 'is_an_option', False)
-                  and content[-1].cleanup_bare(True).startswith('-')
-                  and c.cleanup_bare(True).startswith('-')
-                  and not content[-1].cleanup_bare(True).startswith('--')
-                  and not c.cleanup_bare(True).startswith('--')
+            elif (len(content) != 0
+                  and getattr(content[-1], 'concatenable_right', False)
+                  and getattr(c, 'concatenable_left', False)
               ):
                 # option joining
-                old = content[-1].cleanup_bare(True)
+                old = content[-1].option_canon
                 content[-1] = Argument()
-                content[-1].is_an_option = True
-                content[-1].content = [Normal(old + c.cleanup_bare(True)[1:])]
+                content[-1].content = [Normal(old + c.option_canon[1:])]
                 content[-1].parent = self
+                content[-1].parse_option()
                 continue
             content.append(c)
         first_argument = True
@@ -638,13 +653,6 @@ class Container:
                         txt ="Argument(Normal('"+command_aliases[command]+"'))"
             clean.append(txt)
         return name(self) + '(' + ''.join(clean) + ')'
-
-    def cleanup_bare(self, replace_option):
-        c = self.cleanup(replace_option)
-        d = c.split("Argument(Normal('")
-        if len(d) == 2 and len(d[0]) == 0:
-            return d[1][:-3]
-        return c
 
     def nice(self, depth=0):
         return ('C'
@@ -895,33 +903,9 @@ class Command(Container):
         return ('La commande «' + self.first_of(Argument).html()
                 + '» avec ' + a + self.contextual_help(position))
 
-    def get_option(self, c):
-        """Return False if it is not an option or
-        an array of help about option argument (one per argument)"""
-        if len(c) <= 1 or c[0] != '-':
-            return False
-        if not self.command:
-            return []
-        definition = commands[self.command]
-        if not definition['options']:
-            return []
-        options = definition['options']
-        if c[1] == "-":
-            # Long option
-            if '=' in c:
-                return []
-            if c in options and len(options[c]) >= 3 and options[c][2]:
-                return [c + ' : ' + options[c][2]]
-            return []
-
-        opts = []
-        for k in options:
-            if options[k][0][1] in c and len(options[k]) >= 3 and options[k][2]:
-                opts.append('-' + options[k][0][1] + ' : ' + options[k][2])
-        return opts
     def check_options(self):
         arg_number = 0
-        argument_for_option = []
+        argument_for_option = False
         self.command = False
         for content in self.content:
             content.check_options()
@@ -940,14 +924,14 @@ class Command(Container):
                         self.command = command
                 arg_number += 1
                 continue
-            if len(argument_for_option) != 0:
-                content.is_an_option_argument = argument_for_option[0]
-                argument_for_option = argument_for_option[1:]
+            if argument_for_option:
+                content.is_an_option_argument = option_argument_help
+                argument_for_option = False
                 continue
-            opt = self.get_option(content.text_content())
-            if opt is not False:
-                content.is_an_option = True
-                argument_for_option = opt
+            content.parse_option()
+            argument_for_option = content.option_argument_after
+            option_argument_help = content.option_argument_help
+            if content.is_an_option:
                 continue
             content.argument_position = arg_number
             arg_number += 1
@@ -1040,9 +1024,20 @@ class Argument(Container):
         if self.is_an_option:
             option = self.option_definition(position)
             if option:
-                return '<div class="command_help">' + option[0] + " : " + option[1][1] + '</div>'
+                return ('<div class="command_help">' + option[0] + " : "
+                        + option[1][1] + '</div>')
             else:
-                return ''
+                if position <= self.option_argument_position:
+                    return ''
+                else:
+                    option = self.option_definition(
+                        self.start + self.option_argument_position)
+                    if option and len(option[1]) > 2:
+                        return (
+                            '<div class="command_help">' + option[1][2] + " : "
+                            + self.option_canon[self.option_argument_position:]
+                            + '</div>')
+                    return ''
         if self.is_an_option_argument:
             return ('<div class="command_help">Argument de '
                     + self.is_an_option_argument + '</div>')
@@ -1076,34 +1071,67 @@ class Argument(Container):
             value = "-" + value[position - self.start - 1]
         if value in options:
             return value, options[value]
-        for k in options:
-            if options[k][0] == value:
-                return value, options[k]
+        options_long = definition['options_long']
+        if value[1] in options_long:
+            return value, options[options_long[value[1]]]
         return
+    def parse_option(self):
+        self.is_an_option = False
+        self.option_argument_help = ''
+        self.option_argument_after = False
+        c = self.text_content()
+        self.option_argument_position = len(c)
+        if len(c) <= 1 or c[0] != '-':
+            return
+        self.concatenable_right = True
+        self.concatenable_left = True
+        self.is_an_option = True
+        self.option_canon = c
+        if not self.parent.command:
+            return
+        definition = commands[self.parent.command]
+        if not definition['options']:
+            return
+        options = definition['options']
+        if c[1] == "-":
+            d = c.split("=")[0]
+            self.option_argument_position = len(d)
+            if d in options:
+                option = options[d]
+                if len(option) >= 3 and option[2]:
+                    self.concatenable_right = False
+                    self.option_argument_help = d + ' : ' + option[2]
+                    if d == c:
+                        self.option_argument_after = True
+                        self.option_canon = option[0]
+                else:
+                    self.option_canon = option[0]
+            else:
+                self.concatenable_right = False
+                self.concatenable_left = False
+            return
+        options_long = definition['options_long']
+        opts = []
+        for i, letter in enumerate(c[1:]):
+            opts.append(letter)
+            if letter not in options_long:
+                continue
+            option = options[options_long[letter]]
+            if len(option) >= 3 and option[2]:
+                self.concatenable_right = False
+                self.option_argument_help = ('-' + option[0][1] + ' : '
+                                             + option[2])
+                self.option_argument_position = i+2
+                if len(c) == i+2:
+                    self.option_argument_after = True
+                break
+        opts.sort()
+        self.option_canon = ('-' + ''.join(opts)
+                             + c[self.option_argument_position:])
     def cleanup(self, replace_option):
-        c = Container.cleanup(self, replace_option)
-        if not replace_option or not self.is_an_option:
-            return c
-        option = self.option_definition()
-        if option:
-            c = c.replace(option[0], option[1][0])
-        else:
-            if not c.startswith("Argument(Normal('--"):
-                c = self.text_content()
-                # Reorder one letter options.
-                without_arg = []
-                with_arg = []
-                for i in range(len(c)-1):
-                    opt = self.parent.get_option('-' + c[i+1])
-                    if len(opt) == 0:
-                        without_arg.append(c[i+1])
-                    else:
-                        with_arg.append(c[i+1])
-                without_arg.sort()
-                # XXX Full failure if there is an ' option
-                c = ("Argument(Normal('-" + ''.join(without_arg)
-                     + ''.join(with_arg) + "'))")
-        return c
+        if not self.is_an_option:
+            return Container.cleanup(self, replace_option)
+        return "Argument(Normal('" + self.option_canon + "'))"
 
 class Redirection(Container):
     def color(self):
