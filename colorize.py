@@ -1254,6 +1254,11 @@ class LoopVariable(Command):
 
 class Parser:
     def __init__(self, text):
+        if not isinstance(text, str):
+            try:
+                text = text.encode("utf-8")
+            except:
+                pass
         self.text = text
         self.len = len(self.text)
         self.in_back_cote = False
