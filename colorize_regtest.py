@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Expected results are in 'regtest.py'
 
@@ -21,19 +21,19 @@ def check(input_val, expected_str, expected_cleanup, write_in):
         write_in.write(repr(result_cleanup) + '\n')
         return
     if result_str != expected_str or result_cleanup != expected_cleanup:
-        print 'Input        :', input_val
+        print(('Input        :', input_val))
         if result_str != expected_str:
-            print 'Result str       :', result_str
-            print 'Expected str     :', expected_str
+            print(('Result str       :', result_str))
+            print(('Expected str     :', expected_str))
         if result_cleanup != expected_cleanup:
-            print 'Result cleanup   :', result_cleanup
-            print 'Expected cleanup :', expected_cleanup
-        print parsed.nice()
+            print(('Result cleanup   :', result_cleanup))
+            print(('Expected cleanup :', expected_cleanup))
+        print((parsed.nice()))
         i = 0
         for i in range(len(expected_str)):
             if result_str[i] != expected_str[i]:
                 break
-        print '===>' + result_str[i:]
+        print(('===>' + result_str[i:]))
         return True
     for i in range(len(input_val)):
         parsed.html(i)
@@ -57,7 +57,7 @@ for input_value, expected_value, expected_cleanup in zip(tests[::3],
     expected_cleanup = eval(expected_cleanup)
     error = check(input_value, expected_value, expected_cleanup, f) or error
 
-if colorize.Parser(u'cp --recursive').parse().cleanup(True) != "Line(Pipeline(Command(Argument(Normal('cp'))Argument(Normal('-r')))))":
+if colorize.Parser('cp --recursive').parse().cleanup(True) != "Line(Pipeline(Command(Argument(Normal('cp'))Argument(Normal('-r')))))":
     there_is_an_unicode_problem
 
 
@@ -67,4 +67,4 @@ if f:
 if error:
     sys.exit(1)
 
-print "OK"
+print("OK")

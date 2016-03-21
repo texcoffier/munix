@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Try to parse every permutation of the special characters
 """
@@ -6,9 +6,9 @@ Try to parse every permutation of the special characters
 import math
 import itertools
 import time
-import colorize
+from . import colorize
 
-print "Start very long test"
+print("Start very long test")
 
 chars = set((colorize.list_stopper
             + colorize.redirection_stopper
@@ -24,13 +24,13 @@ def check(txt, depth):
         except KeyboardInterrupt:
             raise
         except:
-            print "BUG for:", txt
+            print(("BUG for:", txt))
         return
     depth -= 1
     for char in chars:
         check(txt + char, depth)
 for i in range(1, len(chars)):
-    print time.ctime(), "check length:", i
+    print((time.ctime(), "check length:", i))
     check("", i)
 
-print "OK"
+print("OK")

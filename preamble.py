@@ -36,4 +36,3 @@ str = repr
 def __join__(t):
     return t.join(this)
 String.prototype.join = __join__
-

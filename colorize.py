@@ -259,6 +259,18 @@ def define_tail():
     )
     return d
 
+def define_du():
+    d = define_command()
+    d['name'] = 'du'
+    d['description'] = "(<b>d</b>isck <b>u</b>sage</am>) affiche la place occupée"
+    d['syntax'] = "du dir1 dir2..."
+    d['*'] = "Affiche la taille occupée par cette hiérarchie"
+    d['options'] = Options(
+        Option('--human-readable', '-h', "Affiche en Ko, Mo, Go, To..."),
+        Option('--summarize', '-s', "Affiche seulement le total")
+    )
+    return d
+
 command_aliases = {
     'more': 'less',
 }
@@ -266,7 +278,7 @@ command_aliases = {
 commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_mkdir(), define_rm(), define_ln(), define_less(),
-          define_man(), define_tail()]:
+          define_man(), define_tail(), define_du()]:
     if x['name'] in commands:
         duplicate_name
         
@@ -348,8 +360,8 @@ class Chars:
         
 
 class Normal(Chars):
-    def local_help(self, dummy_position):
-        return 'Texte : «' + self.html(self.content) + '»'
+    def local_help(self, position):
+        return 'Texte : «' + self.html(position) + '»'
 class Pattern(Chars):
     def color(self):
         return ["#F0F", "#FAF"]

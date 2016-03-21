@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 
 """
@@ -259,10 +259,10 @@ if __name__ == '__main__':
         (r'a|b||c|d' , r'PIPELINE(COMMAND(MOT(a))COMMAND(MOT(b)))||PIPELINE(COMMAND(MOT(c))COMMAND(MOT(d)))'),
         (r'a&&b'     , r'PIPELINE(COMMAND(MOT(a)))&&PIPELINE(COMMAND(MOT(b)))'),
         ):
-        print a
+        print(a)
         if parse(Text(a)) != b:
-            print '====OK====>', b
-            print '====BAD===>', parse(Text(a))
+            print(('====OK====>', b))
+            print(('====BAD===>', parse(Text(a))))
             break
         
     
