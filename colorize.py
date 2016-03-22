@@ -287,9 +287,17 @@ def define_df():
     d['name'] = 'df'
     d['description'] = "(<em><b>d</b>isk <b>f</b>ree</em>) affiche les systèmes de fichier"
     d["message"] = "On peut indiquer un nom de répertoire pour ne pas tout afficher"
-    # d['syntax'] = "df"
     d['options'] = Options(
         Option('--human-readable', '-h', "Tailles lisibles pour un humain")
+    )
+    return d
+
+def define_sort():
+    d = define_command()
+    d['name'] = 'sort'
+    d['description'] = "affiche les lignes des fichiers en les triant"
+    d['options'] = Options(
+        Option('--numeric-sort', '-n', "Pour trier des nombres")
     )
     return d
 
@@ -301,7 +309,7 @@ commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_mkdir(), define_rm(), define_ln(), define_less(),
           define_man(), define_tail(), define_du(), define_date(),
-          define_df()]:
+          define_df(), define_sort()]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
         exit(1)
