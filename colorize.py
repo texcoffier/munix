@@ -282,6 +282,17 @@ def define_date():
     )
     return d
 
+def define_df():
+    d = define_command()
+    d['name'] = 'df'
+    d['description'] = "(<em><b>d</b>isk <b>f</b>ree</em>) affiche les systèmes de fichier"
+    d["message"] = "On peut indiquer un nom de répertoire pour ne pas tout afficher"
+    # d['syntax'] = "df"
+    d['options'] = Options(
+        Option('--human-readable', '-h', "Tailles lisibles pour un humain")
+    )
+    return d
+
 command_aliases = {
     'more': 'less',
 }
@@ -289,7 +300,8 @@ command_aliases = {
 commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_mkdir(), define_rm(), define_ln(), define_less(),
-          define_man(), define_tail(), define_du(), define_date()]:
+          define_man(), define_tail(), define_du(), define_date(),
+          define_df()]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
         exit(1)
