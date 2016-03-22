@@ -271,6 +271,17 @@ def define_du():
     )
     return d
 
+def define_date():
+    d = define_command()
+    d['name'] = 'date'
+    d['description'] = "affiche la date et l'heure actuelle"
+    d['syntax'] = "date"
+    d['options'] = Options(
+        Option('--date', '-d', "Indique la date à afficher",
+               "Par exemple : 2004-02-29 ou @451642800")
+    )
+    return d
+
 command_aliases = {
     'more': 'less',
 }
@@ -278,9 +289,10 @@ command_aliases = {
 commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_mkdir(), define_rm(), define_ln(), define_less(),
-          define_man(), define_tail(), define_du()]:
+          define_man(), define_tail(), define_du(), define_date()]:
     if x['name'] in commands:
-        duplicate_name
+        print("duplicate_name: " + x['name'])
+        exit(1)
         
     commands[x['name']] = x
 
