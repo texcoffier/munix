@@ -320,6 +320,38 @@ def define_uniq():
     d['*'] = "Affiche ce fichier"
     return d
 
+def define_gzip():
+    d = define_command()
+    d['name'] = 'gzip'
+    d['description'] = "(<em>GNU zip</em>) comprime des fichiers"
+    d['*'] = "Comprime ce fichier"
+    d['options'] = Options(
+        Option('--recursive', '-r', "Comprime les fichiers d'une hiérarchie"),
+        Option('--verbose', '-v', "Affiche ce qui est fait"),
+        Option('--best', '-9', "Comprime un maximum", False, False),
+        Option('--fast', '-1', "Comprime le plus rapidement", False, False)
+    )
+    return d
+
+def define_gunzip():
+    d = define_command()
+    d['name'] = 'gunzip'
+    d['description'] = "(<em>GNU unzip</em>) décomprime des fichiers"
+    d['*'] = "Décomprime ce fichier"
+    d['options'] = Options(
+        Option('--recursive', '-r', "Décomprime les fichiers d'une hiérarchie"),
+        Option('--verbose', '-v', "Affiche ce qui est fait")
+    )
+    return d
+
+def define_zcat():
+    d = define_command()
+    d['name'] = 'zcat'
+    d['description'] = "affiche les fichiers en les décomprimant"
+    d['comment'] = "Elle n'écrit ni ne modifie rien sur le disque"
+    d['*'] = "Affiche ce fichier"
+    return d
+
 command_aliases = {
     'more': 'less',
 }
@@ -328,7 +360,8 @@ commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_mkdir(), define_rm(), define_ln(), define_less(),
           define_man(), define_tail(), define_du(), define_date(),
-          define_df(), define_sort(), define_wc(), define_uniq()]:
+          define_df(), define_sort(), define_wc(), define_uniq(),
+          define_gzip(), define_gunzip(), define_zcat()]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
         exit(1)
