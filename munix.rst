@@ -78,7 +78,7 @@ Commandes :
 
    * Fichier : cp, rm, mv, ln, mkdir
 
-   * Transformation : sort, gzip, gunzip, iconv?, convert?, avconv?
+   * Transformation : wc, sort, gzip, gunzip, iconv?, convert?, avconv?
    
    * Affichage : cat, less, tail, zcat, diff
 

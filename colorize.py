@@ -301,6 +301,25 @@ def define_sort():
     )
     return d
 
+def define_wc():
+    d = define_command()
+    d['name'] = 'wc'
+    d['description'] = "(<em><b>w</b>ord <b>c</b>ount</b></em>) affiche le nombre de lignes/mots/octets des fichiers"
+    d['*'] = "Analyse ce fichier"
+    d['options'] = Options(
+        Option('--lines', '-l', "Affiche seulement le nombre de lignes"),
+        Option('--words', '-w', "Affiche seulement le nombre de mots")
+    )
+    return d
+
+def define_uniq():
+    d = define_command()
+    d['name'] = 'uniq'
+    d['description'] = "affiche les fichiers en éliminant les lignes identiques"
+    d['comment'] = "Il faut qu'elles soient cote à cote."
+    d['*'] = "Affiche ce fichier"
+    return d
+
 command_aliases = {
     'more': 'less',
 }
@@ -309,7 +328,7 @@ commands = {}
 for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_mkdir(), define_rm(), define_ln(), define_less(),
           define_man(), define_tail(), define_du(), define_date(),
-          define_df(), define_sort()]:
+          define_df(), define_sort(), define_wc(), define_uniq()]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
         exit(1)
