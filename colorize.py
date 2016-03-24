@@ -1947,8 +1947,9 @@ class Parser:
                     continue
                 if self.get() == "\\":
                     self.read_backslash(sb)
+                    sb.content[-1] = SquareBracketChar(sb.content[-1].content)
                     continue
-                if self.get() in ' \t':
+                if self.get() in ' \t|':
                     parsed.append(Normal('['))
                     self.i = i
                     return

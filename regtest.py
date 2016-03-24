@@ -152,11 +152,11 @@
 "Line(Pipeline(Separator(' '),Unterminated('|'),Command(Argument(Normal('a')))))"
 "Line(Pipeline(Unterminated('|')Command(Argument(Normal('a')))))"
 '[$a\'$a\'"$a"\\"\\\']'
-'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\'),Variable(\'$a\'),Quote(\'\\\'\'),Normal(\'$\'),Normal(\'a\'),Quote(\'\\\'\'),Guillemet(\'"\'),Variable(\'$a\'),Guillemet(\'"\'),Backslash(\'\\\\\'),Normal(\'"\'),Backslash(\'\\\\\'),Normal(\'\\\'\'),SquareBracketStop(\']\'))))))'
-'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\')Variable(\'$a\')Normal(\'$a\')VariableProtected(\'$a\')Normal(\'"\\\'\')SquareBracketStop(\']\'))))))'
+'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\'),Variable(\'$a\'),Quote(\'\\\'\'),Normal(\'$\'),Normal(\'a\'),Quote(\'\\\'\'),Guillemet(\'"\'),Variable(\'$a\'),Guillemet(\'"\'),Backslash(\'\\\\\'),SquareBracketChar(\'"\'),Backslash(\'\\\\\'),SquareBracketChar(\'\\\'\'),SquareBracketStop(\']\'))))))'
+'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\')Variable(\'$a\')Normal(\'$a\')VariableProtected(\'$a\')SquareBracketChar(\'"\')SquareBracketChar(\'\\\'\')SquareBracketStop(\']\'))))))'
 '[a\\]]'
-"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),Backslash('\\\\'),Normal(']'),SquareBracketStop(']'))))))"
-"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar('a')Normal(']')SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),Backslash('\\\\'),SquareBracketChar(']'),SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar('a')SquareBracketChar(']')SquareBracketStop(']'))))))"
 '[a b]'
 "Line(Pipeline(Command(Argument(Normal('[a')),Separator(' '),Argument(Normal('b]')))))"
 "Line(Pipeline(Command(Argument(Normal('[a'))Argument(Normal('b]')))))"
@@ -508,3 +508,12 @@
 'tail -n 5'
 "Line(Pipeline(Command(Argument(Normal('tail')),Separator(' '),Argument(Normal('-n')),Separator(' '),Argument(Normal('5')))))"
 "Line(Pipeline(Command(Argument(Normal('tail'))Argument(Normal('-n5')))))"
+'[ ]'
+"Line(Pipeline(Command(Argument(Normal('[')),Separator(' '),Argument(Normal(']')))))"
+"Line(Pipeline(Command(Argument(Normal('['))Argument(Normal(']')))))"
+'[|]'
+"Line(Pipeline(Command(Argument(Normal('['))),Pipe('|'),Command(Argument(Normal(']')))))"
+"Line(Pipeline(Command(Argument(Normal('[')))Command(Argument(Normal(']')))))"
+'[\\|]'
+"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),Backslash('\\\\'),SquareBracketChar('|'),SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar('|')SquareBracketStop(']'))))))"
