@@ -173,7 +173,7 @@ def define_cp():
     d['description'] = "<b>c</b>o<b>p</b>ie de fichiers et répertoires"
     d['message'] = "Elle crée ou écrase des fichiers si c'est nécessaire"
     d['syntax'] = "cp <var>source</var> <var>destination</var>"
-    d['1'] = "Nom du premier fichier à copier ailleurs"
+    d['1'] = "Nom du premier fichier/répertoire à copier ailleurs"
     d['$'] = "Le fichier ou répertoire destination de la copie"
     d['min_arg'] = 2
     d['options'] = Options(
@@ -575,6 +575,9 @@ class Fildes(Chars):
             s = "la sortie standard."
         elif c == '2':
             s = "la sortie d'erreur."
+        # BASH
+        # elif c == '&':
+        #    s = "la sortie d'erreur et la sortie standard."
         elif c == '0':
             s = "l'entrée standard."
         elif c == '':
@@ -1071,7 +1074,7 @@ class Command(Container):
                 continue
             content.argument_position = arg_number
             arg_number += 1
-        self.nr_argument = arg_number # Real one, not option argument
+        self.nr_argument = arg_number - 1 # Real one, not option argument
     def contextual_help(self, dummy_position):
         if not self.command:
             return ''
@@ -1768,6 +1771,10 @@ class Parser:
     def read_redirection(self, parsed):
         i = self.i
         fildes = self.skip(digit)
+        # BASH
+        # if fildes == "" and self.get() == '&':
+        #     fildes = "&"
+        #     self.next()
         if self.empty():
             self.i = i
             return True
