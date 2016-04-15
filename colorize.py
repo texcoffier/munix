@@ -22,6 +22,7 @@ upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
 digit = "0123456789"
 names = alpha + digit
+logins= names + '-.'
 
 def name(obj):
     try:
@@ -236,7 +237,7 @@ def define_man():
     d['description'] = "(<b>man</b>uel) affiche la documentation"
     d['syntax'] = "man commande"
     d['1'] = "Nom de la commande à expliquer"
-    d['min_arg'] = 1
+    d['min_arg'] = 0
     d['options'] = Options(
         Option('--apropos', '-k',
                "Liste les commandes avec le mot clef indiqué",
@@ -458,13 +459,15 @@ class Star(Pattern):
 class QuestionMark(Pattern):
     def local_help(self, dummy_position):
         return "Le point d'intérogation représente un caractère quelconque."
-class Home(Pattern):
+class Home(Chars):
     def local_help(self, dummy_position):
         if self.content == '~':
             return "Le tilde représente votre répertoire de connexion"
         else:
             return ("C'est le répertoire de connexion de l'utilisateur «"
                     + self.content[1:] + '»')
+    def color(self):
+        return ["#F0F", "#FAF"]
             
 class Separator(Chars):
     hide = True
@@ -2002,7 +2005,7 @@ class Parser:
         if len(parsed.content) != 0  or  self.get() != '~':
             return True
         self.next()
-        n = self.skip(names)
+        n = self.skip(logins)
         if self.empty() or self.get() == '/':
             parsed.append(Home("~" + n))
         else:
