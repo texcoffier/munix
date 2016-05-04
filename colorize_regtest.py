@@ -65,6 +65,8 @@ if f:
     f.close()
 
 if error:
+    print("To rewrite regtest results if these errors are not real, run:")
+    print("    %s rewrite" % sys.argv[0])
     sys.exit(1)
 
 print("OK")

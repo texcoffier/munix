@@ -517,3 +517,18 @@
 '[\\|]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),Backslash('\\\\'),SquareBracketChar('|'),SquareBracketStop(']'))))))"
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar('|')SquareBracketStop(']'))))))"
+'tar -c -v'
+"Line(Pipeline(Command(Argument(Normal('tar')),Separator(' '),Argument(Normal('-c')),Separator(' '),Argument(Normal('-v')))))"
+"Line(Pipeline(Command(Argument(Normal('tar'))Argument(Normal('-c')))))"
+'tar -v -c'
+"Line(Pipeline(Command(Argument(Normal('tar')),Separator(' '),Argument(Normal('-v')),Separator(' '),Argument(Normal('-c')))))"
+"Line(Pipeline(Command(Argument(Normal('tar'))Argument(Normal('-c')))))"
+'tar -vc'
+"Line(Pipeline(Command(Argument(Normal('tar')),Separator(' '),Argument(Normal('-vc')))))"
+"Line(Pipeline(Command(Argument(Normal('tar'))Argument(Normal('-c')))))"
+'tar -cv'
+"Line(Pipeline(Command(Argument(Normal('tar')),Separator(' '),Argument(Normal('-cv')))))"
+"Line(Pipeline(Command(Argument(Normal('tar'))Argument(Normal('-c')))))"
+'tar -v'
+"Line(Pipeline(Command(Argument(Normal('tar')),Separator(' '),Argument(Normal('-v')))))"
+"Line(Pipeline(Command(Argument(Normal('tar')))))"

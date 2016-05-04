@@ -62,12 +62,14 @@ def choices(keywords):
                         ])
 
 class Option:
-    def __init__(self, option , short, message, argument=False, display=True):
-        self.option   = option
-        self.short    = short
-        self.message  = message
-        self.argument = argument
-        self.display  = display
+    def __init__(self, option , short, message, argument=False, display=True,
+                 cleanup=False):
+        self.option   = option   # long option as --verbose
+        self.short    = short    # short option as -v
+        self.message  = message  # HTML Explanation about the option
+        self.argument = argument # This option need an argument
+        self.display  = display  # on the HTML help page
+        self.cleanup  = cleanup  # remove this option when doing the cleanup
 
 class Options:
     def __init__(self, *options):
@@ -353,6 +355,27 @@ def define_zcat():
     d['*'] = "Affiche ce fichier"
     return d
 
+def define_sleep():
+    d = define_command()
+    d['name'] = 'sleep'
+    d['description'] = "attend le nombre de secondes indiqué"
+    d['comment'] = "Arrêtez-la en tapant <tt>Ctrl+C</tt>"
+    d['1'] = "Nombre de secondes à attendre"
+    return d
+
+def define_tar():
+    d = define_command()
+    d['name'] = 'tar'
+    d['description'] = "(<em><b>t</b>ape <b>a</b>archiving</em>) manipulation d'archive"
+    d['comment'] = "La syntaxe dépend des options indiquées"
+    d['options'] = Options(
+        Option('--extract', '-x', "1 fichier &#8594; hiérarchie"),
+        Option('--create', '-c', "Hiérarchie &#8594; 1 fichier"),
+        Option('--file', '-f', "Pour choisir le nom de l'archive", True, True),
+        Option('--verbose', '-v', "Mode verbeux", False, False, True)
+        )
+    return d
+
 command_aliases = {
     'more': 'less',
 }
@@ -362,7 +385,8 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_mkdir(), define_rm(), define_ln(), define_less(),
           define_man(), define_tail(), define_du(), define_date(),
           define_df(), define_sort(), define_wc(), define_uniq(),
-          define_gzip(), define_gunzip(), define_zcat()]:
+          define_gzip(), define_gunzip(), define_zcat(), define_sleep(),
+          define_tar()]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
         exit(1)
@@ -786,6 +810,11 @@ class Container:
         clean = []
         for c in content:
             txt = c.cleanup(replace_option)
+            if (getattr(c, 'is_an_option', False)
+                and txt == "Argument(Normal('-'))"):
+                # Once cleaned, there is no option remaining.
+                # So the argument must be removed
+                continue
             if name(c) == 'Argument':
                 if first_argument:
                     first_argument = False
@@ -1245,6 +1274,9 @@ class Argument(Container):
             if ('-' + letter) not in options.short_opt:
                 continue
             option = options.short_opt['-' + letter]
+            if option.cleanup:
+                opts.pop()
+                continue
             if option and option.argument:
                 self.option_argument_help = ('-' + option.short[1] + ' : '
                                              + option.argument)
