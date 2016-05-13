@@ -532,3 +532,12 @@
 'tar -v'
 "Line(Pipeline(Command(Argument(Normal('tar')),Separator(' '),Argument(Normal('-v')))))"
 "Line(Pipeline(Command(Argument(Normal('tar')))))"
+'echo [A][B]'
+"Line(Pipeline(Command(Argument(Normal('echo')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('A'),SquareBracketStop(']')),SquareBracket(SquareBracketStart('['),SquareBracketChar('B'),SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(Normal('echo'))Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar('A')SquareBracketStop(']'))SquareBracket(SquareBracketStart('[')SquareBracketChar('B')SquareBracketStop(']'))))))"
+'echo [A;B]'
+"Line(Pipeline(Command(Argument(Normal('echo')),Separator(' '),Argument(Normal('[A')))),DotComa(';'),Pipeline(Command(Argument(Normal('B]')))))"
+"Line(Pipeline(Command(Argument(Normal('echo'))Argument(Normal('[A'))))Pipeline(Command(Argument(Normal('B]')))))"
+'echo [A&B]'
+"Line(Backgrounded(Pipeline(Command(Argument(Normal('echo')),Separator(' '),Argument(Normal('[A'))))),Background('&'),Pipeline(Command(Argument(Normal('B]')))))"
+"Line(Backgrounded(Pipeline(Command(Argument(Normal('echo'))Argument(Normal('[A')))))Pipeline(Command(Argument(Normal('B]')))))"

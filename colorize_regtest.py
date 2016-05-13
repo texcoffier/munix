@@ -8,6 +8,8 @@ Run with 'rewrite' argument: create the new expected results
 """
 
 import sys
+import json
+import os
 import colorize
 
 def check(input_val, expected_str, expected_cleanup, write_in):
@@ -39,34 +41,88 @@ def check(input_val, expected_str, expected_cleanup, write_in):
         parsed.html(i)
         parsed.help(i)
 
-f = open("regtest.py", "r")
-tests = f.readlines()
-f.close()
-
-if 'rewrite' in sys.argv:
-    f = open("regtest.py", "w")
-else:
-    f = None
-
-error = False
-for input_value, expected_value, expected_cleanup in zip(tests[::3],
-                                                         tests[1::3]+['""'],
-                                                         tests[2::3]+['""']):
-    input_value = eval(input_value)
-    expected_value = eval(expected_value)
-    expected_cleanup = eval(expected_cleanup)
-    error = check(input_value, expected_value, expected_cleanup, f) or error
-
-if colorize.Parser('cp --recursive').parse().cleanup(True) != "Line(Pipeline(Command(Argument(Normal('cp'))Argument(Normal('-r')))))":
-    there_is_an_unicode_problem
-
-
-if f:
+def get_tests():
+    f = open("regtest.py", "r")
+    tests = f.readlines()
     f.close()
+    for input, expect, expect_clean in zip(tests[::3],
+                                           tests[1::3]+['""'],
+                                           tests[2::3]+['""']):
+        yield eval(input), eval(expect), eval(expect_clean)
 
-if error:
-    print("To rewrite regtest results if these errors are not real, run:")
-    print("    %s rewrite" % sys.argv[0])
-    sys.exit(1)
+def regtest_js():
+    f = open("xxx.js", "w")
+    g = open("colorize.js", "r")
+    f.write(g.read())
+    g.close()
+    f.write("""
+function check(input, expect, cleanup)
+{
+    try {
+          a = new Parser(input).parse();
+        }
+    catch(e)
+        {
+          console.log(input) ;
+          console.log(e) ;
+          return ;
+        }
+    if ( a.str() != expect)
+        {
+          console.log(input) ;
+          console.log("STR()   : " + a.str()) ;
+          console.log("EXPECTED: " + expect) ;
+          return ;
+        }
+    if ( a.cleanup(true) != cleanup)
+        {
+          console.log(input) ;
+          console.log("CLEANUP(): " + a.cleanup(true)) ;
+          console.log("EXPECTED:  " + cleanup) ;
+          return ;
+        }
+}
+    """)
+    for input_value, expected_value, expected_cleanup in get_tests():
+        f.write("check({},{},{});\n".format(json.dumps(input_value),
+                                            json.dumps(expected_value),
+                                            json.dumps(expected_cleanup),
+                                        ))
+    f.close()
+    f = os.popen("node xxx.js || nodejs xxx.js", "r")
+    c = f.read()
+    f.close()
+    if c.strip() != "":
+        print(c)
+        sys.exit(1)
+    print("REGTEST JS OK")
 
-print("OK")
+def regtest_py():
+    if 'rewrite' in sys.argv:
+        f = open("regtest.py.new", "w")
+    else:
+        f = None
+
+    error = False
+    for input_value, expected_value, expected_cleanup in get_tests():
+        error = check(input_value, expected_value, expected_cleanup, f) or error
+
+    if (colorize.Parser('cp --recursive').parse().cleanup(True)
+        !=
+        "Line(Pipeline(Command(Argument(Normal('cp'))Argument(Normal('-r')))))"
+        ):
+        there_is_an_unicode_problem
+
+    if f:
+        f.close()
+        os.rename("regtest.py.new", "regtest.py")
+
+    if error:
+        print("To rewrite regtest results if these errors are not real, run:")
+        print("    %s rewrite" % sys.argv[0])
+        sys.exit(1)
+    print("REGTEST PYTHON OK")
+
+regtest_py()
+regtest_js()
+

@@ -24,7 +24,7 @@ doc_colorize.html:colorize.py create_doc.py
 	./create_doc.py >doc_colorize.html
 
 
-regtest:
+regtest:colorize.js
 	./colorize_regtest.py
 
 clean:

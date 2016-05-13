@@ -36,8 +36,15 @@ def pad(x):
 def protect(t):
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+try:
+    slashslash = RegExp("\\\\", "g")
+    quote = RegExp("'", "g")
+except:
+    slashslash = "\\"
+    quote = "'"
+
 def string(t):
-    return "'" + t.replace("\\", "\\\\").replace("'", "\\'") + "'"
+    return "'" + t.replace(slashslash, "\\\\").replace(quote, "\\'") + "'"
 
 def unused_color(element):
     i = 0
@@ -376,6 +383,14 @@ def define_tar():
         )
     return d
 
+def define_echo():
+    d = define_builtin()
+    d['name'] = 'echo'
+    d['description'] = "affiche ses arguments"
+    d['message'] = "Ele affiche un espace entre chaque argument"
+    d['syntax'] = "echo arg1 arg2 arg3..."
+    return d
+
 command_aliases = {
     'more': 'less',
 }
@@ -386,7 +401,7 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_man(), define_tail(), define_du(), define_date(),
           define_df(), define_sort(), define_wc(), define_uniq(),
           define_gzip(), define_gunzip(), define_zcat(), define_sleep(),
-          define_tar()]:
+          define_tar(), define_echo()]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
         exit(1)
@@ -752,6 +767,11 @@ class Done(For):
 
 hex_to_int = {'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,
               'A':10,'B':11,'C':12,'D':13,'E':14,'F':15}
+
+class ReplacementProtected:
+    pass # To turn around a RapydScript bug
+class Argument:
+    pass # To turn around a RapydScript bug
 
 class Container:
     hide = False
@@ -1144,6 +1164,7 @@ class Argument(Container):
         if (len(self.content) != 0
             and name(self.content[-1]) == name(item)
             and not isinstance(item, Variable)
+            and not isinstance(item, SquareBracket)
             ):
             self.content[-1].content += item.content
         else:
@@ -1971,31 +1992,31 @@ class Parser:
             sb.append(SquareBracketStart('['))
             empty = 1
             while not self.empty():
-                if self.get() == ']' and len(sb.content) != empty:
+                c = self.get()
+                if c == ']' and len(sb.content) != empty:
                     break
-                if self.get() == '!' and len(sb.content) == empty and empty==1:
+                if c == '!' and len(sb.content) == empty and empty==1:
                     empty = 2
                     sb.append(SquareBracketNegate('!'))
                     self.next()
                     continue
-                if self.get() == '$':
+                if c == '$':
                     self.read_dollar(sb)
                     continue
-                if self.get() == '"':
+                if c == '"':
                     self.read_guillemet(sb)
                     continue
-                if self.get() == "'":
+                if c == "'":
                     self.read_quote(sb)
                     continue
-                if self.get() == "\\":
+                if c == "\\":
                     self.read_backslash(sb)
                     sb.content[-1] = SquareBracketChar(sb.content[-1].content)
                     continue
-                if self.get() in ' \t|':
+                if c in ' \t|;&':
                     parsed.append(Normal('['))
                     self.i = i
                     return
-                c = self.get()
                 self.next()
                 if self.empty():
                     sb.append(Normal(c))
