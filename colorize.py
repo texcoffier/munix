@@ -661,6 +661,8 @@ class SquareBracketChar(Pattern):
     def local_help(self, dummy_position):
         return "Le caractère «" + self.content + "» est autorisé"
 class SquareBracketInterval(Pattern):
+    def color(self):
+        return ["#808", "#D8D"]
     def local_help(self, dummy_position):
         return ("Tous les caractères dans l'intervalle «" + self.content
                 + "» sont autorisés")
