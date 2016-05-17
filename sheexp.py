@@ -33,7 +33,7 @@ def sheexp(container):
            autocapitalize="off"
            autocomplete="off"
            >
-        <div id="sheexp_output"></div>
+        <div tabindex="-1" id="sheexp_output"></div>
         <div id="sheexp_help"></div>
         <pre id="sheexp_debug"></pre>"""
     e.style.width = container.offsetWidth
