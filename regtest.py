@@ -541,3 +541,18 @@
 'echo [A&B]'
 "Line(Backgrounded(Pipeline(Command(Argument(Normal('echo')),Separator(' '),Argument(Normal('[A'))))),Background('&'),Pipeline(Command(Argument(Normal('B]')))))"
 "Line(Backgrounded(Pipeline(Command(Argument(Normal('echo'))Argument(Normal('[A')))))Pipeline(Command(Argument(Normal('B]')))))"
+'A=*$B*'
+"Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('*'),Variable('$B'),Normal('*')))))"
+"Line(Pipeline(Command(Affectation(Normal('A')Equal('=')Normal('*')VariableProtected('$B')Normal('*')))))"
+'A=B=C'
+"Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('B=C')))))"
+"Line(Pipeline(Command(Affectation(Normal('A')Equal('=')Normal('B=C')))))"
+'A=A$B'
+"Line(Pipeline(Command(Affectation(Normal('A'),Equal('='),Normal('A'),Variable('$B')))))"
+"Line(Pipeline(Command(Affectation(Normal('A')Equal('=')Normal('A')VariableProtected('$B')))))"
+'A="A$B"'
+'Line(Pipeline(Command(Affectation(Normal(\'A\'),Equal(\'=\'),Guillemet(\'"\'),Normal(\'A\'),Variable(\'$B\'),Guillemet(\'"\')))))'
+"Line(Pipeline(Command(Affectation(Normal('A')Equal('=')Normal('A')VariableProtected('$B')))))"
+'A=A"$B"'
+'Line(Pipeline(Command(Affectation(Normal(\'A\'),Equal(\'=\'),Normal(\'A\'),Guillemet(\'"\'),Variable(\'$B\'),Guillemet(\'"\')))))'
+"Line(Pipeline(Command(Affectation(Normal('A')Equal('=')Normal('A')VariableProtected('$B')))))"

@@ -95,6 +95,8 @@ Et la complétion de commande.
 Variables, patterns et boucles
 ----------------------------------
 
+Builtin : echo, read
+
 Les variables. HOME, PATH, PS1, remplacement $(...)
 
 L'échappement : guillemet, cote, backslash
@@ -103,9 +105,7 @@ Les patterns.
 
 L'enchainement de commandes avec ';' et '&&'
 
-La boucle for.
-
-La boucle 'while' et le 'read'
+La boucle 'for' et 'while'
 
 
 ------------------------------------
@@ -116,7 +116,7 @@ Les redirections dans les fichiers (pas le pipe).
 
 Les expressions régulières.
 
-Les commandes : grep, sed, echo, awk
+Les commandes : grep, sed, awk
 
 Expressions régulières dans vi, emacs, en Javascript, Python, C ?
 

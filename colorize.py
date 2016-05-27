@@ -378,7 +378,8 @@ def define_tar():
     d['options'] = Options(
         Option('--extract', '-x', "1 fichier &#8594; hiérarchie"),
         Option('--create', '-c', "Hiérarchie &#8594; 1 fichier"),
-        Option('--file', '-f', "Pour choisir le nom de l'archive", True, True),
+        Option('--file', '-f', "Pour choisir le nom de l'archive",
+               "Le nom de l'archive générée ou lue", True),
         Option('--verbose', '-v', "Mode verbeux", False, False, True)
         )
     return d
@@ -797,10 +798,10 @@ class Container:
                     protected = not protected
                 continue
             if n == 'Variable':
-                if protected:
+                if protected or name(self) == 'Affectation':
                     c = VariableProtected(c.content)
             elif n == 'Replacement':
-                if protected:
+                if protected or name(self) == 'Affectation':
                     r = ReplacementProtected()
                     r.content = c.content
                     c = r
@@ -2053,7 +2054,7 @@ class Parser:
         a = Affectation()
         a.append(parsed.content.pop())
         a.append(Equal("="))
-        for content in self.parse_argument().content:
+        for content in self.parse_argument(False, False).content:
             a.append(content)
         parsed.append(a)
     def read_home(self, parsed):
@@ -2065,7 +2066,7 @@ class Parser:
             parsed.append(Home("~" + n))
         else:
             parsed.append(Unterminated("~" + n))
-    def parse_argument(self, parse_equal=True):
+    def parse_argument(self, parse_equal=True, parse_pattern=True):
         parsed = Argument()
         while not self.empty():
             c = self.get()
@@ -2077,7 +2078,7 @@ class Parser:
                 and self.read_dollar(parsed)
                 and self.read_quote(parsed)
                 and self.read_guillemet(parsed)
-                and self.read_pattern(parsed)
+                and (not parse_pattern or self.read_pattern(parsed))
                 and self.read_replacement(parsed)
                 and self.read_home(parsed)
                 ):
