@@ -417,6 +417,16 @@ def format_man(definition):
             definition["section"] + '/' + definition["name"]
             + '">man ' + definition["name"] + "</a>")
 
+def valid_variable_name(name):
+    if len(name) == 0:
+        return False
+    if name[0] not in alpha:
+        return False
+    for i in name:
+        if i not in names:
+            return False
+    return True
+
 ##############################################################################
 ##############################################################################
 ##############################################################################
@@ -556,6 +566,12 @@ class Variable(Chars):
         return "«" + self.html() + "» est remplacé par le shell par " + message
 class VariableProtected(Variable):
     pass
+class VariableName(Variable):
+    def local_help(self, dummy_position):
+        return "Nom de la variable"
+class LoopVariable(VariableName):
+    def local_help(self, dummy_position):
+        return "Nom de la variable qui va changer de valeur dans la boucle"
 class Unterminated(Chars):
     def color(self):
         return ["#F00", "#FAA"]
@@ -1419,10 +1435,6 @@ class Body(Line):
         else:
             return "Terminer le bloc de commande avec le mot-clef «done»"
 
-class LoopVariable(Command):
-    def local_help(self, dummy_position):
-        return "Nom de la variable qui va changer de valeur"
-
 
 ##############################################################################
 ##############################################################################
@@ -1674,13 +1686,18 @@ class Parser:
         parsed.append(For('for' + self.skip(" \t")))
         error = self.error_if_empty()
         if error == '':
-            v = LoopVariable()
-            v.append(self.parse_argument())
-            parsed.append(v)
+            c = self.parse_argument()
+            if (len(c.content) == 1
+                and name(c.content[0]) == 'Normal'
+                and valid_variable_name(c.content[0].content)
+                ):
+                parsed.append(LoopVariable(c.content[0].content))
+            else:
+                parsed.append(Unterminated(c.text(),
+                                           "Nom de variable invalide"))
         else:
             parsed.content[0] = Unterminated(parsed.content[0].content,
                                              "Indiquez le nom de la variable")
-            error = "Il manque le nom de la variable"
             error = ""
         error = self.parse_keyword(error, parsed, "in")
         if error == '':
@@ -2050,9 +2067,11 @@ class Parser:
             return True
         if name(parsed.content[0]) != 'Normal':
             return True
+        if not valid_variable_name(parsed.content[0].content):
+            return True
         self.next()
         a = Affectation()
-        a.append(parsed.content.pop())
+        a.append(VariableName(parsed.content.pop().content))
         a.append(Equal("="))
         for content in self.parse_argument(False, False).content:
             a.append(content)
