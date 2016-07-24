@@ -5,8 +5,11 @@ CONVERT = preamble.py colorize.py sheexp.py
 
 all:regtest colorize.js doc_colorize.html munix.html
 
+RapydScript:
+	git clone git://github.com/atsepkov/RapydScript.git
+	cd RapydScript ; git checkout e2c8b247a5b1a1024a8e7adae188b7bb78a77ede
 
-colorize.js:licence.txt $(CONVERT)
+colorize.js:RapydScript licence.txt $(CONVERT)
 	(cat licence.txt ; \
          git log --pretty=format:'// GIT commit %H' -n 1 ; \
 	 echo ; \

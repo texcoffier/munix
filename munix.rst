@@ -82,7 +82,7 @@ Commandes :
    
    * Affichage : cat, less, tail, zcat, diff
 
-   * Pratique : date, man, du, df
+   * Pratique : date, man, du, df, tar
 
 Notion d'option de commande (et de paramètre d'option ?)
 
@@ -105,7 +105,7 @@ Les patterns.
 
 L'enchainement de commandes avec ';' et '&&'
 
-La boucle 'for' et 'while'
+La boucle 'for'
 
 
 ------------------------------------
@@ -119,6 +119,8 @@ Les expressions régulières.
 Les commandes : grep, sed, awk
 
 Expressions régulières dans vi, emacs, en Javascript, Python, C ?
+
+La boucle 'while' et le 'read'
 
 
 ------------------------
@@ -149,7 +151,7 @@ Concepts : utilisateur, groupe, droits
 Commandes : chown, chgrp, chmod
 
 Concepts : Périphérique, disque, TTY, liaison série, clavier, souris, écran
-Commandes : mount, find, tar, sshfs, récupérer les fichiers perdus.
+Commandes : mount, find, sshfs, récupérer les fichiers perdus.
 
 Concepts : client, serveur, nom machine, adresse IP, clefs privés/publiques
 Commandes : ssh, scp, rsync, wget, sendmail
@@ -185,10 +187,50 @@ valgrind ?
 
 
 =============================================================================
+INSTALLER LE QUESTIONNAIRE SUR SA MACHINE
+=============================================================================
 
-Cette version montre plus de choses, mais ira moins dans les détails
-et les cas tordus.
+Récupération des sources dans le répertoire QUENLIG
+à partir des 3 dépôts GIT : ::
 
-En moins par rapport à l'actuel :
-   * Internationalisation.
-   * Préférences
+  (
+  set -e # Arrêt si erreur
+  DEPOT=ssh://pedagolinux.univ-lyon1.fr/home/tpetu/INF2011L
+  git clone $DEPOT/QUENLIG
+  cd QUENLIG
+  mkdir Students
+  git clone $DEPOT/QUENLIG-Questions
+  mv QUENLIG-Questions/* QUENLIG-Questions/.??* Questions
+  rmdir QUENLIG-Questions
+  cd Questions/MUNIX1
+  git clone $DEPOT/MUNIX
+  )
+
+Création et lancement d'une session de test en arrière plan
+pour le module 1 : ::
+
+  ANNEE=2015
+  SEMESTRE=1
+  MODULE=1
+  ADMIN="thierry.excoffier amelie.cordier"
+  Questions/MUNIX1/create "$ANNEE"s"$SEMESTRE"m"$MODULE" "$ADMIN"
+
+Si l'URL publique n'est pas en *.univ-lyon1.fr* alors CAS va refuser
+d'accepter la connexion. Il faut donc se connecter en invité : ::
+
+  http://127.0.0.1:42421/guestToto   # 42422 pour le module 2...
+
+On peut mettre *guestToto* en *admin*, mais ce n'est pas recommandé
+car n'importe qui pourrait faire tourner du code sur votre machine.
+
+Commandes de base : ::
+
+  ./main.py                      # Liste les options et les sessions
+  ./main.py MUNIX2015s1m1 stop   # Arrête la session indiquée
+  ./main.py MUNIX2015s1m1 start  # Démarre la session
+
+Pour faire des questions, ou vous partez de questions existantes
+ou bien vous lisez la documentation :
+http://perso.univ-lyon1.fr/thierry.excoffier/QUENLIG/en.html#question_creation
+
+
