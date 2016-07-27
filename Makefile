@@ -10,6 +10,8 @@ RapydScript:
 	cd RapydScript ; git checkout e2c8b247a5b1a1024a8e7adae188b7bb78a77ede
 
 colorize.js:RapydScript licence.txt $(CONVERT)
+	@if [ "$$(which node)" = "" ] ; \
+         then echo "Ne trouve pas NodeJS sous le nom 'node'" >&2 ; exit 1 ; fi
 	(cat licence.txt ; \
          git log --pretty=format:'// GIT commit %H' -n 1 ; \
 	 echo ; \

@@ -15,51 +15,16 @@ Proposition pour Unix :
  * Horaire libre. Etalé sur tout le semestre.
  * Un seul cours de présentation.
  * Pas de TD en présentiel.
+ * L'apprentissage est fait via un cours/TD/TP intégré avec QUENLIG.
  * Autant de séances de TP que les étudiants veulent. Présence non obligatoire.
-
-6 examens de 25 minutes à passer quand les étudiants le veulent :
-   * Le premier examen, avant la semaine 4
-   * Le deuxième avant la semaine 6
-   * ...
-   * Le sixième avant la semaine 14
-
-Soit 2h30 d'examen pour l'UE (actuellement 3*5 + 2*45 + 90 = 195 = 3h15)
-
-
-Chaque semaine 5 créneaux d'1h30 (un par jour). Sur chaque créneau :
-   * une salle de TP pour ceux qui veulent travailler en groupe
-     ou bien venir discuter avec un enseignant.
-
-   * une salle d'examen permettant de faire passer 45 examens par créneau.
-
-Coût :
-  * 12 semaines * 5 créneaux 1h30 * 2 enseignants = 180 heures eq TD
-  * Droit de tirage : 30h par groupe
-  * Il faut donc 6 groupes pour équilibrer (6*36 = 216 étudiants)
-  * Maximum d'examen passable : 45 * 5 * 12 = 2700 (/6) soit 450 étudiants
-    si l'on est à flux tendu. On peut prendre une salle plus grande.
-
-
-L'apprentissage est fait via un cours/TD/TP intégré avec QUENLIG.
-  * Le TP prévient quand l'étudiant a les connaissances suffisantes
-    pour passer l'examen.
-  * L'étudiant peut continuer à s'entrainer jusqu'à épuisement des questions.
-  * L'étudiant n'est pas forcé de faire le TP pour passer l'examen.
-    Mais on ne peut passer l'examen qu'une seule fois.
-
-Utilisation d'unix pour ceux qui ne l'ont pas chez eux :
-   * Via le navigateur web : http://bellard.org/jslinux/
-   * Via putty : sur linuxetu.univ-lyon1.fr puis pedagolinux.univ-lyon1.fr
-   * Via un live CD : il faut graver un CD et on a plus accès à windows
-   * Via une machine virtuelle : c'est plus compliqué à lancer.
-   * Via cygwin : c'est pas sous unix :-(
-   * Via son téléphone android (c'est dangereux de rooter)
+   Les étudiants s'autoévaluent.
+ * Pas de note de contrôle continue, un examen final et une deuxième session.
 
 =============================================================================
                                       PROGRAMME
 =============================================================================
 
-Décomposé en 6 parties pour les 6 examens.
+Décomposé en 6 parties.
 
 Certaines parties ont moins de connaissances théoriques mais
 nécessitent plus de pratique.
@@ -190,6 +155,10 @@ valgrind ?
 INSTALLER LE QUESTIONNAIRE SUR SA MACHINE
 =============================================================================
 
+Prérequis :
+  * Python3
+  * nodejs accessible sous le nom 'node'
+
 Récupération des sources dans le répertoire QUENLIG
 à partir des 3 dépôts GIT : ::
 
@@ -204,6 +173,8 @@ Récupération des sources dans le répertoire QUENLIG
   rmdir QUENLIG-Questions
   cd Questions/MUNIX1
   git clone $DEPOT/MUNIX
+  cd MUNIX
+  make # Traduction Python→JS, tests de régression
   )
 
 Création et lancement d'une session de test en arrière plan
