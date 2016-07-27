@@ -209,6 +209,7 @@ Récupération des sources dans le répertoire QUENLIG
 Création et lancement d'une session de test en arrière plan
 pour le module 1 : ::
 
+  cd QUENLIG
   ANNEE=2015
   SEMESTRE=1
   MODULE=1
