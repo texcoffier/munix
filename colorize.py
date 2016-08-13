@@ -117,6 +117,9 @@ pipeline_stopper = ';)&'
 ##############################################################################
 ##############################################################################
 
+def nothing(txt):
+    return txt
+
 def define_command():
     return {
         "builtin": False,
@@ -129,7 +132,8 @@ def define_command():
         "unknown": '',
         "section": '1',
         "min_arg": 0,
-        "options": None
+        "options": None,
+        "cleanup": nothing # sleep 1m => sleep 60
         }
 
 def define_builtin():
@@ -362,12 +366,25 @@ def define_zcat():
     d['*'] = "Affiche ce fichier"
     return d
 
+def replace_minutes(txt):
+    t = txt.split("'")
+    for i, mot in enumerate(t):
+        if mot and mot[-1] == "m":
+            try:
+                minutes = int(mot[:-1])
+                t[i] = str(minutes * 60)
+                return "'".join(t)
+            except ValueError:
+                pass
+    return txt
+
 def define_sleep():
     d = define_command()
     d['name'] = 'sleep'
     d['description'] = "attend le nombre de secondes indiqué"
     d['comment'] = "Arrêtez-la en tapant <tt>Ctrl+C</tt>"
     d['1'] = "Nombre de secondes à attendre"
+    d['cleanup'] = replace_minutes
     return d
 
 def define_tar():
@@ -1176,6 +1193,12 @@ class Command(Container):
         s.append('</div>')
         return '\n'.join(s)
 
+    def cleanup(self, replace_option):
+        s = Container.cleanup(self, replace_option)
+        if not self.command:
+            return s
+        return commands[self.command]["cleanup"](s)
+    
 class Argument(Container):
     def color(self):
         return ["#000", "#FFA"]

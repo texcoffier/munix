@@ -565,3 +565,6 @@
 'for A-B in'
 "Line(Pipeline(Command(ForLoop(Unterminated('for '),Unterminated('A-B'),In(' in')))))"
 "Line(Pipeline(Command(ForLoop(Unterminated('for ')Unterminated('A-B')))))"
+'sleep 1m'
+"Line(Pipeline(Command(Argument(Normal('sleep')),Separator(' '),Argument(Normal('1m')))))"
+"Line(Pipeline(Command(Argument(Normal('sleep'))Argument(Normal('60')))))"

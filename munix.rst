@@ -29,9 +29,9 @@ Décomposé en 6 parties.
 Certaines parties ont moins de connaissances théoriques mais
 nécessitent plus de pratique.
 
-----------------------
-Le système de fichier
-----------------------
+-------------------------
+1 : Le système de fichier
+-------------------------
 
 Intro : Pourquoi ce cours. Histoire. Comment accéder à unix et au shell.
 
@@ -57,7 +57,7 @@ Et la complétion de commande.
 
 
 ----------------------------------
-Variables, patterns et boucles
+2 : Variables, patterns et boucles
 ----------------------------------
 
 Builtin : echo, read
@@ -73,9 +73,9 @@ L'enchainement de commandes avec ';' et '&&'
 La boucle 'for'
 
 
-------------------------------------
-Redirections, expressions régulières
-------------------------------------
+----------------------------------------
+3 : Redirections, expressions régulières
+----------------------------------------
 
 Les redirections dans les fichiers (pas le pipe).
 
@@ -88,9 +88,9 @@ Expressions régulières dans vi, emacs, en Javascript, Python, C ?
 La boucle 'while' et le 'read'
 
 
-------------------------
-Scripts et processus
-------------------------
+---------------------------
+4 : Scripts et processus
+---------------------------
 
 Concepts : Processus et pipeline
 commandes : kill, killall, ps, pstree, top, free
@@ -109,7 +109,7 @@ Commandes : test, expr, ulimit
 
 
 ---------------------------
-Système et réseaux
+5 : Système et réseaux
 ---------------------------
 
 Concepts : utilisateur, groupe, droits
@@ -130,9 +130,9 @@ Concepts : Multifenêtrage, window manager, émulateur de terminaux
 Commandes : ??????
 
 
------------------------
-Outils de développement
------------------------
+-------------------------------
+6 : Outils de développement
+-------------------------------
 
 La notion de compilation séparée.
 
