@@ -105,7 +105,7 @@ Script : argument, commentaire, exit, $?, export
 
 Le 'if'
 
-Commandes : test, expr, ulimit
+Commandes : test, ulimit
 
 
 ---------------------------
@@ -156,6 +156,7 @@ INSTALLER LE QUESTIONNAIRE SUR SA MACHINE
 =============================================================================
 
 Prérequis :
+  * Demander l'accès aux dépôts.
   * Python3
   * nodejs accessible sous le nom 'node'
 
