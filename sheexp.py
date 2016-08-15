@@ -23,11 +23,6 @@ def sheexp(container):
     e.id = "sheexp_editor"
     e.innerHTML = """
         <input id="sheexp_input"
-           onkeyup="update();setTimeout(update,1)"
-           onkeydown="update();setTimeout(update,1)"
-           onclick="update();setTimeout(update,1)"
-           onpaste="update()"
-           onkeypress="setTimeout(update,1)"
            spellcheck="off"
            autocorrect="off"
            autocapitalize="off"
@@ -44,19 +39,36 @@ def sheexp(container):
     update.help    = document.getElementById("sheexp_help")
     update.debug   = document.getElementById("sheexp_debug")
     update.display_debug = False
+    update.input.onkeyup    = update
+    update.input.onkeydown  = update
+    update.input.onkeypress = update
+    update.input.onclick    = update
+    update.input.onpaste    = update
     update.input.focus()
     setInterval(update, 100)
 
 def update():
-    position = update.input.selectionStart
-    if update.input.value == update.last and position == update.last_position:
+    update_real_fast()
+    setTimeout(update_real_slow, 1)
+
+def update_real_fast():
+    if update.input.value == update.last:
         return
     update.last = update.input.value
-    update.last_position = position
-    p = Parser(update.last).parse()
+    update.last_position = -1
+    update.parsed = Parser(update.last).parse()
     update.debug.innerHTML = update.display_debug and p.nice() or ''
-    update.output.innerHTML = p.html(position)
-    update.help.innerHTML = p.help(position)
+    update.output.innerHTML = update.parsed.html(update.input.selectionStart)
+    if (update.input.selectionEnd == update.input.textLength
+        and update.editor.scrollLeft != 0 ):
+        update.editor.scrollLeft += 4
+
+def update_real_slow():
+    position = update.input.selectionStart
+    if position == update.last_position:
+        return
+    update.last_position = position
+    update.help.innerHTML = update.parsed.help(position)
     if (update.input.selectionEnd == update.input.textLength
         and update.editor.scrollLeft != 0 ):
         update.editor.scrollLeft += 4
