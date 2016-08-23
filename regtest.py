@@ -269,8 +269,8 @@
 "Line(Pipeline(Command(Separator(' '),Argument(Normal('a')))),DotComa(';'),Pipeline(Command(Argument(Normal('b')),Separator(' '))))"
 "Line(Pipeline(Command(Argument(Normal('a'))))Pipeline(Command(Argument(Normal('b')))))"
 'A=5 for'
-"Line(Pipeline(Command(Affectation(VariableName('A'),Equal('='),Normal('5')),Separator(' '),ForLoop(Unterminated('for')))))"
-"Line(Pipeline(Command(Affectation(VariableName('A')Equal('=')Normal('5'))ForLoop(Unterminated('for')))))"
+"Line(Pipeline(Command(Affectation(VariableName('A'),Equal('='),Normal('5')),Separator(' '),Argument(Normal('for')))))"
+"Line(Pipeline(Command(Affectation(VariableName('A')Equal('=')Normal('5'))Argument(Normal('for')))))"
 ' while'
 "Line(Pipeline(Command(Separator(' '),WhileLoop(Unterminated('while')))))"
 "Line(Pipeline(Command(WhileLoop(Unterminated('while')))))"
@@ -568,3 +568,12 @@
 'sleep 1m'
 "Line(Pipeline(Command(Argument(Normal('sleep')),Separator(' '),Argument(Normal('1m')))))"
 "Line(Pipeline(Command(Argument(Normal('sleep'))Argument(Normal('60')))))"
+'N=$(a)done'
+"Line(Pipeline(Command(Affectation(VariableName('N'),Equal('='),Replacement(GroupStart('$('),Line(Pipeline(Command(Argument(Normal('a'))))),GroupStop(')')),Normal('done')))))"
+"Line(Pipeline(Command(Affectation(VariableName('N')Equal('=')ReplacementProtected(GroupStart Line(Pipeline(Command(Argument(Normal('a')))))GroupStop )Normal('done')))))"
+'N=done'
+"Line(Pipeline(Command(Affectation(VariableName('N'),Equal('='),Normal('done')))))"
+"Line(Pipeline(Command(Affectation(VariableName('N')Equal('=')Normal('done')))))"
+'A= done'
+"Line(Pipeline(Command(Affectation(VariableName('A'),Equal('=')),Separator(' '),Argument(Normal('done')))))"
+"Line(Pipeline(Command(Affectation(VariableName('A')Equal('='))Argument(Normal('done')))))"

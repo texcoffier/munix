@@ -409,6 +409,20 @@ def define_echo():
     d['syntax'] = "echo arg1 arg2 arg3..."
     return d
 
+def define_manque_point_virgule(name):
+    d = define_command()
+    d['description'] = '<span class="command_help_error">N\'auriez-vous pas oublié un point-virgule avant ?</span>'
+    d['name'] = name
+    return d
+
+def define_done (): return define_manque_point_virgule('done')
+def define_for  (): return define_manque_point_virgule('for')
+def define_while(): return define_manque_point_virgule('while')
+def define_if   (): return define_manque_point_virgule('if')
+def define_then (): return define_manque_point_virgule('then')
+def define_else (): return define_manque_point_virgule('else')
+def define_fi   (): return define_manque_point_virgule('fi')
+
 command_aliases = {
     'more': 'less',
 }
@@ -419,7 +433,11 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_man(), define_tail(), define_du(), define_date(),
           define_df(), define_sort(), define_wc(), define_uniq(),
           define_gzip(), define_gunzip(), define_zcat(), define_sleep(),
-          define_tar(), define_echo()]:
+          define_tar(), define_echo(),
+          
+          define_done(), define_for(),
+          define_if(), define_then(), define_else(), define_fi()
+]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
         exit(1)
@@ -1837,7 +1855,9 @@ class Parser:
             if not self.empty():
                 before_command = parsed.number_of(Argument)==0
                 parsed.append(self.parse_argument(parse_equal = before_command))
-                if parsed.number_of(Argument) == 1:
+                if (parsed.number_of(Argument) == 1
+                    and not isinstance(parsed.content[0], Affectation)
+                    ):
                     text = parsed.content[-1].text()
                     if text == 'for':
                         parsed.content.pop()
