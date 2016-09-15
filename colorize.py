@@ -622,7 +622,7 @@ class Unterminated(Chars):
         if ";" in self.content:
             return "Vous pouvez taper une autre commande ou faire un pipeline"
         if "&&" in self.content:
-            return "Vous pouvez taper une autre commande ou faire un pipeline qui sera exécuter si la précédente se termine bien"
+            return "Vous pouvez taper une autre commande ou faire un pipeline qui sera exécutée si la précédente se termine bien"
         if "(" in self.content:
             return "Les commandes jusqu'à la parenthèse fermante seront exécutées dans un nouveau processus"
         if ">" in self.content or '<' in self.content:
