@@ -160,6 +160,16 @@ def define_pwd():
     d['unknown'] = "Cet argument est complètement inutile et peut éventuellement provoquer des erreurs"
     return d
 
+def define_read():
+    d = define_builtin()
+    d['name'] = 'read'
+    d['description'] = "Lecture d'un ligne de l'entrée standard"
+    d['message'] = "La ligne est stockée dans les variables indiquées"
+    d['syntax'] = "read TITI TATA TOTO"
+    d['*'] = "Nom de la variable où stocker le n<sup>ème</sup> mot"
+    d['$'] = "Nom de la variable où stocker le reste de la ligne"
+    return d
+
 def define_ls():
     d = define_command()
     d['name'] = 'ls'
@@ -436,7 +446,8 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_tar(), define_echo(),
           
           define_done(), define_for(),
-          define_if(), define_then(), define_else(), define_fi()
+          define_if(), define_then(), define_else(), define_fi(),
+          define_read()
 ]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])

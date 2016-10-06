@@ -60,7 +60,7 @@ Et la complétion de commande.
 2 : Variables, patterns et boucles
 ----------------------------------
 
-Builtin : echo, read
+Builtin : echo
 
 Les variables. HOME, PATH, PS1, remplacement $(...)
 
@@ -77,7 +77,7 @@ La boucle 'for'
 3 : Redirections, expressions régulières
 ----------------------------------------
 
-Les redirections dans les fichiers (pas le pipe).
+Les redirections dans les fichiers (pas le pipe). /dev/null
 
 Les expressions régulières.
 
@@ -85,7 +85,7 @@ Les commandes : grep, sed, awk
 
 Expressions régulières dans vi, emacs, en Javascript, Python, C ?
 
-La boucle 'while' et le 'read'
+La boucle 'while'. 'read' et 'test'
 
 
 ---------------------------
@@ -105,7 +105,7 @@ Script : argument, commentaire, exit, $?, export
 
 Le 'if'
 
-Commandes : test, ulimit
+Commandes : ulimit
 
 
 ---------------------------
