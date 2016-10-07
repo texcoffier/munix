@@ -19,7 +19,6 @@
     font-family: Courier New;
     font-size: 14pt ;
     font-weight: bold ;
-    line-height: 1.6em ;
 }
 
 #sheexp_input, #sheexp_output , #sheexp_help {
@@ -34,7 +33,7 @@
 }
 
 .Parsed {
-    display: inline-block ;
+    display: inline ;
     white-space: pre ;
 }
 
@@ -83,76 +82,3 @@
     background: #F00 ;
     color: #FFF ;
 }
-
-/*
-
-#help {
-    margin-top: 3em ;
-}
-
-.Redirection {
-    border-bottom-width: 6px ;
-    border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 255, 255, 0.222) ;
-    padding-bottom: 2px ;
-}
-.Redirection.active {
-    border-bottom-color: rgba(0, 255, 255, 1) ;
-}
-.help_Redirection { color: #088 ; }
-
-.Replacement {
-    border-bottom-width: 6px ;
-    border-bottom-style: solid ;
-    border-bottom-color: rgba(255, 255, 0, 0.222) ;
-    padding-bottom: 2px ;
-}
-.Replacement.active {
-    border-bottom-color: rgba(255, 255, 0, 1) ;
-}
-.help_Replacement { color: #880 ; }
-
-.Argument {
-    border-bottom-width: 6px ;
-    border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 0, 0, 0.222) ;
-    padding-bottom: 2px ;
-}
-.Argument.active {
-    border-bottom-color: rgba(0, 0, 0, 1) ;
-}
-
-.Group {
-    border-bottom-width: 6px ;
-    border-bottom-style: solid ;
-    border-bottom-color: rgba(255, 0, 255, 0.222) ;
-    padding-bottom: 2px ;
-}
-.Group.active {
-    border-bottom-color: rgba(255, 0, 255, 1) ;
-}
-.help_Group { color: #808 ; }
-
-.Command {
-    border-bottom-width: 6px ;
-    border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 0, 255, 0.222) ;
-    padding-bottom: 2px ;
-}
-.Command.active {
-    border-bottom-color: rgba(0, 0, 255, 1) ;
-}
-.help_Command { color: #00F ; }
-
-.Pipeline {
-    border-bottom-width: 6px ;
-    border-bottom-style: solid ;
-    border-bottom-color: rgba(0, 255, 0, 0.222) ;
-    padding-bottom: 2px ;
-}
-.Pipeline.active {
-    border-bottom-color: rgba(0, 255, 0, 1) ;
-}
-.help_Pipeline { color: #080 ; }
-
-*/

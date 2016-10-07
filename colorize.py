@@ -654,7 +654,7 @@ class Unexpected(Unterminated):
 class Invisible(Chars):
     hide = True
     def color(self):
-        return ["#BBB", "#FFF"]
+        return ["#999", "#FFF"]
     def itext(self, txt):
         if isinstance(self.parent, SquareBracket):
             txt += ".<br><b>Même le tiret dans ce contexte</b>"
