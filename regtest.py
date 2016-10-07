@@ -329,7 +329,7 @@
 "Line(Pipeline(Command(IfThenElse(Unterminated('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),DotComa('; '),Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Unexpected('fi')))))))"
 "Line(Pipeline(Command(IfThenElse(Unterminated('if ')Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('a'))))Pipeline(Unexpected('fi')))))))"
 'if a; then b ; else c ; fi'
-"Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; ')),ElseBloc(Else('else'),Pipeline(Command(Separator(' '),Argument(Normal('c')))),DotComa(' ; ')),Fi('fi')))))"
+"Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; ')),ElseBloc(Else('else '),Pipeline(Command(Argument(Normal('c')))),DotComa(' ; ')),Fi('fi')))))"
 "Line(Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b')))))ElseBloc(Pipeline(Command(Argument(Normal('c')))))))))"
 'if a; then b | ; fi'
 "Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues('; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b'))),Separator(' '),Unterminated('| ')),DotComa('; ')),Fi('fi')))))"
@@ -577,3 +577,48 @@
 'A= done'
 "Line(Pipeline(Command(Affectation(VariableName('A'),Equal('=')),Separator(' '),Argument(Normal('done')))))"
 "Line(Pipeline(Command(Affectation(VariableName('A')Equal('='))Argument(Normal('done')))))"
+'a\nb'
+"Line(Pipeline(Command(Argument(Normal('a')))),NewLine('\n'),Pipeline(Command(Argument(Normal('b')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))))Pipeline(Command(Argument(Normal('b')))))"
+'a ;\nb'
+"Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ;'),NewLine('\n'),Pipeline(Command(Argument(Normal('b')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))))Pipeline(Command(Argument(Normal('b')))))"
+'(a\nb)'
+"Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Argument(Normal('a')))),NewLine('\n'),Pipeline(Command(Argument(Normal('b'))))),GroupStop(')'))))"
+"Line(Pipeline(Group(GroupStart Line(Pipeline(Command(Argument(Normal('a'))))Pipeline(Command(Argument(Normal('b')))))GroupStop )))"
+'A="a\nb"'
+'Line(Pipeline(Command(Affectation(VariableName(\'A\'),Equal(\'=\'),Guillemet(\'"\'),Normal(\'a\nb\'),Guillemet(\'"\')))))'
+"Line(Pipeline(Command(Affectation(VariableName('A')Equal('=')Normal('a\nb')))))"
+'A=a\nb'
+"Line(Pipeline(Command(Affectation(VariableName('A'),Equal('='),Normal('a')))),NewLine('\n'),Pipeline(Command(Argument(Normal('b')))))"
+"Line(Pipeline(Command(Affectation(VariableName('A')Equal('=')Normal('a'))))Pipeline(Command(Argument(Normal('b')))))"
+'for a in *\ndo b ; done'
+"Line(Pipeline(Command(ForLoop(For('for '),LoopVariable('a'),In(' in '),ForValues(Argument(Star('*'))),EndOfValues('\n'),Body(Do('do '),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; '),Done('done'))))))"
+"Line(Pipeline(Command(ForLoop(LoopVariable('a')ForValues(Argument(Star('*')))Body(Pipeline(Command(Argument(Normal('b')))))))))"
+'for a in *\ndo b\ndone'
+"Line(Pipeline(Command(ForLoop(For('for '),LoopVariable('a'),In(' in '),ForValues(Argument(Star('*'))),EndOfValues('\n'),Body(Do('do '),Pipeline(Command(Argument(Normal('b')))),NewLine('\n'),Done('done'))))))"
+"Line(Pipeline(Command(ForLoop(LoopVariable('a')ForValues(Argument(Star('*')))Body(Pipeline(Command(Argument(Normal('b')))))))))"
+'while a\ndo b\ndone'
+"Line(Pipeline(Command(WhileLoop(While('while '),Command(Argument(Normal('a'))),EndOfValues('\n'),Body(Do('do '),Pipeline(Command(Argument(Normal('b')))),NewLine('\n'),Done('done'))))))"
+"Line(Pipeline(Command(WhileLoop(Command(Argument(Normal('a')))Body(Pipeline(Command(Argument(Normal('b')))))))))"
+'a\\\nb'
+"Line(Pipeline(Command(Argument(Normal('a'),Backslash('\\\\'),Normal('\nb')))))"
+"Line(Pipeline(Command(Argument(Normal('a\nb')))))"
+'a&\nb'
+"Line(Backgrounded(Pipeline(Command(Argument(Normal('a'))))),Background('&'),NewLine('\n'),Pipeline(Command(Argument(Normal('b')))))"
+"Line(Backgrounded(Pipeline(Command(Argument(Normal('a')))))Pipeline(Command(Argument(Normal('b')))))"
+'if a\nthen\nb\nfi'
+"Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues('\n'),ThenBloc(Then('then\n'),Pipeline(Command(Argument(Normal('b')))),NewLine('\n')),Fi('fi')))))"
+"Line(Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b')))))))))"
+'if a\nthen\nb\nelse\nc\nfi'
+"Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues('\n'),ThenBloc(Then('then\n'),Pipeline(Command(Argument(Normal('b')))),NewLine('\n')),ElseBloc(Else('else\n'),Pipeline(Command(Argument(Normal('c')))),NewLine('\n')),Fi('fi')))))"
+"Line(Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b')))))ElseBloc(Pipeline(Command(Argument(Normal('c')))))))))"
+'if\na\nthen\nb\nfi'
+"Line(Pipeline(Command(IfThenElse(If('if\n'),Command(Argument(Normal('a'))),EndOfValues('\n'),ThenBloc(Then('then\n'),Pipeline(Command(Argument(Normal('b')))),NewLine('\n')),Fi('fi')))))"
+"Line(Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b')))))))))"
+'if\na\nthen\nb\nc\nfi'
+"Line(Pipeline(Command(IfThenElse(If('if\n'),Command(Argument(Normal('a'))),EndOfValues('\n'),ThenBloc(Then('then\n'),Pipeline(Command(Argument(Normal('b')))),NewLine('\n'),Pipeline(Command(Argument(Normal('c')))),NewLine('\n')),Fi('fi')))))"
+"Line(Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b'))))Pipeline(Command(Argument(Normal('c')))))))))"
+'if\na\nthen\nb\nfi\nif\na\nthen\nb\nfi'
+"Line(Pipeline(Command(IfThenElse(If('if\n'),Command(Argument(Normal('a'))),EndOfValues('\n'),ThenBloc(Then('then\n'),Pipeline(Command(Argument(Normal('b')))),NewLine('\n')),Fi('fi')))),NewLine('\n'),Pipeline(Command(IfThenElse(If('if\n'),Command(Argument(Normal('a'))),EndOfValues('\n'),ThenBloc(Then('then\n'),Pipeline(Command(Argument(Normal('b')))),NewLine('\n')),Fi('fi')))))"
+"Line(Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b'))))))))Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b')))))))))"

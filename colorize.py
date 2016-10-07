@@ -108,10 +108,10 @@ class Options:
             s.append("<br>")
         return ''.join(s)
     
-list_stopper = '&<>;|()'
-redirection_stopper = '#<>;|()'
+list_stopper = '&<>;|()\n'
+redirection_stopper = '#<>;|()\n'
 argument_stopper = ' \t' + list_stopper
-pipeline_stopper = ';)&'
+pipeline_stopper = ';)&\n'
 
 ##############################################################################
 ##############################################################################
@@ -587,6 +587,10 @@ class DotComa(Separator):
     def local_help(self, dummy_position):
         return "Le «;» permet de séparer les commandes."
 
+class NewLine(Separator):
+    def local_help(self, dummy_position):
+        return "Le retour à la ligne permet de séparer les commandes."
+
 special_variables = {
     "#": "le nombre d'arguments du script shell",
     "?": "la valeur de retour du processus précédent",
@@ -762,7 +766,7 @@ class Or(Chars):
 
 class Background(Separator):
     def local_help(self, dummy_position):
-        return 'Lancement en arrière plan'        
+        return 'Lancement en arrière plan'
     def cleanup(self, replace_option):
         return '&'
 
@@ -1563,6 +1567,11 @@ class Parser:
                 parsed.append(DotComa(";" + self.skip(" \t")))
                 if self.empty():
                     break
+            if self.get() == '\n':
+                self.next()
+                parsed.append(NewLine("\n" + self.skip(" \t\n")))
+                if self.empty():
+                    break
             if self.get() == '|':
                 self.next()
                 if self.get() != '|':
@@ -1616,7 +1625,7 @@ class Parser:
                 if not self.empty() and self.get() == '|':
                     self.i -= 1
                     break
-                parsed.append(Pipe("|" + self.skip(" \t")))
+                parsed.append(Pipe("|" + self.skip(" \t\n")))
         return parsed
     def parse_group(self, eat_separator=True):
         parsed = Group()
@@ -1683,7 +1692,7 @@ class Parser:
         if error == '':
             v = self.parse_argument()
             if v.text() == keyword:
-                v = keyword + self.skip(' \t')
+                v = keyword + self.skip(' \t\n')
                 if keyword == 'in':
                     v = In(v)
                 elif keyword == 'then':
@@ -1708,7 +1717,7 @@ class Parser:
         
     def parse_if(self):
         parsed = IfThenElse()
-        parsed.append(If('if' + self.skip(" \t")))
+        parsed.append(If('if' + self.skip(" \t\n")))
         error = self.parse_test(parsed)
         error = self.parse_keyword(error, parsed.content, "then")
         if error == '':
@@ -1718,7 +1727,7 @@ class Parser:
             elif err == 'else':
                 else_block = ElseBloc()
                 parsed.append(else_block)
-                else_block.append(Else(err))
+                else_block.append(Else(err + self.skip(' \t\n')))
                 err = self.parse_until(else_block, ['fi'], True)
                 if err == 'fi':
                     parsed.append(Fi(err))
@@ -1775,9 +1784,9 @@ class Parser:
     def parse_end_of_command(self, error, parsed):
         error = self.error_if_empty(error)
         if error == '':
-            if self.get() == ';':
+            if self.get() in ';\n':
+                parsed.append(EndOfValues(self.get()))
                 self.next()
-                parsed.append(EndOfValues(';'))
                 if not self.empty():
                     self.read_separator(parsed)
             else:
@@ -1792,7 +1801,7 @@ class Parser:
         if (
                 (
                     len(parsed.content) > 3
-                    and parsed.content[-2].text().strip() == ';'
+                    and parsed.content[-2].text().strip() in ';\n'
                     and parsed.content[1].text() != ''
                     or
                     isinstance(parsed.content[-2], Backgrounded)
@@ -1856,7 +1865,7 @@ class Parser:
             if not self.empty():
                 if not self.read_comment(parsed):
                     return parsed
-                if self.get() in '|;)&':
+                if self.get() in '|;)&\n':
                     return parsed
                 if self.get() == '`' and self.in_back_cote:
                     return parsed
