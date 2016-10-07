@@ -15,9 +15,9 @@
     margin-bottom: 0.5em ;
 }
 
-#sheexp_input, #sheexp_output, .Parsed {
+#sheexp_input, #sheexp_output, SHELL > .Line {
     font-family: Courier New;
-    font-size: 14pt ;
+    font-size: 120% ;
     font-weight: bold ;
 }
 
