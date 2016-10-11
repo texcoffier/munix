@@ -63,7 +63,7 @@
 [3,-178,	'Texte : «a»'
 	'Argument 1 : «a»'
 ],
-[4,-178,	'Un espace ou plus pour séparer les arguments.'
+[4,-178,	'Continuez la condition'
 	''
 ]],
 [	'[ a b'
@@ -497,6 +497,191 @@
 [52,-190,	'Un espace ou plus pour séparer les arguments.'
 ],
 [53,-178,	'Texte : «]»'
+	'Argument 2 : «]»'
+]],
+[	'while ['
+,
+[0,-1,	'Commande incomplète'
+	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
+],
+[7,-93,	'Tapez un espace puis la condition'
+	'Commande : «[» sans argument'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+]],
+[	'while [ '
+,
+[0,-1,	'Commande incomplète'
+	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
+],
+[7,-93,	'Tapez un espace puis la condition'
+	'Commande : «[» sans argument'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+],
+[8,-223,	'Indiquez la condition à tester'
+]],
+[	'while [ a'
+,
+[0,-1,	'Commande incomplète'
+	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
+],
+[7,-93,	"Manque le ']' final"
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+],
+[8,-228,	'Un espace ou plus pour séparer les arguments.'
+],
+[9,-227,	'Texte : «a»'
+	'Argument 1 : «a»'
+]],
+[	'while [ a '
+,
+[0,-1,	'Commande incomplète'
+	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
+],
+[7,-93,	"Manque le ']' final"
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+],
+[8,-228,	'Un espace ou plus pour séparer les arguments.'
+],
+[9,-227,	'Texte : «a»'
+	'Argument 1 : «a»'
+],
+[10,-227,	'Continuez la condition'
+	''
+]],
+[	'while [ a ='
+,
+[0,-1,	'Commande incomplète'
+	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
+],
+[7,-93,	"Manque le ']' final"
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+],
+[8,-228,	'Un espace ou plus pour séparer les arguments.'
+],
+[9,-227,	'Texte : «a»'
+	'Argument 1 : «a»'
+],
+[10,-227,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[11,-227,	'Il manque la valeur de droite'
+	'Argument 2 : «=»'
+]],
+[	'while [ a = '
+,
+[0,-1,	'Commande incomplète'
+	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
+],
+[7,-93,	"Manque le ']' final"
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+],
+[8,-228,	'Un espace ou plus pour séparer les arguments.'
+],
+[9,-227,	'Texte : «a»'
+	'Argument 1 : «a»'
+],
+[10,-227,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[11,-227,	'Il manque la valeur de droite'
+	'Argument 2 : «=»'
+],
+[12,-227,	'Argument de droite'
+	''
+]],
+[	'while [ a = b'
+,
+[0,-1,	'Commande incomplète'
+	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
+],
+[7,-93,	"Manque le ']' final"
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+],
+[8,-228,	'Un espace ou plus pour séparer les arguments.'
+],
+[9,-228,	'Texte : «a»'
+	'Test si «a» = «b»'
+],
+[10,-246,	'Un espace ou plus pour séparer les arguments.'
+],
+[11,-246,	'Comparaison de chaînes de caractères'
+],
+[12,-246,	'Un espace ou plus pour séparer les arguments.'
+],
+[13,-246,	'Texte : «b»'
+]],
+[	'while [ a = b '
+,
+[0,-1,	'Commande incomplète'
+	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
+],
+[7,-93,	"Manque le ']' final"
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+],
+[8,-228,	'Un espace ou plus pour séparer les arguments.'
+],
+[9,-228,	'Texte : «a»'
+	'Test si «a» = «b»'
+],
+[10,-246,	'Un espace ou plus pour séparer les arguments.'
+],
+[11,-246,	'Comparaison de chaînes de caractères'
+],
+[12,-246,	'Un espace ou plus pour séparer les arguments.'
+],
+[13,-246,	'Texte : «b»'
+],
+[14,-228,	"Vous pouvez terminer le test avec un ']'"
+]],
+[	'while [ a = b ]'
+,
+[0,-1,	'Commande incomplète'
+	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
+],
+[7,-93,	'Texte : «[»'
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+],
+[8,-228,	'Un espace ou plus pour séparer les arguments.'
+],
+[9,-228,	'Texte : «a»'
+	'Test si «a» = «b»'
+],
+[10,-246,	'Un espace ou plus pour séparer les arguments.'
+],
+[11,-246,	'Comparaison de chaînes de caractères'
+],
+[12,-246,	'Un espace ou plus pour séparer les arguments.'
+],
+[13,-246,	'Texte : «b»'
+],
+[14,-228,	'Un espace ou plus pour séparer les arguments.'
+],
+[15,-227,	'Texte : «]»'
 	'Argument 2 : «]»'
 ]],
 ]

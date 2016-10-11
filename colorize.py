@@ -471,6 +471,7 @@ def parse_test(command, position, allow_bool=True):
     (position, t, v) = get_argument(command, position)
     old_position = position - 1
     if v is None:
+        command.fail = "empty"
         return position
     if t == "!":
         v.make_comment("Négation de l'expression qui suit", "#080")
@@ -594,18 +595,15 @@ def analyse_test(command):
             else:
                 v1.make_comment("Manque le ']' final", "#F00")
             last = command.content[position-1]
-            if (isinstance(last, Unterminated)
-                and 'point-virgule' in last.message
-                or isinstance(last, Separator)
-                and command.nr_argument >= 1
-                ):
-                if not command.fail:
-                    last.message = "Vous pouvez terminer le test avec un ']'"
-            elif (isinstance(last, Separator)
-                  and command.nr_argument == 0
-                  and not command.fail
-                  ):
+            space = (isinstance(last, Separator)
+                     or isinstance(last, Unterminated))
+            if space and command.nr_argument >= 1 and command.fail == False:
+                last.message = "Vous pouvez terminer le test avec un ']'"
+            elif space and command.nr_argument == 0 and command.fail != True:
                 last.message = "Indiquez la condition à tester"
+            elif space and command.nr_argument == 1:
+                last.message = "Continuez la condition"
+            # else: last.message = name(last) + str(command.nr_argument)
         else:
             v1.make_comment(foreground="#080")
             if t != ']':

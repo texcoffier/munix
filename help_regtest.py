@@ -50,7 +50,7 @@ with open("help_regtest.txt", "r") as h:
 
 
 if error and not rewrite:
-    os.system("diff -u help_regtest.txt help_regtest.txt.new")
+    os.system("diff -U 20 help_regtest.txt help_regtest.txt.new")
     print("\nTo record the changes, run:  {} rewrite".format(sys.argv[0]))
     sys.exit(1)
 
