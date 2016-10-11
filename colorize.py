@@ -459,6 +459,14 @@ test_operators = {
     '-le': ["&le;", True],
    }
 
+def need_operator(command, v):
+    s = []
+    for i in test_operators:
+        s.append(i)
+    s.sort()
+    v.make_comment('Ici on attend un opérateur : ' + ' '.join(s), "#F00")
+    command.fail = True
+
 def parse_test(command, position, allow_bool=True):
     (position, t, v) = get_argument(command, position)
     old_position = position - 1
@@ -476,6 +484,7 @@ def parse_test(command, position, allow_bool=True):
         (position, t2, v2) = get_argument(command, position)
         if v2 is None:
             v.make_comment("Il manque la parenthèse fermante", "#F00")
+            command.fail = True
             return position
         if t2 != ')':
             v2.make_comment("Il devrait y avoir une parenthèse fermante",
@@ -484,7 +493,7 @@ def parse_test(command, position, allow_bool=True):
             v.make_comment(foreground="#080")
             position = merge_into(command, old_position, position,
                                   ArgumentGroup(),
-                                  "Regoupe ces opérations")
+                                  "Regroupe ces opérations")
     elif t in ('-e', '-d'):
         v.make_comment(
            {
@@ -494,8 +503,8 @@ def parse_test(command, position, allow_bool=True):
         (position, t2, v2) = get_argument(command, position)
         if v2 is None:
             v.make_comment(foreground="#F00")
-            if isinstance(command.content[position-1], Unterminated):
-                command.content[position-1].message = "Indiquez le chemin"
+            command.content[position-1].message = "Indiquez le chemin"
+            command.fail = True
             return position
         else:
             m = {
@@ -510,6 +519,7 @@ def parse_test(command, position, allow_bool=True):
     else:
         (position, t2, v2) = get_argument(command, position)
         if v2 is None:
+            command.fail = True
             return position
         if t2 in test_operators:
             (position, t3, v3) = get_argument(command, position)
@@ -517,6 +527,7 @@ def parse_test(command, position, allow_bool=True):
                 v2.make_comment("Il manque la valeur de droite", "#F00")
                 if isinstance(command.content[position-1], Unterminated):
                     command.content[position-1].message = "Argument de droite"
+                command.fail = True
                 return position
             else:
                 if test_operators[t2][1]:
@@ -531,10 +542,7 @@ def parse_test(command, position, allow_bool=True):
                                       + " " + test_operators[t2][0] + " "
                                       + "«" + v3.html() + "»")
         else:
-            s = 'Ici on attend un opérateur : '
-            for i in test_operators:
-                s += ' ' + i
-            v2.make_comment(s, "#F00")
+            need_operator(command, v2)
             return position
 
     if not allow_bool:
@@ -557,6 +565,7 @@ def parse_test(command, position, allow_bool=True):
             if (save_position+1 == position
                 and isinstance(command.content[position-1], Unterminated)):
                 command.content[position-1].message = "Indiquez une expression"
+                command.fail = True
             (position, t, v) = get_argument(command, position)
             if t != operator:
                 position = merge_into(command, old_position, position-1,
@@ -568,25 +577,35 @@ def parse_test(command, position, allow_bool=True):
         return position-1
 
     if v:
+        command.fail = True
         v.make_comment("Ici on devrait trouver '-o' ou '-a'", "#F00")
     return position
             
 
 def analyse_test(command):
+    command.fail = False
     (position1, t1, v1) = get_argument(command, 0)
     position = parse_test(command, position1)
     (position, t, v) = get_argument(command, position)
     if t1 == '[':
         if v is None:
-            if command.nr_argument <= 1:
+            if command.nr_argument == 0:
                 v1.make_comment("Tapez un espace puis la condition", "#F00")
             else:
                 v1.make_comment("Manque le ']' final", "#F00")
             last = command.content[position-1]
             if (isinstance(last, Unterminated)
                 and 'point-virgule' in last.message
+                or isinstance(last, Separator)
+                and command.nr_argument >= 1
                 ):
-                last.message = "Vous pouvez terminer le test avec un ']'"
+                if not command.fail:
+                    last.message = "Vous pouvez terminer le test avec un ']'"
+            elif (isinstance(last, Separator)
+                  and command.nr_argument == 0
+                  and not command.fail
+                  ):
+                last.message = "Indiquez la condition à tester"
         else:
             v1.make_comment(foreground="#080")
             if t != ']':
@@ -708,7 +727,7 @@ class Chars:
         return (s + 'class="help help_' + name(self)
                 + '" style="background:' + unused_color(self)
                 + ';border:1px solid black'
-                + '"><div>' + message + '</div></div>')
+                + '"><div>' + message + '</div></div>\n')
     def local_help(self, dummy_position):
         return name(self) + ':' + protect(self.content)
     def active(self, position):
@@ -1417,7 +1436,7 @@ class Command(Container):
             return ''
         definition = commands[self.command]
         s = ['<div class="command_help">',
-             '<b>', self.command, '</b> : ',  definition["description"]]
+             '<b>' + self.command + '</b> : ' + definition["description"]]
         if definition["builtin"]:
             s.append(" (builtin)")
         s.append('<br>')
@@ -1431,11 +1450,11 @@ class Command(Container):
         if definition["options"]:
             s.append("Options :<br>")
             s.append(definition["options"].html())
-        s.append("Aide : <tt>")
-        s.append(definition["builtin"]
-                 and format_help(definition)
-                 or format_man(definition))
-        s.append("</tt><br>")
+        s.append("Aide : <tt>"
+                 + (definition["builtin"]
+                    and format_help(definition)
+                    or format_man(definition))
+                 + "</tt><br>")
         if self.nr_argument < definition["min_arg"]:
             s.append('<span class="command_help_error">'
                      + 'Votre commande manque d\'argument !</span><br>')
@@ -1727,7 +1746,7 @@ class ArgumentGroup(Argument):
     is_an_option = False
     command = False
     def local_help(self, dummy_position):
-        return self.message
+        return self.message + '\n'
 
 
 ##############################################################################

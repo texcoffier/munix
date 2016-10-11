@@ -31,6 +31,7 @@ doc_colorize.html:colorize.py create_doc.py
 
 regtest:colorize.js
 	./colorize_regtest.py
+	./help_regtest.py
 
 clean:
 	@echo "CLEANING"

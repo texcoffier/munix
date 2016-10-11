@@ -1,0 +1,502 @@
+[[	'echo *'
+,
+[0,-1,	'Texte : «echo»'
+	'La commande «echo» avec un argument.'
+	'echo : affiche ses arguments'
+	' (builtin)'
+	'Elle affiche un espace entre chaque argument'
+	'Syntaxe : '
+	'echo arg1 arg2 arg3...'
+	'Aide : help echo'
+	'Une ligne comportant : une commande simple'
+],
+[5,-220,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-219,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
+	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule."
+]],
+[	'['
+,
+[0,-1,	'Tapez un espace puis la condition'
+	'Commande : «[» sans argument'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+]],
+[	'[ '
+,
+[0,-1,	'Tapez un espace puis la condition'
+	'Commande : «[» sans argument'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-174,	'Indiquez la condition à tester'
+]],
+[	'[ a'
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-178,	'Texte : «a»'
+	'Argument 1 : «a»'
+]],
+[	'[ a '
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-178,	'Texte : «a»'
+	'Argument 1 : «a»'
+],
+[4,-178,	'Un espace ou plus pour séparer les arguments.'
+	''
+]],
+[	'[ a b'
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-178,	'Texte : «a»'
+	'Argument 1 : «a»'
+],
+[4,-178,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[5,-178,	'Ici on attend un opérateur : != -eq -ge -gt -le -lt -ne ='
+	'Argument 2 : «b»'
+]],
+[	'[ a ='
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-178,	'Texte : «a»'
+	'Argument 1 : «a»'
+],
+[4,-178,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[5,-178,	'Il manque la valeur de droite'
+	'Argument 2 : «=»'
+]],
+[	'[ a = '
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-178,	'Texte : «a»'
+	'Argument 1 : «a»'
+],
+[4,-178,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[5,-178,	'Il manque la valeur de droite'
+	'Argument 2 : «=»'
+],
+[6,-178,	'Un espace ou plus pour séparer les arguments.'
+	''
+]],
+[	'[ a = b'
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-179,	'Texte : «a»'
+	'Test si «a» = «b»'
+],
+[4,-197,	'Un espace ou plus pour séparer les arguments.'
+],
+[5,-197,	'Comparaison de chaînes de caractères'
+],
+[6,-197,	'Un espace ou plus pour séparer les arguments.'
+],
+[7,-197,	'Texte : «b»'
+]],
+[	'[ a = b '
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-179,	'Texte : «a»'
+	'Test si «a» = «b»'
+],
+[4,-197,	'Un espace ou plus pour séparer les arguments.'
+],
+[5,-197,	'Comparaison de chaînes de caractères'
+],
+[6,-197,	'Un espace ou plus pour séparer les arguments.'
+],
+[7,-197,	'Texte : «b»'
+],
+[8,-179,	"Vous pouvez terminer le test avec un ']'"
+]],
+[	'[ -d'
+,
+[0,-1,	'Tapez un espace puis la condition'
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-178,	'Vrai si le chemin suivant pointe sur un répertoire'
+	'Argument 1 : «-d»'
+]],
+[	'[ -d '
+,
+[0,-1,	'Tapez un espace puis la condition'
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-178,	'Vrai si le chemin suivant pointe sur un répertoire'
+	'Argument 1 : «-d»'
+],
+[5,-178,	'Indiquez le chemin'
+	''
+]],
+[	'[ -d a'
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-179,	'Vrai si le chemin suivant pointe sur un répertoire'
+	'Vrai si «a» est un répertoire'
+],
+[5,-209,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-209,	'Le chemin testé'
+]],
+[	'[ -d a '
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec un argument.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-179,	'Vrai si le chemin suivant pointe sur un répertoire'
+	'Vrai si «a» est un répertoire'
+],
+[5,-209,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-209,	'Le chemin testé'
+],
+[7,-179,	"Vous pouvez terminer le test avec un ']'"
+]],
+[	'[ -d a b'
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-179,	'Vrai si le chemin suivant pointe sur un répertoire'
+	'Vrai si «a» est un répertoire'
+],
+[5,-209,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-209,	'Le chemin testé'
+],
+[7,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[8,-178,	"Ici on devrait trouver '-o' ou '-a'"
+	'Argument 2 : «b»'
+]],
+[	'[ -d a ]'
+,
+[0,-1,	'Texte : «[»'
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-179,	'Vrai si le chemin suivant pointe sur un répertoire'
+	'Vrai si «a» est un répertoire'
+],
+[5,-209,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-209,	'Le chemin testé'
+],
+[7,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[8,-178,	'Texte : «]»'
+	'Argument 2 : «]»'
+]],
+[	'[ -d a -o -e k -a 5 != 6 -o 8 -lt 9 ]'
+,
+[0,-1,	'Texte : «[»'
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-179,	'Vrai si le chemin suivant pointe sur un répertoire'
+	'Vrai si «a» est un répertoire'
+	'OU booléen'
+],
+[5,-220,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-220,	'Le chemin testé'
+],
+[7,-190,	'Un espace ou plus pour séparer les arguments.'
+],
+[8,-190,	"'OU' booléen entre ce qui est à gauche et à droite"
+],
+[10,-190,	'Un espace ou plus pour séparer les arguments.'
+],
+[11,-190,	'Vrai si le chemin pointe sur une entité qui existe'
+	'Vrai si «k» est une entité qui existe'
+	'ET booléen'
+],
+[13,-239,	'Un espace ou plus pour séparer les arguments.'
+],
+[14,-239,	'Le chemin testé'
+],
+[15,-201,	'Un espace ou plus pour séparer les arguments.'
+],
+[16,-201,	"'ET' booléen entre ce qui est à gauche et à droite"
+],
+[18,-201,	'Un espace ou plus pour séparer les arguments.'
+],
+[19,-201,	'Texte : «5»'
+	'Test si «5» &ne; «6»'
+],
+[20,-222,	'Un espace ou plus pour séparer les arguments.'
+],
+[21,-222,	'Comparaison de chaînes de caractères'
+],
+[23,-222,	'Un espace ou plus pour séparer les arguments.'
+],
+[24,-222,	'Texte : «6»'
+],
+[25,-201,	'Un espace ou plus pour séparer les arguments.'
+],
+[26,-190,	"'OU' booléen entre ce qui est à gauche et à droite"
+],
+[28,-190,	'Un espace ou plus pour séparer les arguments.'
+],
+[29,-190,	'Texte : «8»'
+	'Test si «8» &lt; «9»'
+],
+[30,-211,	'Un espace ou plus pour séparer les arguments.'
+],
+[31,-211,	"Comparaison d'entiers"
+],
+[34,-211,	'Un espace ou plus pour séparer les arguments.'
+],
+[35,-211,	'Texte : «9»'
+],
+[36,-190,	'Un espace ou plus pour séparer les arguments.'
+],
+[37,-178,	'Texte : «]»'
+	'Argument 2 : «]»'
+]],
+[	"[ '(' a = 1 "
+,
+[0,-1,	"Manque le ']' final"
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-178,	'Il manque la parenthèse fermante'
+	"Argument 1 : «'('»"
+],
+[6,-178,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[7,-179,	'Texte : «a»'
+	'Test si «a» = «1»'
+],
+[8,-197,	'Un espace ou plus pour séparer les arguments.'
+],
+[9,-197,	'Comparaison de chaînes de caractères'
+],
+[10,-197,	'Un espace ou plus pour séparer les arguments.'
+],
+[11,-197,	'Texte : «1»'
+],
+[12,-179,	'Un espace ou plus pour séparer les arguments.'
+]],
+[	"[ '(' -d a -o -e k ')' -a '(' 5 != 6 -o 8 -lt 9 ')' ]"
+,
+[0,-1,	'Texte : «[»'
+	'La commande «[» avec 2 arguments.'
+	'[ : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man ['
+	'Une ligne comportant : une commande simple'
+],
+[2,-179,	'Un espace ou plus pour séparer les arguments.'
+],
+[3,-179,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	'Regroupe ces opérations'
+	'ET booléen'
+],
+[4,-214,	'Texte : «(»'
+],
+[5,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+],
+[6,-215,	'Un espace ou plus pour séparer les arguments'
+],
+[7,-214,	'Vrai si le chemin suivant pointe sur un répertoire'
+	'Vrai si «a» est un répertoire'
+	'OU booléen'
+],
+[9,-255,	'Un espace ou plus pour séparer les arguments.'
+],
+[10,-255,	'Le chemin testé'
+],
+[11,-225,	'Un espace ou plus pour séparer les arguments.'
+],
+[12,-225,	"'OU' booléen entre ce qui est à gauche et à droite"
+],
+[14,-225,	'Un espace ou plus pour séparer les arguments.'
+],
+[15,-225,	'Vrai si le chemin pointe sur une entité qui existe'
+	'Vrai si «k» est une entité qui existe'
+],
+[17,-263,	'Un espace ou plus pour séparer les arguments.'
+],
+[18,-263,	'Le chemin testé'
+],
+[19,-225,	'Un espace ou plus pour séparer les arguments.'
+],
+[20,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+],
+[21,-214,	'Texte : «)»'
+],
+[22,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+],
+[23,-190,	'Un espace ou plus pour séparer les arguments.'
+],
+[24,-190,	"'ET' booléen entre ce qui est à gauche et à droite"
+],
+[26,-190,	'Un espace ou plus pour séparer les arguments.'
+],
+[27,-190,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	'Regroupe ces opérations'
+],
+[28,-214,	'Texte : «(»'
+],
+[29,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+],
+[30,-215,	'Un espace ou plus pour séparer les arguments'
+],
+[31,-214,	'Texte : «5»'
+	'Test si «5» &ne; «6»'
+	'OU booléen'
+],
+[32,-246,	'Un espace ou plus pour séparer les arguments.'
+],
+[33,-246,	'Comparaison de chaînes de caractères'
+],
+[35,-246,	'Un espace ou plus pour séparer les arguments.'
+],
+[36,-246,	'Texte : «6»'
+],
+[37,-225,	'Un espace ou plus pour séparer les arguments.'
+],
+[38,-225,	"'OU' booléen entre ce qui est à gauche et à droite"
+],
+[40,-225,	'Un espace ou plus pour séparer les arguments.'
+],
+[41,-225,	'Texte : «8»'
+	'Test si «8» &lt; «9»'
+],
+[42,-246,	'Un espace ou plus pour séparer les arguments.'
+],
+[43,-246,	"Comparaison d'entiers"
+],
+[46,-246,	'Un espace ou plus pour séparer les arguments.'
+],
+[47,-246,	'Texte : «9»'
+],
+[48,-225,	'Un espace ou plus pour séparer les arguments.'
+],
+[49,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+],
+[50,-214,	'Texte : «)»'
+],
+[51,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+],
+[52,-190,	'Un espace ou plus pour séparer les arguments.'
+],
+[53,-178,	'Texte : «]»'
+	'Argument 2 : «]»'
+]],
+]
