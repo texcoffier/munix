@@ -622,3 +622,12 @@
 'if\na\nthen\nb\nfi\nif\na\nthen\nb\nfi'
 "Line(Pipeline(Command(IfThenElse(If('if\n'),Command(Argument(Normal('a'))),EndOfValues('\n'),ThenBloc(Then('then\n'),Pipeline(Command(Argument(Normal('b')))),NewLine('\n')),Fi('fi')))),NewLine('\n'),Pipeline(Command(IfThenElse(If('if\n'),Command(Argument(Normal('a'))),EndOfValues('\n'),ThenBloc(Then('then\n'),Pipeline(Command(Argument(Normal('b')))),NewLine('\n')),Fi('fi')))))"
 "Line(Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b'))))))))Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b')))))))))"
+'test a = b'
+"Line(Pipeline(Command(Argument(Normal('test')),Separator(' '),ArgumentGroup(Argument(Normal('a')),Separator(' '),Argument(Normal('=')),Separator(' '),Argument(Normal('b'))))))"
+"Line(Pipeline(Command(Argument(Normal('test'))ArgumentGroup(Argument(Normal('a'))Argument(Normal('='))Argument(Normal('b'))))))"
+'[ -d a ]'
+"Line(Pipeline(Command(Argument(Normal('[')),Separator(' '),ArgumentGroup(Argument(Normal('-d')),Separator(' '),Argument(Normal('a'))),Separator(' '),Argument(Normal(']')))))"
+"Line(Pipeline(Command(Argument(Normal('['))ArgumentGroup(Argument(Normal('-d'))Argument(Normal('a')))Argument(Normal(']')))))"
+'[ a = b -o c -eq d ]'
+"Line(Pipeline(Command(Argument(Normal('[')),Separator(' '),ArgumentGroup(ArgumentGroup(Argument(Normal('a')),Separator(' '),Argument(Normal('=')),Separator(' '),Argument(Normal('b'))),Separator(' '),Argument(Normal('-o')),Separator(' '),ArgumentGroup(Argument(Normal('c')),Separator(' '),Argument(Normal('-eq')),Separator(' '),Argument(Normal('d'))),Separator(' ')),Argument(Normal(']')))))"
+"Line(Pipeline(Command(Argument(Normal('['))ArgumentGroup(ArgumentGroup(Argument(Normal('a'))Argument(Normal('='))Argument(Normal('b')))Argument(Normal('-o'))ArgumentGroup(Argument(Normal('c'))Argument(Normal('-eq'))Argument(Normal('d'))))Argument(Normal(']')))))"

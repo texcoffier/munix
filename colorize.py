@@ -117,6 +117,11 @@ pipeline_stopper = ';)&\n'
 ##############################################################################
 ##############################################################################
 
+class ArgumentGroup:
+    pass # To turn around a RapydScript bug
+class Char:
+    pass # To turn around a RapydScript bug
+
 def nothing(txt):
     return txt
 
@@ -133,7 +138,8 @@ def define_command():
         "section": '1',
         "min_arg": 0,
         "options": None,
-        "cleanup": nothing # sleep 1m => sleep 60
+        "cleanup": nothing, # sleep 1m => sleep 60
+        "analyse": nothing  # see 'define_test'
         }
 
 def define_builtin():
@@ -250,7 +256,7 @@ def define_less():
     d = define_command()
     d['name'] = 'less'
     d['description'] = "affichage de fichier page par page"
-    d['comment'] = "Si aucun nom de fichier n'est donné c'est un filtre"
+    d['message'] = "Si aucun nom de fichier n'est donné c'est un filtre"
     d['syntax'] = "less <var>fichier1</var> <var>fichier2</var>"
     return d
 
@@ -340,7 +346,7 @@ def define_uniq():
     d = define_command()
     d['name'] = 'uniq'
     d['description'] = "affiche les fichiers en éliminant les lignes identiques"
-    d['comment'] = "Il faut qu'elles soient cote à cote."
+    d['message'] = "Il faut qu'elles soient cote à cote."
     d['*'] = "Affiche ce fichier"
     return d
 
@@ -372,7 +378,7 @@ def define_zcat():
     d = define_command()
     d['name'] = 'zcat'
     d['description'] = "affiche les fichiers en les décomprimant"
-    d['comment'] = "Elle n'écrit ni ne modifie rien sur le disque"
+    d['message'] = "Elle n'écrit ni ne modifie rien sur le disque"
     d['*'] = "Affiche ce fichier"
     return d
 
@@ -392,7 +398,7 @@ def define_sleep():
     d = define_command()
     d['name'] = 'sleep'
     d['description'] = "attend le nombre de secondes indiqué"
-    d['comment'] = "Arrêtez-la en tapant <tt>Ctrl+C</tt>"
+    d['message'] = "Arrêtez-la en tapant <tt>Ctrl+C</tt>"
     d['1'] = "Nombre de secondes à attendre"
     d['cleanup'] = replace_minutes
     return d
@@ -401,7 +407,7 @@ def define_tar():
     d = define_command()
     d['name'] = 'tar'
     d['description'] = "(<em><b>t</b>ape <b>a</b>archiving</em>) manipulation d'archive"
-    d['comment'] = "La syntaxe dépend des options indiquées"
+    d['message'] = "La syntaxe dépend des options indiquées"
     d['options'] = Options(
         Option('--extract', '-x', "1 fichier &#8594; hiérarchie"),
         Option('--create', '-c', "Hiérarchie &#8594; 1 fichier"),
@@ -415,8 +421,196 @@ def define_echo():
     d = define_builtin()
     d['name'] = 'echo'
     d['description'] = "affiche ses arguments"
-    d['message'] = "Ele affiche un espace entre chaque argument"
+    d['message'] = "Elle affiche un espace entre chaque argument"
     d['syntax'] = "echo arg1 arg2 arg3..."
+    return d
+
+def get_argument(command, position):
+    """Returns : position, argument or None"""
+    while position < len(command.content):
+        v = command.content[position]
+        position += 1
+        if isinstance(v, Argument):
+            return (position, v.text_content(), v)
+    return (position, None, None)        
+
+def merge_into(command, begin, end, node, comment):
+    node.content = []
+    node.message = comment
+    t = []
+    for i, n in enumerate(command.content):
+        if begin <= i < end:
+            node.content.append(n)
+            if i == begin:
+                t.append(node)
+        else:
+            t.append(n)
+    command.content = t
+    return begin + 1
+
+test_operators = {
+    '=': ["=", False],
+    '!=': ["&ne;", False],
+    '-eq': ["=", True],
+    '-ne': ["&ne;", True],
+    '-gt': ["&gt;", True],
+    '-ge': ["&ge;", True],
+    '-lt': ["&lt;", True],
+    '-le': ["&le;", True],
+   }
+
+def parse_test(command, position, allow_bool=True):
+    (position, t, v) = get_argument(command, position)
+    old_position = position - 1
+    if v is None:
+        return position
+    if t == "!":
+        v.make_comment("Négation de l'expression qui suit", "#080")
+        position = parse_test(command, position, allow_bool=False)
+        position = merge_into(command, old_position, position,
+                              ArgumentGroup(),
+                              "Négation booléenne")
+    elif t == '(':
+        v.make_comment(foreground="#080")
+        position = parse_test(command, position)
+        (position, t2, v2) = get_argument(command, position)
+        if v2 is None:
+            v.make_comment("Il manque la parenthèse fermante", "#F00")
+            return position
+        if t2 != ')':
+            v2.make_comment("Il devrait y avoir une parenthèse fermante",
+                            "#F00")
+        else:
+            v.make_comment(foreground="#080")
+            position = merge_into(command, old_position, position,
+                                  ArgumentGroup(),
+                                  "Regoupe ces opérations")
+    elif t in ('-e', '-d'):
+        v.make_comment(
+           {
+               '-e': "Vrai si le chemin pointe sur une entité qui existe",
+               '-d': "Vrai si le chemin suivant pointe sur un répertoire"
+           }[t], "#080")
+        (position, t2, v2) = get_argument(command, position)
+        if v2 is None:
+            v.make_comment(foreground="#F00")
+            if isinstance(command.content[position-1], Unterminated):
+                command.content[position-1].message = "Indiquez le chemin"
+            return position
+        else:
+            m = {
+               '-e': "une entité qui existe",
+               '-d': "un répertoire"
+            }[t]
+            v2.make_comment("Le chemin testé")
+            position = merge_into(command, old_position, position,
+                                  ArgumentGroup(),
+                                  "Vrai si «" + v2.html()
+                                  + '» est ' + m)
+    else:
+        (position, t2, v2) = get_argument(command, position)
+        if v2 is None:
+            return position
+        if t2 in test_operators:
+            (position, t3, v3) = get_argument(command, position)
+            if v3 is None:
+                v2.make_comment("Il manque la valeur de droite", "#F00")
+                if isinstance(command.content[position-1], Unterminated):
+                    command.content[position-1].message = "Argument de droite"
+                return position
+            else:
+                if test_operators[t2][1]:
+                    v2.make_comment("Comparaison d'entiers", "#080")
+                else:
+                    v2.make_comment("Comparaison de chaînes de caractères",
+                                    "#080")
+                position = merge_into(command, old_position, position,
+                                      ArgumentGroup(),
+                                      "Test si "
+                                      + "«" + v.html() + "»"
+                                      + " " + test_operators[t2][0] + " "
+                                      + "«" + v3.html() + "»")
+        else:
+            s = 'Ici on attend un opérateur : '
+            for i in test_operators:
+                s += ' ' + i
+            v2.make_comment(s, "#F00")
+            return position
+
+    if not allow_bool:
+        return position
+
+    (position, t, v) = get_argument(command, position)
+
+    for operator, humain, allow_bool2 in [
+            ['-a', 'ET', False],
+            ['-o', 'OU', 'allow-and']
+            ]:
+        if v is None:
+            return position
+        while t == operator:
+            v.make_comment(
+                "'" + humain + "' booléen entre ce qui est à gauche et à droite",
+                "#080")
+            save_position = position
+            position = parse_test(command, position, allow_bool=allow_bool2)
+            if (save_position+1 == position
+                and isinstance(command.content[position-1], Unterminated)):
+                command.content[position-1].message = "Indiquez une expression"
+            (position, t, v) = get_argument(command, position)
+            if t != operator:
+                position = merge_into(command, old_position, position-1,
+                                      ArgumentGroup(), humain + " booléen") +1
+        if allow_bool == 'allow-and':
+            return position-1
+
+    if t in (']', ')'):
+        return position-1
+
+    if v:
+        v.make_comment("Ici on devrait trouver '-o' ou '-a'", "#F00")
+    return position
+            
+
+def analyse_test(command):
+    (position1, t1, v1) = get_argument(command, 0)
+    position = parse_test(command, position1)
+    (position, t, v) = get_argument(command, position)
+    if t1 == '[':
+        if v is None:
+            if command.nr_argument <= 1:
+                v1.make_comment("Tapez un espace puis la condition", "#F00")
+            else:
+                v1.make_comment("Manque le ']' final", "#F00")
+            last = command.content[position-1]
+            if (isinstance(last, Unterminated)
+                and 'point-virgule' in last.message
+                ):
+                last.message = "Vous pouvez terminer le test avec un ']'"
+        else:
+            v1.make_comment(foreground="#080")
+            if t != ']':
+                v.make_comment("Cela devrait être un ']'", "#F00")
+            else:
+                v.make_comment(foreground="#080")
+            (position, t, v) = get_argument(command, position)
+            
+    while v:
+        v.make_comment("Arguments en trop", "#F00")
+        (position, t, v) = get_argument(command, position)
+    return command
+
+def define_test():
+    d = define_command()
+    d['name'] = 'test'
+    d['description'] = "Evaluateur de condition"
+    d['message'] = "La commande termine sans erreur si la condition est vraie"
+    d['analyse'] = analyse_test
+    return d
+
+def define_test_bracket():
+    d = define_test()
+    d['name'] = '['
     return d
 
 def define_manque_point_virgule(name):
@@ -434,7 +628,7 @@ def define_else (): return define_manque_point_virgule('else')
 def define_fi   (): return define_manque_point_virgule('fi')
 
 command_aliases = {
-    'more': 'less',
+    'more': 'less'
 }
 
 commands = {}
@@ -447,7 +641,7 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           
           define_done(), define_for(),
           define_if(), define_then(), define_else(), define_fi(),
-          define_read()
+          define_read(), define_test(), define_test_bracket()
 ]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
@@ -479,11 +673,13 @@ def valid_variable_name(name):
 
 class Chars:
     hide = False
+    foreground = "#000"
+    background = "#FFF"
     def __init__(self, chars, message=""):
         self.content = chars
         self.message = message
     def color(self):
-        return ["#000", "#FFF"]
+        return [self.foreground, self.background]
     def str(self):
         return name(self) + '(' + string(self.content) + ')'
     def nice(self, depth):
@@ -537,6 +733,10 @@ class Chars:
     def replace_unexpected(self):
         pass # To easely stop container recursion
     def check_options(self):
+        pass # To easely stop container recursion
+    def analyse(self):
+        return self # To easely stop container recursion
+    def make_comment(self, comment=None, foreground=None):
         pass # To easely stop container recursion
         
 
@@ -975,6 +1175,15 @@ class Container:
         for x in self.content:
             if isinstance(x, classe):
                 return x
+    def last_of(self, classe):
+        for x in self.content[::-1]:
+            if isinstance(x, classe):
+                return x
+    def all_of(self, classe):
+        return [x
+                for x in self.content
+                if isinstance(x, classe)
+        ]
     def is_a_pattern(self):
         for c in self.content:
             if c.is_a_pattern():
@@ -1092,6 +1301,13 @@ class Container:
                     self.content[i] = Unterminated(self.content[i].content)
     def text(self):
         return ''.join([x.text() for x in self.content])
+    def analyse(self):
+        self.content = [i.analyse()
+                        for i in self.content
+        ]
+        return self
+    def make_comment(self, comment=None, foreground=None):
+        pass
 
 class Line(Container):
     def color(self):
@@ -1231,7 +1447,14 @@ class Command(Container):
         if not self.command:
             return s
         return commands[self.command]["cleanup"](s)
-    
+
+    def analyse(self):
+        if self.command:
+            definition = commands[self.command]
+            if definition:
+                return definition['analyse'](self)
+        return Container.analyse(self)
+
 class Argument(Container):
     def color(self):
         return ["#000", "#FFA"]
@@ -1247,6 +1470,8 @@ class Argument(Container):
     def nice(self, depth=0):
         return 'A' + pad(depth) + ' '.join([x.str() for x in self.content])+'\n'
     def local_help(self, position):
+        if isinstance(self.parent, ArgumentGroup):
+            return ''
         pos = 0
         for child in self.parent.content:
             if isinstance(child, Argument):
@@ -1351,7 +1576,7 @@ class Argument(Container):
             if d in options.long_opt:
                 option = options.long_opt[d]
                 if option.argument:
-                    self.option_argument_help = d + ' : ' + option.argument
+                    self.option_argument_help = d + ' : ' + option.message
                     self.option_canon = option.short
                     if d == c:
                         self.option_argument_after = True
@@ -1375,7 +1600,7 @@ class Argument(Container):
                 continue
             if option and option.argument:
                 self.option_argument_help = ('-' + option.short[1] + ' : '
-                                             + option.argument)
+                                             + option.message)
                 self.option_argument_position = i+2
                 if len(c) == i+2:
                     self.option_argument_after = True
@@ -1390,6 +1615,13 @@ class Argument(Container):
             return Container.cleanup(self, replace_option)
         return "Argument(Normal('" + self.option_canon + "'))"
 
+    def make_comment(self, comment=None, foreground=None):
+        for i in self.content:
+            if comment:
+                i.message = comment
+            if foreground:
+                i.foreground = foreground
+        
 class Redirection(Container):
     def color(self):
         return ["#000", "#AFF"]
@@ -1490,6 +1722,12 @@ class Body(Line):
             return "Les commandes qui sont répétées"
         else:
             return "Terminer le bloc de commande avec le mot-clef «done»"
+
+class ArgumentGroup(Argument):
+    is_an_option = False
+    command = False
+    def local_help(self, dummy_position):
+        return self.message
 
 
 ##############################################################################
@@ -1604,6 +1842,8 @@ class Parser:
             parsed.replace_unexpected()
             parsed.init_position()
             parsed.check_options()
+            parsed.analyse()
+            parsed.init_position()
         return parsed
     def parse_pipeline(self, init):
         parsed = Pipeline()
@@ -1657,7 +1897,7 @@ class Parser:
         if error != '':
             return error
         if self.empty():
-            return 'Fin prématurée de la commande'
+            return 'Commande incomplète'
         return ''
 
     def parse_test(self, parsed):
