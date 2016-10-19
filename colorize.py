@@ -630,6 +630,68 @@ def define_test_bracket():
     d['name'] = '['
     return d
 
+
+def analyse_grep(command):
+    (position, dummy_t, dummy_v) = get_argument(command, 0)
+    state = "start"
+    is_a_filter = True
+    regexp = "normal"
+    while True:
+        (position, t, v) = get_argument(command, position)
+        if v is None:
+            break
+        if len(t) > 0 and t[0] == '-' and state != "regexp":
+            if state == "only-filename":
+                v.make_comment("Les options doivent être en début de commande",
+                               "#F00")
+                continue
+            if t == '-e':
+                v.make_comment(
+                    "L'argument qui suit est l'expression à rechercher")
+                state = "regexp"
+                continue
+            if t == '-E':
+                v.make_comment("Syntaxe des expressions régulières étendues")
+                regexp = "extended"
+                continue
+            if t == '-F':
+                v.make_comment("Recherche de texte verbatim")
+                regexp = "fast"
+                continue
+            v.make_comment("Option non prévue par ce logiciel", "#F00")
+            continue
+
+        if state == "start" or state == "regexp":
+            if v.first_of(Pattern):
+                v.make_comment("""Attention le shell va remplacer
+                le <em>pattern</em> et donc la commande <tt>grep</tt>
+                ne verra pas l'expression à chercher.""")
+            else:
+                v.make_comment("Expression régulière à chercher", "#F0F")
+            if state == "start":
+                state = "only-filename"
+            else:
+                state = "filename"
+            continue
+        if state == "filename" or state == "only-filename":
+            v.make_comment("Chemin du fichier ou l'on cherche les lignes",
+                           "#000")
+            state = "only-filename"
+            is_a_filter = False
+            continue
+        v.make_comment("Il y a un bug, prévenez l'enseignant", "#F00")
+    if is_a_filter:
+        command.make_comment("""Comme il n'y a pas de nom de fichier,
+        la commande cherche les lignes sur son entrée standard.""")
+    return command
+
+def define_grep():
+    d = define_command()
+    d['name'] = 'grep'
+    d['description'] = "Affiche les lignes du fichier qui passent le crible"
+    d['analyse'] = analyse_grep
+    return d
+
 def define_manque_point_virgule(name):
     d = define_command()
     d['description'] = '<span class="command_help_error">N\'auriez-vous pas oublié un point-virgule avant ?</span>'
@@ -658,7 +720,8 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           
           define_done(), define_for(),
           define_if(), define_then(), define_else(), define_fi(),
-          define_read(), define_test(), define_test_bracket()
+          define_read(), define_test(), define_test_bracket(),
+          define_grep()
 ]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
@@ -1323,8 +1386,8 @@ class Container:
                         for i in self.content
         ]
         return self
-    def make_comment(self, comment=None, foreground=None):
-        pass
+    def make_comment(self, comment=None):
+        self.message = comment
 
 class Line(Container):
     def color(self):
@@ -1377,9 +1440,12 @@ class Pipeline(Line):
             return ''
         return 'Un pipeline enchainant ' + str(nr) + ' commandes.'
 class Command(Container):
+    message = None
     def color(self):
         return ["#000", "#CFC"]
     def local_help(self, position):
+        if self.message:
+            return self.message + self.contextual_help(position)
         nr = self.number_of(Argument)
         if len(self.content) and isinstance(self.content[-1], Command):
             # Case of the For and While loop
@@ -2427,3 +2493,5 @@ class Parser:
         if not parsed.empty() and isinstance(parsed.content[0], Affectation):
             return parsed.content[0]
         return parsed
+
+

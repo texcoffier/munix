@@ -684,4 +684,155 @@
 [15,-227,	'Texte : «]»'
 	'Argument 2 : «]»'
 ]],
+[	'grep a'
+,
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+],
+[5,-222,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-221,	'Expression régulière à chercher'
+	'Argument 1 : «a»'
+]],
+[	'grep a b'
+,
+[0,-1,	'Texte : «grep»'
+	'La commande «grep» avec 2 arguments.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+],
+[5,-157,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-156,	'Expression régulière à chercher'
+	'Argument 1 : «a»'
+],
+[7,-156,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[8,-156,	"Chemin du fichier ou l'on cherche les lignes"
+	'Argument 2 : «b»'
+]],
+[	'grep a -e'
+,
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+],
+[5,-222,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-221,	'Expression régulière à chercher'
+	'Argument 1 : «a»'
+],
+[7,-221,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[8,-221,	'Les options doivent être en début de commande'
+	'Argument 2 : «-e»'
+]],
+[	'grep -e -e f'
+,
+[0,-1,	'Texte : «grep»'
+	'La commande «grep» avec 3 arguments.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+],
+[5,-157,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-156,	"L'argument qui suit est l'expression à rechercher"
+	'Argument 1 : «-e»'
+],
+[8,-156,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[9,-156,	'Expression régulière à chercher'
+	'Argument 2 : «-e»'
+],
+[11,-156,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[12,-156,	"Chemin du fichier ou l'on cherche les lignes"
+	'Argument 3 : «f»'
+]],
+[	'grep a b c'
+,
+[0,-1,	'Texte : «grep»'
+	'La commande «grep» avec 3 arguments.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+],
+[5,-157,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-156,	'Expression régulière à chercher'
+	'Argument 1 : «a»'
+],
+[7,-156,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[8,-156,	"Chemin du fichier ou l'on cherche les lignes"
+	'Argument 2 : «b»'
+],
+[9,-156,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[10,-156,	"Chemin du fichier ou l'on cherche les lignes"
+	'Argument 3 : «c»'
+]],
+[	'grep -e a -e b'
+,
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+],
+[5,-222,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-221,	"L'argument qui suit est l'expression à rechercher"
+	'Argument 1 : «-e»'
+],
+[8,-221,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[9,-221,	'Expression régulière à chercher'
+	'Argument 2 : «a»'
+],
+[10,-221,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[11,-221,	"L'argument qui suit est l'expression à rechercher"
+	'Argument 3 : «-e»'
+],
+[13,-221,	'Un espace ou plus pour séparer les arguments.'
+	''
+],
+[14,-221,	'Expression régulière à chercher'
+	'Argument 4 : «b»'
+]],
+[	'grep *'
+,
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+],
+[5,-222,	'Un espace ou plus pour séparer les arguments.'
+],
+[6,-221,	'Attention le shell va remplacer'
+	'                le pattern et donc la commande grep'
+	"                ne verra pas l'expression à chercher."
+	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule."
+]],
 ]
