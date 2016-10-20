@@ -11,9 +11,8 @@ def nice_repr(t):
     if isinstance(t, list):
         return '[' + ','.join(nice_repr(i) for i in t) + ']'
     if isinstance(t, str):
-        return '\n'.join('\t' + repr(i) for i in re.split("\n+", t)) + '\n'
+        return '\n'.join('\t' + repr(i) for i in re.split("\n+", t))
     return str(t)
-    
 
 def help_check(tests):
     output = open("help_regtest.txt.new", "w")
@@ -28,8 +27,11 @@ def help_check(tests):
             t = re.sub("<[^>]*>", "", p.help(i))
             if t != last:
                 j = -1
-                while t[j] == last[j]:
-                    j -= 1
+                try:
+                    while t[j] == last[j]:
+                        j -= 1
+                except IndexError:
+                    pass
                 if j == -1:
                     tt = t
                 else:

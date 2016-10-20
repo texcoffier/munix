@@ -630,7 +630,6 @@ def define_test_bracket():
     d['name'] = '['
     return d
 
-
 def analyse_grep(command):
     (position, dummy_t, dummy_v) = get_argument(command, 0)
     state = "start"
@@ -662,12 +661,23 @@ def analyse_grep(command):
             continue
 
         if state == "start" or state == "regexp":
+            c = v.cleanup(replace_option=False)
             if v.first_of(Pattern):
                 v.make_comment("""Attention le shell va remplacer
                 le <em>pattern</em> et donc la commande <tt>grep</tt>
                 ne verra pas l'expression à chercher.""")
+            elif 'Variable' in c:
+                v.make_comment("""L'expression à cherche va dépendre
+                du contenu de la variable.""")
             else:
-                v.make_comment("Expression régulière à chercher", "#F0F")
+                if regexp == 'normal':
+                    v.message = "Expression régulière à rechercher"
+                    command.content[position-1] = regexpparser_top(v, False)
+                elif regexp == 'extended':
+                    v.message = "Expression régulière étendue à rechercher"
+                    command.content[position-1] = regexpparser_top(v, True)
+                else:
+                    v.message = "Texte à rechercher"
             if state == "start":
                 state = "only-filename"
             else:
@@ -755,6 +765,7 @@ class Chars:
     hide = False
     foreground = "#000"
     background = "#FFF"
+    begin_regexp = False
     def __init__(self, chars, message=""):
         self.content = chars
         self.message = message
@@ -818,6 +829,8 @@ class Chars:
         return self # To easely stop container recursion
     def make_comment(self, comment=None, foreground=None):
         pass # To easely stop container recursion
+    def init_group_number(self, group_number):
+        return group_number # To easely stop container recursion
         
 
 class Normal(Chars):
@@ -945,7 +958,7 @@ class Invisible(Chars):
         return "Le caractère «" + self.content + "» disparaît. " + txt
 class Backslash(Invisible):
     def local_help(self, dummy_position):
-        return self.itext("Il annule la signification du caractère suivant.")
+        return self.itext("Il annule la signification du caractère suivant pour le shell.")
 class Quote(Invisible):
     def local_help(self, dummy_position):
         return self.itext("La signification de tous les caractères entre les deux cotes est annulée.")
@@ -1219,10 +1232,10 @@ class Container:
     def init_position(self, i=0, ident=0):
         self.start = i
         for content in self.content:
+            content.parent = self
             content.init_position(i, ident)
             i = content.end
             ident = content.ident + 1
-            content.parent = self
         self.ident = ident
         self.end = i
         return i
@@ -1238,6 +1251,7 @@ class Container:
         h = self.local_help(position)
         if h == '':
             return s
+        h += '\n'
         s += '<div '
         if position != -1:
             s += 'id="H' + str(self.ident) + '" '
@@ -1532,13 +1546,15 @@ class Command(Container):
         return commands[self.command]["cleanup"](s)
 
     def analyse(self):
+        self = Container.analyse(self)
         if self.command:
             definition = commands[self.command]
             if definition:
                 return definition['analyse'](self)
-        return Container.analyse(self)
+        return self
 
 class Argument(Container):
+    message = None
     def color(self):
         return ["#000", "#FFA"]
     def append(self, item):
@@ -1546,6 +1562,7 @@ class Argument(Container):
             and name(self.content[-1]) == name(item)
             and not isinstance(item, Variable)
             and not isinstance(item, SquareBracket)
+            and not isinstance(item, Invisible)
             ):
             self.content[-1].content += item.content
         else:
@@ -1619,7 +1636,9 @@ class Argument(Container):
                 text = ('<div class="command_help_error">'
                         + definition["unknown"] + '</div>')
             else:
-                return ''
+                if self.message is None:
+                    return ''
+                text = self.message
         return '<div class="command_help">' + text + '</div>'
     def option_definition(self, position=None):
         command = self.parent.command
@@ -1700,6 +1719,8 @@ class Argument(Container):
 
     def make_comment(self, comment=None, foreground=None):
         for i in self.content:
+            if isinstance(i, Invisible) or isinstance(i, Unterminated):
+                continue
             if comment:
                 i.message = comment
             if foreground:
@@ -2494,4 +2515,473 @@ class Parser:
             return parsed.content[0]
         return parsed
 
+##############################################################################
+##############################################################################
+##############################################################################
 
+class RegExpTree(Argument):
+    is_an_option = False
+    is_an_option_argument = False
+    argument_position = ""
+    begin_regexp = False
+    def local_help(self, position):
+        r = Argument.local_help(self, position)
+        if not isinstance(self.parent, RegExpTree):
+            r += " : une expression régulière"
+            if self.extended:
+                r += " <b>étendue</b>"
+            r += self.or_list(self.content)
+        return r
+    def color(self):
+        return ["#080", "#8F8"]
+    def init_position(self, i=0, ident=0):
+        if (isinstance(self, RegExpMultiply)
+            and isinstance(self.content[1], RegExpBloc)
+            and not self.parse_done):
+            self.content[1].content[0] = Unterminated(
+                '{',
+                """Indiquez le nombre de répétition ou bien un intervalle
+                comme {3,7} qui autorise de 3 à 7 répétitions""")
+
+        r = Container.init_position(self, i, ident)
+        if not isinstance(self.parent, RegExpTree):
+            self.groups = []
+            self.init_group_number(1)
+        return r
+
+    def get_groups(self):
+        top = self
+        while isinstance(top.parent, RegExpTree):
+            top = top.parent
+        return top.groups
+
+    def init_group_number(self, group_number):
+        if isinstance(self, RegExpGroup):
+            self.group_number = group_number
+            self.get_groups().append(self)
+            group_number += 1
+        for c in self.content:
+            group_number = c.init_group_number(group_number)
+        return group_number
+
+    def or_list(self, content):
+        t = []
+        s = ''
+        for i in content:
+            if isinstance(i, RegExpOr):
+                t.append(s)
+                s = ''
+            else:
+                if i.content != "" and not isinstance(i, Invisible):
+                    s += i.html()
+        if len(t) == 0:
+            return ''
+        t.append(s)
+        tt = []
+        for s in t:
+            if s == '':
+                s = "UNE CHAINE VIDE"
+            else:
+                s =  '«' + s + '»'
+            tt.append('<li>' + s)
+        return ("\n<br>Correspond à l'une des possibilités suivantes :\n<ul>"
+                + '\n'.join(tt) + '</ul>')
+
+class RegExpMultiply(RegExpTree):
+    parse_done = False
+    def local_help(self, dummy_position):
+        return ("Répète «" + self.content[0].html() + '» '
+                + self.content[1].how_many())
+
+class RegExpBloc(RegExpTree):
+    def how_many(self):
+        middle = None
+        for i, element in enumerate(self.content):
+            if element.text() == ',':
+                middle = i
+                break
+        if middle is None:
+            return ("exactement "
+                    + ''.join([element.html()
+                               for element in self.content[1:-1]])
+                    + ' fois')
+        return ('de '
+                + ''.join([element.html()
+                           for element in self.content[1:middle]])
+                + ' à '
+                + ''.join([element.html()
+                           for element in self.content[middle+1:-1]])
+                + " fois")
+    def local_help(self, dummy_position):
+        return ""
+
+class RegExpGroup(RegExpTree):
+    def local_help(self, dummy_position):
+        return ("Groupement numéro " + str(self.group_number)
+                + self.or_list(self.content[1:-1]))
+
+class RegExpBackslashSpecial(RegExpTree):
+    def local_help(self, dummy_position):
+        if self.content[-1].content == 'b':
+            return "Ceci représente l'emplacement aux extrémités de mot. Cet emplacement ne contient aucun caractère car il est entre 2 lettres."
+        groups = self.get_groups()
+        n = int(self.content[-1].content) - 1
+        if n < len(groups):
+            more = "qui correspond à : «" + groups[n].html() + "»"
+        else:
+            more = "mais ce groupe n'existe pas"
+        return ("Remplacé par ce qui a été trouvé par le groupe "
+                + str(n+1) + '<br>\n' + more)
+
+class RegExpList(RegExpTree):
+    def local_help(self, dummy_position):
+        if self.first_of(RegExpNegate):
+            return "Remplace un unique caractère qui n'est <b>pas</b> dans la liste"
+        else:
+            return "Remplace un unique caractère de la liste"
+
+class RegExpRange(RegExpTree):
+    def local_help(self, dummy_position):
+        return ("Un caractère dont le code ASCII est entre celui de «"
+                + self.content[0].content + '» et celui de «'
+                + self.content[-1].content + '»')
+
+class RegExpChar(Normal):
+    def color(self):
+        return ["#080", "#8F8"]
+
+class RegExpDot(RegExpChar):
+    def local_help(self, dummy_position):
+        return "Un caractère quelconque."
+
+class RegExpStar(RegExpChar):
+    def how_many(self):
+        if self.content == '*':
+            return "de 0 fois (rien) à l'infini"
+        else:
+            return "de une fois à l'infini"
+    def local_help(self, dummy_position):
+        return "Répète l'entité précédente"
+
+class RegExpReset(RegExpChar):
+    begin_regexp = True
+class RegExpOr(RegExpReset):
+    def local_help(self, dummy_position):
+        return "«OU» entre la partie gauche et la droite"
+class RegExpParenthesis(RegExpReset):
+    def local_help(self, dummy_position):
+        if self.content == '(':
+            return "Début du groupe"
+        else:
+            return "Fin du groupe"
+class RegExpBegin(RegExpReset):
+    def local_help(self, dummy_position):
+        return "Le début de ligne"
+class RegExpEnd(RegExpChar):
+    def local_help(self, dummy_position):
+        return "La fin de ligne"
+
+class RegExpGarbage(RegExpChar):
+    def local_help(self, dummy_position):
+        return "Ces caractères n'ont aucun sens après la fin de ligne"
+    def color(self):
+        return ["#F00", "#F88"]
+
+class RegExpBadRange(RegExpGarbage):
+    def local_help(self, dummy_position):
+        return "Les seul caractères autorisés sont les chiffres et la virgule"
+
+class RegExpBadEscape(RegExpGarbage):
+    def local_help(self, dummy_position):
+        return "Ce n'était pas la peine d'échapper ce caractère qui est normal, cela peut au contraire lui donner un sens."
+
+class RegExpBracket(RegExpChar):
+    def local_help(self, dummy_position):
+        if self.content == '[':
+            return "Début de liste de caractères"
+        else:
+            return "Fin de liste de caractères"
+
+class RegExpNegate(RegExpBracket):
+    def local_help(self, dummy_position):
+        return "Un caractère qui n'est pas dans la liste suivante"
+
+class RegExpListNormal(Normal):
+    def local_help(self, dummy_position):
+        return "Le caractère «" + self.content + "»"
+
+class RegExpBackslash(Invisible):
+    escape = True
+    def local_help(self, dummy_position):
+        if self.escape:
+            return "Il disparaît en annulant la signification du caractère suivant pour l'expression régulière."
+        else:
+            return "Il donne une signication au caractère suivant"
+    def color(self):
+        return ["#8F8", "#8F8"]
+
+
+class RegExpNoHelp(RegExpReset):
+    def local_help(self, dummy_position):
+        return ""
+
+
+def new_content(element, delete_from, delete_to, insert_elements):
+    content = []
+    for i, e in enumerate(element.content):
+        if delete_from <= i < delete_to:
+            if i == delete_from:
+                for ee in insert_elements:
+                    if isinstance(ee, Normal) and len(ee.content) == 0:
+                        continue
+                    content.append(ee)
+            continue
+        content.append(e)
+    element.content = content
+    return element
+
+def split_char(root, element, i, j, char, extended):
+    new_content(root, i, i+1,
+                [Normal(element.content[:j]),
+                 char,
+                 Normal(element.content[j+1:])])
+    return regexpparser(root, extended)
+
+def regexpparser_multiply(root, i, j, index_last_element, element, char,
+                          extended):
+    node = RegExpMultiply()
+    if char == '{':
+        number = RegExpBloc()
+        number.content = [RegExpNoHelp(char)]
+    else:
+        number = RegExpStar(char)
+        node.parse_done = True
+    if j != 0:
+        node.content = [Normal(element.content[j-1]), number]
+        root = new_content(root, i, i+1,
+                           [Normal(element.content[:j-1]),
+                            node,
+                            Normal(element.content[j+1:])])
+    else:
+        last_element = root.content[index_last_element]
+        if (isinstance(last_element, Normal)
+            and len(last_element.content) > 1):
+            new_content(root, index_last_element,
+                        index_last_element+1,
+                        [Normal(last_element.content[:-1]),
+                         Normal(last_element.content[-1])])
+            index_last_element += 1
+            i += 1
+            last_element = root.content[index_last_element]
+
+        if index_last_element + 1 == i:
+            bloc = last_element
+        else:
+            bloc = RegExpBloc()
+            bloc.content = root.content[index_last_element:i]
+        node.content = [bloc, number]
+        root = new_content(root, index_last_element, i+1,
+                           [node, Normal(element.content[j+1:])])
+    return regexpparser(root, extended)
+
+def regexpparser_get(root, i, j, content):
+    if len(root.content[i].content) == j:
+        while True:
+            i += 1
+            if i == len(root.content):
+                return None, None, None
+            if isinstance(root.content[i], Normal):
+                break
+            content.append(root.content[i])
+        j = 0
+    char = root.content[i].content[j]
+    j += 1
+    return i, j, char
+
+def regexpparser_list(root, i, j, extended):
+    content = [RegExpBracket('[')]
+    normals = []
+    i_start = i
+    j_start = j
+    i, j, char = regexpparser_get(root, i, j, content)
+    i, j, char = regexpparser_get(root, i, j, content)
+    if char == '^':
+        content.append(RegExpNegate(char))
+        i, j, char = regexpparser_get(root, i, j, content)
+    if char == ']':
+        content.append(RegExpListNormal(char))
+        i, j, char = regexpparser_get(root, i, j, content)
+    while i is not None:
+        if char == ']':
+            content.append(RegExpBracket(char))
+            break
+        if len(normals) > 1 and normals[-1].content == '-':
+            r = RegExpRange()
+            r.content = [RegExpListNormal(char)]
+            while True:
+                r.content.append(content.pop())
+                if r.content[-1] is normals[-2]:
+                    break
+            r.content.reverse()
+            content.append(r)
+            normals = []
+        else:
+            content.append(RegExpListNormal(char))
+            normals.append(content[-1])
+        i, j, char = regexpparser_get(root, i, j, content)
+
+    node = RegExpList()
+    node.content = content
+    root_content = [Normal(root.content[i_start].content[:j_start]),
+                    node]
+    if i is None:
+        content[0] = Unterminated(
+            '[',
+            'Une liste de caractères autorisés comme «[aeiou0-9_/@]»')
+        i = len(root.content)
+    else:
+        root_content.append(Normal(root.content[i].content[j:]))
+    root = new_content(root, i_start, i+1, root_content)
+    return regexpparser(root, extended)
+
+# Fonction en O(n*n) pour simplifier le code
+def regexpparser(root, extended):
+    index_last_element = None
+    group_start = None
+    for i, element in enumerate(root.content):
+        if element.begin_regexp:
+            if isinstance(element, RegExpParenthesis):
+                group_start = i
+            index_last_element = None
+            continue
+        if (index_last_element is not None
+            and isinstance(root.content[index_last_element], RegExpMultiply)
+            and not root.content[index_last_element].parse_done
+        ):
+            factor = root.content[index_last_element].content[1]
+            if not isinstance(factor, RegExpBloc):
+                node = RegExpBloc()
+                node.content = [RegExpNoHelp(factor.content)]
+                root.content[index_last_element].content[1] = node
+            else:
+                node = root.content[index_last_element].content[1]
+            if name(element) != 'Normal':
+                node.append(element)
+                new_content(root, i, i+1, [])
+                return regexpparser(root, extended)
+            char = element.content[0]
+            if char not in "0123456789,}":
+                node.content.append(RegExpBadRange(char))
+            else:
+                node.content.append(RegExpNoHelp(char))
+            if char == '}':
+                root.content[index_last_element].parse_done = True
+            new_content(root, i, i+1, [Normal(element.content[1:])])
+            return regexpparser(root, extended)
+        if not isinstance(element, Normal):
+            if (isinstance(element, RegExpTree)
+                or isinstance(element, RegExpBackslash)
+            ):
+                index_last_element = i
+            continue
+        if isinstance(element, RegExpEnd) or isinstance(element, RegExpDot):
+            index_last_element = i
+            continue
+
+        if isinstance(element, RegExpGarbage):
+            continue
+
+        if (index_last_element
+            and isinstance(root.content[index_last_element], RegExpEnd)
+            and name(element) == 'Normal'
+        ):
+            if not extended:
+                content = [RegExpGarbage(element.content)]
+                new_content(root, i, i+1, content)
+                return regexpparser(root, extended)
+            split = len(element.content)
+            for j, char in enumerate(element.content):
+                if char in ')|':
+                    split = j
+                    break
+            if split != 0:
+                content = [RegExpGarbage(element.content[:split]),
+                           Normal(element.content[split:])]
+                new_content(root, i, i+1, content)
+                return regexpparser(root, extended)
+
+        # Normal string
+        for j, char in enumerate(element.content):
+            if (j == 0
+                and index_last_element is not None
+                and isinstance(root.content[index_last_element],
+                               RegExpBackslash)):
+                if char == 'b'  or  char in '123456789' and extended:
+                    node = RegExpBackslashSpecial()
+                    node.content = root.content[index_last_element:i]
+                    root.content[index_last_element].escape = False
+                    node.content.append(RegExpNoHelp(char))
+                    if len(element.content) > 1:
+                        element.content = element.content[1:]
+                    else:
+                        i += 1
+                    new_content(root, index_last_element, i, [node]) 
+                    return regexpparser(root, extended)
+                if (char not in '*.^$\\[.'
+                    and (not extended or char not in '()|')):
+                    root.content[index_last_element].escape = 0
+                    return split_char(root, element, i, j,
+                                      RegExpBadEscape(char), extended)
+                continue
+            if ((char == '*'
+                or char in '+{' and extended
+                 )
+                and (j != 0 or index_last_element is not None)
+                ):
+                return regexpparser_multiply(root, i, j, index_last_element,
+                                             element, char, extended)
+            elif char == '^' and index_last_element is None and j == 0:
+                return split_char(root, element, i, j,
+                                  RegExpBegin(char), extended)
+            elif char == '$':
+                return split_char(root, element, i, j,
+                                  RegExpEnd(char), extended)
+            elif char == '.':
+                return split_char(root, element, i, j,
+                                  RegExpDot(char), extended)
+            elif char == '\\':
+                return split_char(root, element, i, j,
+                                  RegExpBackslash(char), extended)
+            elif char == '(' and extended:
+                return split_char(root, element, i, j,
+                                  RegExpParenthesis(char), extended)
+            elif char == '|' and extended:
+                return split_char(root, element, i, j,
+                                  RegExpOr(char), extended)
+            elif char == ')' and extended:
+                if group_start is None:
+                    return split_char(root, element, i, j,
+                                      Unterminated(')', "Il manque l'ouvrante"),
+                                      extended)
+                node = RegExpGroup()
+                node.content = root.content[group_start:i]
+                if j:
+                    node.content.append(Normal(element.content[:j]))
+                node.content.append(RegExpParenthesis(')'))
+                new_content(root, group_start, i+1,
+                            [node, Normal(element.content[j+1:])])
+                return regexpparser(root, extended)
+            elif char == '[':
+                return regexpparser_list(root, i, j, extended)
+        index_last_element = i
+    if group_start is not None:
+        root.content[group_start] = Unterminated(
+            '(', 'Groupe ouvert mais pas encore fermé')
+    return root
+
+def regexpparser_top(root, extended):
+    r = regexpparser(root, extended)
+    t = RegExpTree()
+    t.content = r.content
+    t.extended = extended
+    return t

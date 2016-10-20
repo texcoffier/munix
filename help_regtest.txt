@@ -1,5 +1,4 @@
-[[	'echo *'
-,
+[[	'echo *',
 [0,-1,	'Texte : «echo»'
 	'La commande «echo» avec un argument.'
 	'echo : affiche ses arguments'
@@ -9,830 +8,1115 @@
 	'echo arg1 arg2 arg3...'
 	'Aide : help echo'
 	'Une ligne comportant : une commande simple'
-],
-[5,-220,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-219,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
-	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule."
-]],
-[	'['
-,
+	''],
+[5,-222,	'Un espace ou plus pour séparer les arguments.'],
+[6,-223,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
+	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"]],
+[	'[',
 [0,-1,	'Tapez un espace puis la condition'
 	'Commande : «[» sans argument'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-]],
-[	'[ '
-,
+	'']],
+[	'[ ',
 [0,-1,	'Tapez un espace puis la condition'
 	'Commande : «[» sans argument'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-174,	'Indiquez la condition à tester'
-]],
-[	'[ a'
-,
+	''],
+[2,-176,	'Indiquez la condition à tester']],
+[	'[ a',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-178,	'Texte : «a»'
-	'Argument 1 : «a»'
-]],
-[	'[ a '
-,
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Texte : «a»'
+	'Argument 1 : «a»']],
+[	'[ a ',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-178,	'Texte : «a»'
-	'Argument 1 : «a»'
-],
-[4,-178,	'Continuez la condition'
-	''
-]],
-[	'[ a b'
-,
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Texte : «a»'
+	'Argument 1 : «a»'],
+[4,-181,	'Continuez la condition']],
+[	'[ a b',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-178,	'Texte : «a»'
-	'Argument 1 : «a»'
-],
-[4,-178,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[5,-178,	'Ici on attend un opérateur : != -eq -ge -gt -le -lt -ne ='
-	'Argument 2 : «b»'
-]],
-[	'[ a ='
-,
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Texte : «a»'
+	'Argument 1 : «a»'],
+[4,-181,	'Un espace ou plus pour séparer les arguments.'],
+[5,-181,	'Ici on attend un opérateur : != -eq -ge -gt -le -lt -ne ='
+	'Argument 2 : «b»']],
+[	'[ a =',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-178,	'Texte : «a»'
-	'Argument 1 : «a»'
-],
-[4,-178,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[5,-178,	'Il manque la valeur de droite'
-	'Argument 2 : «=»'
-]],
-[	'[ a = '
-,
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Texte : «a»'
+	'Argument 1 : «a»'],
+[4,-181,	'Un espace ou plus pour séparer les arguments.'],
+[5,-181,	'Il manque la valeur de droite'
+	'Argument 2 : «=»']],
+[	'[ a = ',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-178,	'Texte : «a»'
-	'Argument 1 : «a»'
-],
-[4,-178,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[5,-178,	'Il manque la valeur de droite'
-	'Argument 2 : «=»'
-],
-[6,-178,	'Un espace ou plus pour séparer les arguments.'
-	''
-]],
-[	'[ a = b'
-,
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Texte : «a»'
+	'Argument 1 : «a»'],
+[4,-181,	'Un espace ou plus pour séparer les arguments.'],
+[5,-181,	'Il manque la valeur de droite'
+	'Argument 2 : «=»'],
+[6,-181,	'Un espace ou plus pour séparer les arguments.']],
+[	'[ a = b',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-179,	'Texte : «a»'
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Texte : «a»'
 	'Test si «a» = «b»'
-],
-[4,-197,	'Un espace ou plus pour séparer les arguments.'
-],
-[5,-197,	'Comparaison de chaînes de caractères'
-],
-[6,-197,	'Un espace ou plus pour séparer les arguments.'
-],
-[7,-197,	'Texte : «b»'
-]],
-[	'[ a = b '
-,
+	''],
+[4,-200,	'Un espace ou plus pour séparer les arguments.'],
+[5,-200,	'Comparaison de chaînes de caractères'],
+[6,-200,	'Un espace ou plus pour séparer les arguments.'],
+[7,-200,	'Texte : «b»']],
+[	'[ a = b ',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-179,	'Texte : «a»'
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Texte : «a»'
 	'Test si «a» = «b»'
-],
-[4,-197,	'Un espace ou plus pour séparer les arguments.'
-],
-[5,-197,	'Comparaison de chaînes de caractères'
-],
-[6,-197,	'Un espace ou plus pour séparer les arguments.'
-],
-[7,-197,	'Texte : «b»'
-],
-[8,-179,	"Vous pouvez terminer le test avec un ']'"
-]],
-[	'[ -d'
-,
+	''],
+[4,-200,	'Un espace ou plus pour séparer les arguments.'],
+[5,-200,	'Comparaison de chaînes de caractères'],
+[6,-200,	'Un espace ou plus pour séparer les arguments.'],
+[7,-200,	'Texte : «b»'],
+[8,-181,	"Vous pouvez terminer le test avec un ']'"]],
+[	'[ -d',
 [0,-1,	'Tapez un espace puis la condition'
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-178,	'Vrai si le chemin suivant pointe sur un répertoire'
-	'Argument 1 : «-d»'
-]],
-[	'[ -d '
-,
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
+	'Argument 1 : «-d»']],
+[	'[ -d ',
 [0,-1,	'Tapez un espace puis la condition'
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-178,	'Vrai si le chemin suivant pointe sur un répertoire'
-	'Argument 1 : «-d»'
-],
-[5,-178,	'Indiquez le chemin'
-	''
-]],
-[	'[ -d a'
-,
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
+	'Argument 1 : «-d»'],
+[5,-181,	'Indiquez le chemin']],
+[	'[ -d a',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-179,	'Vrai si le chemin suivant pointe sur un répertoire'
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
 	'Vrai si «a» est un répertoire'
-],
-[5,-209,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-209,	'Le chemin testé'
-]],
-[	'[ -d a '
-,
+	''],
+[5,-212,	'Un espace ou plus pour séparer les arguments.'],
+[6,-212,	'Le chemin testé']],
+[	'[ -d a ',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-179,	'Vrai si le chemin suivant pointe sur un répertoire'
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
 	'Vrai si «a» est un répertoire'
-],
-[5,-209,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-209,	'Le chemin testé'
-],
-[7,-179,	"Vous pouvez terminer le test avec un ']'"
-]],
-[	'[ -d a b'
-,
+	''],
+[5,-212,	'Un espace ou plus pour séparer les arguments.'],
+[6,-212,	'Le chemin testé'],
+[7,-181,	"Vous pouvez terminer le test avec un ']'"]],
+[	'[ -d a b',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-179,	'Vrai si le chemin suivant pointe sur un répertoire'
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
 	'Vrai si «a» est un répertoire'
-],
-[5,-209,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-209,	'Le chemin testé'
-],
-[7,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[8,-178,	"Ici on devrait trouver '-o' ou '-a'"
-	'Argument 2 : «b»'
-]],
-[	'[ -d a ]'
-,
+	''],
+[5,-212,	'Un espace ou plus pour séparer les arguments.'],
+[6,-212,	'Le chemin testé'],
+[7,-181,	'Un espace ou plus pour séparer les arguments.'],
+[8,-181,	"Ici on devrait trouver '-o' ou '-a'"
+	'Argument 2 : «b»']],
+[	'[ -d a ]',
 [0,-1,	'Texte : «[»'
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-179,	'Vrai si le chemin suivant pointe sur un répertoire'
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
 	'Vrai si «a» est un répertoire'
-],
-[5,-209,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-209,	'Le chemin testé'
-],
-[7,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[8,-178,	'Texte : «]»'
-	'Argument 2 : «]»'
-]],
-[	'[ -d a -o -e k -a 5 != 6 -o 8 -lt 9 ]'
-,
+	''],
+[5,-212,	'Un espace ou plus pour séparer les arguments.'],
+[6,-212,	'Le chemin testé'],
+[7,-181,	'Un espace ou plus pour séparer les arguments.'],
+[8,-181,	'Texte : «]»'
+	'Argument 2 : «]»']],
+[	'[ -d a -o -e k -a 5 != 6 -o 8 -lt 9 ]',
 [0,-1,	'Texte : «[»'
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-179,	'Vrai si le chemin suivant pointe sur un répertoire'
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
 	'Vrai si «a» est un répertoire'
 	'OU booléen'
-],
-[5,-220,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-220,	'Le chemin testé'
-],
-[7,-190,	'Un espace ou plus pour séparer les arguments.'
-],
-[8,-190,	"'OU' booléen entre ce qui est à gauche et à droite"
-],
-[10,-190,	'Un espace ou plus pour séparer les arguments.'
-],
-[11,-190,	'Vrai si le chemin pointe sur une entité qui existe'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Le chemin testé'],
+[7,-193,	'Un espace ou plus pour séparer les arguments.'],
+[8,-193,	"'OU' booléen entre ce qui est à gauche et à droite"],
+[10,-193,	'Un espace ou plus pour séparer les arguments.'],
+[11,-193,	'Vrai si le chemin pointe sur une entité qui existe'
 	'Vrai si «k» est une entité qui existe'
 	'ET booléen'
-],
-[13,-239,	'Un espace ou plus pour séparer les arguments.'
-],
-[14,-239,	'Le chemin testé'
-],
-[15,-201,	'Un espace ou plus pour séparer les arguments.'
-],
-[16,-201,	"'ET' booléen entre ce qui est à gauche et à droite"
-],
-[18,-201,	'Un espace ou plus pour séparer les arguments.'
-],
-[19,-201,	'Texte : «5»'
+	''],
+[13,-244,	'Un espace ou plus pour séparer les arguments.'],
+[14,-244,	'Le chemin testé'],
+[15,-205,	'Un espace ou plus pour séparer les arguments.'],
+[16,-205,	"'ET' booléen entre ce qui est à gauche et à droite"],
+[18,-205,	'Un espace ou plus pour séparer les arguments.'],
+[19,-205,	'Texte : «5»'
 	'Test si «5» &ne; «6»'
-],
-[20,-222,	'Un espace ou plus pour séparer les arguments.'
-],
-[21,-222,	'Comparaison de chaînes de caractères'
-],
-[23,-222,	'Un espace ou plus pour séparer les arguments.'
-],
-[24,-222,	'Texte : «6»'
-],
-[25,-201,	'Un espace ou plus pour séparer les arguments.'
-],
-[26,-190,	"'OU' booléen entre ce qui est à gauche et à droite"
-],
-[28,-190,	'Un espace ou plus pour séparer les arguments.'
-],
-[29,-190,	'Texte : «8»'
+	''],
+[20,-227,	'Un espace ou plus pour séparer les arguments.'],
+[21,-227,	'Comparaison de chaînes de caractères'],
+[23,-227,	'Un espace ou plus pour séparer les arguments.'],
+[24,-227,	'Texte : «6»'],
+[25,-205,	'Un espace ou plus pour séparer les arguments.'],
+[26,-193,	"'OU' booléen entre ce qui est à gauche et à droite"],
+[28,-193,	'Un espace ou plus pour séparer les arguments.'],
+[29,-193,	'Texte : «8»'
 	'Test si «8» &lt; «9»'
-],
-[30,-211,	'Un espace ou plus pour séparer les arguments.'
-],
-[31,-211,	"Comparaison d'entiers"
-],
-[34,-211,	'Un espace ou plus pour séparer les arguments.'
-],
-[35,-211,	'Texte : «9»'
-],
-[36,-190,	'Un espace ou plus pour séparer les arguments.'
-],
-[37,-178,	'Texte : «]»'
-	'Argument 2 : «]»'
-]],
-[	"[ '(' a = 1 "
-,
+	''],
+[30,-215,	'Un espace ou plus pour séparer les arguments.'],
+[31,-215,	"Comparaison d'entiers"],
+[34,-215,	'Un espace ou plus pour séparer les arguments.'],
+[35,-215,	'Texte : «9»'],
+[36,-193,	'Un espace ou plus pour séparer les arguments.'],
+[37,-181,	'Texte : «]»'
+	'Argument 2 : «]»']],
+[	"[ '(' a = 1 ",
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-178,	'Il manque la parenthèse fermante'
-	"Argument 1 : «'('»"
-],
-[6,-178,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[7,-179,	'Texte : «a»'
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 1 : «'('»"],
+[4,-200,	'Il manque la parenthèse fermante'],
+[5,-200,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[6,-181,	'Un espace ou plus pour séparer les arguments.'],
+[7,-181,	'Texte : «a»'
 	'Test si «a» = «1»'
-],
-[8,-197,	'Un espace ou plus pour séparer les arguments.'
-],
-[9,-197,	'Comparaison de chaînes de caractères'
-],
-[10,-197,	'Un espace ou plus pour séparer les arguments.'
-],
-[11,-197,	'Texte : «1»'
-],
-[12,-179,	'Un espace ou plus pour séparer les arguments.'
-]],
-[	"[ '(' -d a -o -e k ')' -a '(' 5 != 6 -o 8 -lt 9 ')' ]"
-,
+	''],
+[8,-200,	'Un espace ou plus pour séparer les arguments.'],
+[9,-200,	'Comparaison de chaînes de caractères'],
+[10,-200,	'Un espace ou plus pour séparer les arguments.'],
+[11,-200,	'Texte : «1»'],
+[12,-181,	'Un espace ou plus pour séparer les arguments.']],
+[	"[ '(' -d a -o -e k ')' -a '(' 5 != 6 -o 8 -lt 9 ')' ]",
 [0,-1,	'Texte : «[»'
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
 	'Une ligne comportant : une commande simple'
-],
-[2,-179,	'Un espace ou plus pour séparer les arguments.'
-],
-[3,-179,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	''],
+[2,-181,	'Un espace ou plus pour séparer les arguments.'],
+[3,-181,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	'Regroupe ces opérations'
 	'ET booléen'
-],
-[4,-214,	'Texte : «(»'
-],
-[5,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
-],
-[6,-215,	'Un espace ou plus pour séparer les arguments'
-],
-[7,-214,	'Vrai si le chemin suivant pointe sur un répertoire'
+	''],
+[4,-218,	'Texte : «(»'],
+[5,-218,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[6,-219,	'Un espace ou plus pour séparer les arguments'],
+[7,-218,	'Vrai si le chemin suivant pointe sur un répertoire'
 	'Vrai si «a» est un répertoire'
 	'OU booléen'
-],
-[9,-255,	'Un espace ou plus pour séparer les arguments.'
-],
-[10,-255,	'Le chemin testé'
-],
-[11,-225,	'Un espace ou plus pour séparer les arguments.'
-],
-[12,-225,	"'OU' booléen entre ce qui est à gauche et à droite"
-],
-[14,-225,	'Un espace ou plus pour séparer les arguments.'
-],
-[15,-225,	'Vrai si le chemin pointe sur une entité qui existe'
+	''],
+[9,-261,	'Un espace ou plus pour séparer les arguments.'],
+[10,-261,	'Le chemin testé'],
+[11,-230,	'Un espace ou plus pour séparer les arguments.'],
+[12,-230,	"'OU' booléen entre ce qui est à gauche et à droite"],
+[14,-230,	'Un espace ou plus pour séparer les arguments.'],
+[15,-230,	'Vrai si le chemin pointe sur une entité qui existe'
 	'Vrai si «k» est une entité qui existe'
-],
-[17,-263,	'Un espace ou plus pour séparer les arguments.'
-],
-[18,-263,	'Le chemin testé'
-],
-[19,-225,	'Un espace ou plus pour séparer les arguments.'
-],
-[20,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
-],
-[21,-214,	'Texte : «)»'
-],
-[22,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
-],
-[23,-190,	'Un espace ou plus pour séparer les arguments.'
-],
-[24,-190,	"'ET' booléen entre ce qui est à gauche et à droite"
-],
-[26,-190,	'Un espace ou plus pour séparer les arguments.'
-],
-[27,-190,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	''],
+[17,-269,	'Un espace ou plus pour séparer les arguments.'],
+[18,-269,	'Le chemin testé'],
+[19,-230,	'Un espace ou plus pour séparer les arguments.'],
+[20,-218,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[21,-218,	'Texte : «)»'],
+[22,-218,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[23,-193,	'Un espace ou plus pour séparer les arguments.'],
+[24,-193,	"'ET' booléen entre ce qui est à gauche et à droite"],
+[26,-193,	'Un espace ou plus pour séparer les arguments.'],
+[27,-193,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	'Regroupe ces opérations'
-],
-[28,-214,	'Texte : «(»'
-],
-[29,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
-],
-[30,-215,	'Un espace ou plus pour séparer les arguments'
-],
-[31,-214,	'Texte : «5»'
+	''],
+[28,-218,	'Texte : «(»'],
+[29,-218,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[30,-219,	'Un espace ou plus pour séparer les arguments'],
+[31,-218,	'Texte : «5»'
 	'Test si «5» &ne; «6»'
 	'OU booléen'
-],
-[32,-246,	'Un espace ou plus pour séparer les arguments.'
-],
-[33,-246,	'Comparaison de chaînes de caractères'
-],
-[35,-246,	'Un espace ou plus pour séparer les arguments.'
-],
-[36,-246,	'Texte : «6»'
-],
-[37,-225,	'Un espace ou plus pour séparer les arguments.'
-],
-[38,-225,	"'OU' booléen entre ce qui est à gauche et à droite"
-],
-[40,-225,	'Un espace ou plus pour séparer les arguments.'
-],
-[41,-225,	'Texte : «8»'
+	''],
+[32,-252,	'Un espace ou plus pour séparer les arguments.'],
+[33,-252,	'Comparaison de chaînes de caractères'],
+[35,-252,	'Un espace ou plus pour séparer les arguments.'],
+[36,-252,	'Texte : «6»'],
+[37,-230,	'Un espace ou plus pour séparer les arguments.'],
+[38,-230,	"'OU' booléen entre ce qui est à gauche et à droite"],
+[40,-230,	'Un espace ou plus pour séparer les arguments.'],
+[41,-230,	'Texte : «8»'
 	'Test si «8» &lt; «9»'
-],
-[42,-246,	'Un espace ou plus pour séparer les arguments.'
-],
-[43,-246,	"Comparaison d'entiers"
-],
-[46,-246,	'Un espace ou plus pour séparer les arguments.'
-],
-[47,-246,	'Texte : «9»'
-],
-[48,-225,	'Un espace ou plus pour séparer les arguments.'
-],
-[49,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
-],
-[50,-214,	'Texte : «)»'
-],
-[51,-214,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
-],
-[52,-190,	'Un espace ou plus pour séparer les arguments.'
-],
-[53,-178,	'Texte : «]»'
-	'Argument 2 : «]»'
-]],
-[	'while ['
-,
+	''],
+[42,-252,	'Un espace ou plus pour séparer les arguments.'],
+[43,-252,	"Comparaison d'entiers"],
+[46,-252,	'Un espace ou plus pour séparer les arguments.'],
+[47,-252,	'Texte : «9»'],
+[48,-230,	'Un espace ou plus pour séparer les arguments.'],
+[49,-218,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[50,-218,	'Texte : «)»'],
+[51,-218,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[52,-193,	'Un espace ou plus pour séparer les arguments.'],
+[53,-181,	'Texte : «]»'
+	'Argument 2 : «]»']],
+[	'while [',
 [0,-1,	'Commande incomplète'
-	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
-],
-[7,-93,	'Tapez un espace puis la condition'
+	"Boucle tant que la commande s'exécute sans erreur"
+	'Une ligne comportant : une commande simple'
+	''],
+[7,-95,	'Tapez un espace puis la condition'
 	'Commande : «[» sans argument'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
-]],
-[	'while [ '
-,
+	'']],
+[	'while [ ',
 [0,-1,	'Commande incomplète'
-	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
-],
-[7,-93,	'Tapez un espace puis la condition'
+	"Boucle tant que la commande s'exécute sans erreur"
+	'Une ligne comportant : une commande simple'
+	''],
+[7,-95,	'Tapez un espace puis la condition'
 	'Commande : «[» sans argument'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
-],
-[8,-223,	'Indiquez la condition à tester'
-]],
-[	'while [ a'
-,
+	''],
+[8,-226,	'Indiquez la condition à tester']],
+[	'while [ a',
 [0,-1,	'Commande incomplète'
-	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
-],
-[7,-93,	"Manque le ']' final"
+	"Boucle tant que la commande s'exécute sans erreur"
+	'Une ligne comportant : une commande simple'
+	''],
+[7,-95,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
-],
-[8,-228,	'Un espace ou plus pour séparer les arguments.'
-],
-[9,-227,	'Texte : «a»'
-	'Argument 1 : «a»'
-]],
-[	'while [ a '
-,
+	''],
+[8,-231,	'Un espace ou plus pour séparer les arguments.'],
+[9,-231,	'Texte : «a»'
+	'Argument 1 : «a»']],
+[	'while [ a ',
 [0,-1,	'Commande incomplète'
-	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
-],
-[7,-93,	"Manque le ']' final"
+	"Boucle tant que la commande s'exécute sans erreur"
+	'Une ligne comportant : une commande simple'
+	''],
+[7,-95,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
-],
-[8,-228,	'Un espace ou plus pour séparer les arguments.'
-],
-[9,-227,	'Texte : «a»'
-	'Argument 1 : «a»'
-],
-[10,-227,	'Continuez la condition'
-	''
-]],
-[	'while [ a ='
-,
+	''],
+[8,-231,	'Un espace ou plus pour séparer les arguments.'],
+[9,-231,	'Texte : «a»'
+	'Argument 1 : «a»'],
+[10,-231,	'Continuez la condition']],
+[	'while [ a =',
 [0,-1,	'Commande incomplète'
-	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
-],
-[7,-93,	"Manque le ']' final"
+	"Boucle tant que la commande s'exécute sans erreur"
+	'Une ligne comportant : une commande simple'
+	''],
+[7,-95,	"Manque le ']' final"
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
-],
-[8,-228,	'Un espace ou plus pour séparer les arguments.'
-],
-[9,-227,	'Texte : «a»'
-	'Argument 1 : «a»'
-],
-[10,-227,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[11,-227,	'Il manque la valeur de droite'
-	'Argument 2 : «=»'
-]],
-[	'while [ a = '
-,
+	''],
+[8,-231,	'Un espace ou plus pour séparer les arguments.'],
+[9,-231,	'Texte : «a»'
+	'Argument 1 : «a»'],
+[10,-231,	'Un espace ou plus pour séparer les arguments.'],
+[11,-231,	'Il manque la valeur de droite'
+	'Argument 2 : «=»']],
+[	'while [ a = ',
 [0,-1,	'Commande incomplète'
-	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
-],
-[7,-93,	"Manque le ']' final"
+	"Boucle tant que la commande s'exécute sans erreur"
+	'Une ligne comportant : une commande simple'
+	''],
+[7,-95,	"Manque le ']' final"
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
-],
-[8,-228,	'Un espace ou plus pour séparer les arguments.'
-],
-[9,-227,	'Texte : «a»'
-	'Argument 1 : «a»'
-],
-[10,-227,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[11,-227,	'Il manque la valeur de droite'
-	'Argument 2 : «=»'
-],
-[12,-227,	'Argument de droite'
-	''
-]],
-[	'while [ a = b'
-,
+	''],
+[8,-231,	'Un espace ou plus pour séparer les arguments.'],
+[9,-231,	'Texte : «a»'
+	'Argument 1 : «a»'],
+[10,-231,	'Un espace ou plus pour séparer les arguments.'],
+[11,-231,	'Il manque la valeur de droite'
+	'Argument 2 : «=»'],
+[12,-231,	'Argument de droite']],
+[	'while [ a = b',
 [0,-1,	'Commande incomplète'
-	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
-],
-[7,-93,	"Manque le ']' final"
+	"Boucle tant que la commande s'exécute sans erreur"
+	'Une ligne comportant : une commande simple'
+	''],
+[7,-95,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
-],
-[8,-228,	'Un espace ou plus pour séparer les arguments.'
-],
-[9,-228,	'Texte : «a»'
+	''],
+[8,-231,	'Un espace ou plus pour séparer les arguments.'],
+[9,-231,	'Texte : «a»'
 	'Test si «a» = «b»'
-],
-[10,-246,	'Un espace ou plus pour séparer les arguments.'
-],
-[11,-246,	'Comparaison de chaînes de caractères'
-],
-[12,-246,	'Un espace ou plus pour séparer les arguments.'
-],
-[13,-246,	'Texte : «b»'
-]],
-[	'while [ a = b '
-,
+	''],
+[10,-250,	'Un espace ou plus pour séparer les arguments.'],
+[11,-250,	'Comparaison de chaînes de caractères'],
+[12,-250,	'Un espace ou plus pour séparer les arguments.'],
+[13,-250,	'Texte : «b»']],
+[	'while [ a = b ',
 [0,-1,	'Commande incomplète'
-	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
-],
-[7,-93,	"Manque le ']' final"
+	"Boucle tant que la commande s'exécute sans erreur"
+	'Une ligne comportant : une commande simple'
+	''],
+[7,-95,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
-],
-[8,-228,	'Un espace ou plus pour séparer les arguments.'
-],
-[9,-228,	'Texte : «a»'
+	''],
+[8,-231,	'Un espace ou plus pour séparer les arguments.'],
+[9,-231,	'Texte : «a»'
 	'Test si «a» = «b»'
-],
-[10,-246,	'Un espace ou plus pour séparer les arguments.'
-],
-[11,-246,	'Comparaison de chaînes de caractères'
-],
-[12,-246,	'Un espace ou plus pour séparer les arguments.'
-],
-[13,-246,	'Texte : «b»'
-],
-[14,-228,	"Vous pouvez terminer le test avec un ']'"
-]],
-[	'while [ a = b ]'
-,
+	''],
+[10,-250,	'Un espace ou plus pour séparer les arguments.'],
+[11,-250,	'Comparaison de chaînes de caractères'],
+[12,-250,	'Un espace ou plus pour séparer les arguments.'],
+[13,-250,	'Texte : «b»'],
+[14,-231,	"Vous pouvez terminer le test avec un ']'"]],
+[	'while [ a = b ]',
 [0,-1,	'Commande incomplète'
-	"Boucle tant que la commande s'exécute sans erreurUne ligne comportant : une commande simple"
-],
-[7,-93,	'Texte : «[»'
+	"Boucle tant que la commande s'exécute sans erreur"
+	'Une ligne comportant : une commande simple'
+	''],
+[7,-95,	'Texte : «[»'
 	'La commande «[» avec 2 arguments.'
 	'[ : Evaluateur de condition'
 	'La commande termine sans erreur si la condition est vraie'
 	'Aide : man ['
-],
-[8,-228,	'Un espace ou plus pour séparer les arguments.'
-],
-[9,-228,	'Texte : «a»'
+	''],
+[8,-231,	'Un espace ou plus pour séparer les arguments.'],
+[9,-231,	'Texte : «a»'
 	'Test si «a» = «b»'
-],
-[10,-246,	'Un espace ou plus pour séparer les arguments.'
-],
-[11,-246,	'Comparaison de chaînes de caractères'
-],
-[12,-246,	'Un espace ou plus pour séparer les arguments.'
-],
-[13,-246,	'Texte : «b»'
-],
-[14,-228,	'Un espace ou plus pour séparer les arguments.'
-],
-[15,-227,	'Texte : «]»'
-	'Argument 2 : «]»'
-]],
-[	'grep a'
-,
+	''],
+[10,-250,	'Un espace ou plus pour séparer les arguments.'],
+[11,-250,	'Comparaison de chaînes de caractères'],
+[12,-250,	'Un espace ou plus pour séparer les arguments.'],
+[13,-250,	'Texte : «b»'],
+[14,-231,	'Un espace ou plus pour séparer les arguments.'],
+[15,-231,	'Texte : «]»'
+	'Argument 2 : «]»']],
+[	'grep a',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
 	'        la commande cherche les lignes sur son entrée standard.'
 	'grep : Affiche les lignes du fichier qui passent le crible'
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
-],
-[5,-222,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-221,	'Expression régulière à chercher'
-	'Argument 1 : «a»'
-]],
-[	'grep a b'
-,
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Texte : «a»'
+	'Argument 1 : «a» : une expression régulière']],
+[	'grep a b',
 [0,-1,	'Texte : «grep»'
 	'La commande «grep» avec 2 arguments.'
 	'grep : Affiche les lignes du fichier qui passent le crible'
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
-],
-[5,-157,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-156,	'Expression régulière à chercher'
-	'Argument 1 : «a»'
-],
-[7,-156,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[8,-156,	"Chemin du fichier ou l'on cherche les lignes"
-	'Argument 2 : «b»'
-]],
-[	'grep a -e'
-,
+	''],
+[5,-159,	'Un espace ou plus pour séparer les arguments.'],
+[6,-159,	'Texte : «a»'
+	'Argument 1 : «a» : une expression régulière'],
+[7,-159,	'Un espace ou plus pour séparer les arguments.'],
+[8,-159,	"Chemin du fichier ou l'on cherche les lignes"
+	'Argument 2 : «b»']],
+[	'grep a -e',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
 	'        la commande cherche les lignes sur son entrée standard.'
 	'grep : Affiche les lignes du fichier qui passent le crible'
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
-],
-[5,-222,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-221,	'Expression régulière à chercher'
-	'Argument 1 : «a»'
-],
-[7,-221,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[8,-221,	'Les options doivent être en début de commande'
-	'Argument 2 : «-e»'
-]],
-[	'grep -e -e f'
-,
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Texte : «a»'
+	'Argument 1 : «a» : une expression régulière'],
+[7,-224,	'Un espace ou plus pour séparer les arguments.'],
+[8,-224,	'Les options doivent être en début de commande'
+	'Argument 2 : «-e»']],
+[	'grep -e -e f',
 [0,-1,	'Texte : «grep»'
 	'La commande «grep» avec 3 arguments.'
 	'grep : Affiche les lignes du fichier qui passent le crible'
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
-],
-[5,-157,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-156,	"L'argument qui suit est l'expression à rechercher"
-	'Argument 1 : «-e»'
-],
-[8,-156,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[9,-156,	'Expression régulière à chercher'
-	'Argument 2 : «-e»'
-],
-[11,-156,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[12,-156,	"Chemin du fichier ou l'on cherche les lignes"
-	'Argument 3 : «f»'
-]],
-[	'grep a b c'
-,
+	''],
+[5,-159,	'Un espace ou plus pour séparer les arguments.'],
+[6,-159,	"L'argument qui suit est l'expression à rechercher"
+	'Argument 1 : «-e»'],
+[8,-159,	'Un espace ou plus pour séparer les arguments.'],
+[9,-159,	'Texte : «-e»'
+	'Argument 2 : «-e» : une expression régulière'],
+[11,-159,	'Un espace ou plus pour séparer les arguments.'],
+[12,-159,	"Chemin du fichier ou l'on cherche les lignes"
+	'Argument 3 : «f»']],
+[	'grep a b c',
 [0,-1,	'Texte : «grep»'
 	'La commande «grep» avec 3 arguments.'
 	'grep : Affiche les lignes du fichier qui passent le crible'
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
-],
-[5,-157,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-156,	'Expression régulière à chercher'
-	'Argument 1 : «a»'
-],
-[7,-156,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[8,-156,	"Chemin du fichier ou l'on cherche les lignes"
-	'Argument 2 : «b»'
-],
-[9,-156,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[10,-156,	"Chemin du fichier ou l'on cherche les lignes"
-	'Argument 3 : «c»'
-]],
-[	'grep -e a -e b'
-,
+	''],
+[5,-159,	'Un espace ou plus pour séparer les arguments.'],
+[6,-159,	'Texte : «a»'
+	'Argument 1 : «a» : une expression régulière'],
+[7,-159,	'Un espace ou plus pour séparer les arguments.'],
+[8,-159,	"Chemin du fichier ou l'on cherche les lignes"
+	'Argument 2 : «b»'],
+[9,-159,	'Un espace ou plus pour séparer les arguments.'],
+[10,-159,	"Chemin du fichier ou l'on cherche les lignes"
+	'Argument 3 : «c»']],
+[	'grep -e a -e b',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
 	'        la commande cherche les lignes sur son entrée standard.'
 	'grep : Affiche les lignes du fichier qui passent le crible'
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
-],
-[5,-222,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-221,	"L'argument qui suit est l'expression à rechercher"
-	'Argument 1 : «-e»'
-],
-[8,-221,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[9,-221,	'Expression régulière à chercher'
-	'Argument 2 : «a»'
-],
-[10,-221,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[11,-221,	"L'argument qui suit est l'expression à rechercher"
-	'Argument 3 : «-e»'
-],
-[13,-221,	'Un espace ou plus pour séparer les arguments.'
-	''
-],
-[14,-221,	'Expression régulière à chercher'
-	'Argument 4 : «b»'
-]],
-[	'grep *'
-,
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	"L'argument qui suit est l'expression à rechercher"
+	'Argument 1 : «-e»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	'Texte : «a»'
+	'Argument 2 : «a» : une expression régulière'],
+[10,-224,	'Un espace ou plus pour séparer les arguments.'],
+[11,-224,	"L'argument qui suit est l'expression à rechercher"
+	'Argument 3 : «-e»'],
+[13,-224,	'Un espace ou plus pour séparer les arguments.'],
+[14,-224,	'Texte : «b»'
+	'Argument 4 : «b» : une expression régulière']],
+[	'grep *',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
 	'        la commande cherche les lignes sur son entrée standard.'
 	'grep : Affiche les lignes du fichier qui passent le crible'
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
-],
-[5,-222,	'Un espace ou plus pour séparer les arguments.'
-],
-[6,-221,	'Attention le shell va remplacer'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-225,	'Attention le shell va remplacer'
 	'                le pattern et donc la commande grep'
 	"                ne verra pas l'expression à chercher."
-	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule."
-]],
+	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"]],
+[	'grep "a',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Pour terminer le texte protégé, il faut mettre un deuxième guillemet'
+	'Argument 1 : «"a» : une expression régulière'],
+[7,-269,	'Texte : «a»']],
+[	'grep "a"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 1 : «"a"» : une expression régulière'],
+[7,-270,	'Texte : «a»'],
+[8,-270,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'grep "ab*"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 1 : «"ab*"» : une expression régulière'],
+[7,-272,	'Texte : «a»'],
+[8,-272,	'Texte : «b»'
+	"Répète «b» de 0 fois (rien) à l'infini"],
+[9,-311,	"Répète l'entité précédente"],
+[10,-272,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'grep "a\'\'b*"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 1 : «"a\'\'b*"» : une expression régulière'],
+[7,-274,	"Texte : «a''»"],
+[10,-274,	'Texte : «b»'
+	"Répète «b» de 0 fois (rien) à l'infini"],
+[11,-313,	"Répète l'entité précédente"],
+[12,-274,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	"grep -F 'a*'",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Recherche de texte verbatim'
+	'Argument 1 : «-F»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 2 : «'a*'»Texte à rechercher"],
+[10,-262,	'Texte : «a*»'],
+[12,-262,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[	'grep "a+*"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 1 : «"a+*"» : une expression régulière'],
+[7,-272,	'Texte : «a»'],
+[8,-272,	'Texte : «+»'
+	"Répète «+» de 0 fois (rien) à l'infini"],
+[9,-311,	"Répète l'entité précédente"],
+[10,-272,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'grep -E "a+*"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 2 : «"a+*"» : une expression régulière étendue'],
+[10,-280,	'Texte : «a»'
+	"Répète «a» de une fois à l'infini"
+	"Répète «a+» de 0 fois (rien) à l'infini"],
+[11,-354,	"Répète l'entité précédente"],
+[12,-320,	"Répète l'entité précédente"],
+[13,-280,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	"grep 'a\\*'",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 1 : «'a\\*'» : une expression régulière"],
+[7,-272,	'Texte : «a»'],
+[8,-272,	"Il disparaît en annulant la signification du caractère suivant pour l'expression régulière."],
+[9,-272,	'Texte : «*»'],
+[10,-272,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[	"grep '\\\\*'",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 1 : «'\\\\*'» : une expression régulière"],
+[7,-274,	"Il disparaît en annulant la signification du caractère suivant pour l'expression régulièr"],
+[8,-272,	'Texte : «\\»'
+	"Répète «\\» de 0 fois (rien) à l'infini"],
+[9,-311,	"Répète l'entité précédente"],
+[10,-272,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[	'grep "\\\\\\\\+"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 1 : «"\\\\\\\\+"» : une expression régulière'],
+[7,-275,	'Le caractère «\\» disparaît. Il annule la signification du caractère suivant pour le shell'],
+[8,-275,	"Il disparaît en annulant la signification du caractère suivant pour l'expression régulière"],
+[9,-275,	'Le caractère «\\» disparaît. Il annule la signification du caractère suivant pour le shell'],
+[10,-274,	'Texte : «\\+»'],
+[12,-274,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'grep "[""""^a]"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 1 : «"[""""^a]"» : une expression régulière'],
+[7,-277,	'Début de liste de caractères'
+	"Remplace un unique caractère qui n'est pas dans la liste"],
+[8,-334,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[12,-334,	"Un caractère qui n'est pas dans la liste suivante"],
+[13,-334,	'Le caractère «a»'],
+[14,-334,	'Fin de liste de caractères'],
+[15,-277,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'grep -E "(g(bc)+h(X))*(*)([a])"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 2 : «"(g(bc)+h(X))*(*)([a])"» : une expression régulière étendue'],
+[10,-298,	'Début du groupe'
+	'Groupement numéro 1'
+	"Répète «(g(bc)+h(X))» de 0 fois (rien) à l'infini"],
+[11,-368,	'Texte : «g»'],
+[12,-368,	'Début du groupe'
+	'Groupement numéro 2'
+	"Répète «(bc)» de une fois à l'infini"],
+[13,-425,	'Texte : «bc»'],
+[15,-425,	'Fin du groupe'],
+[16,-405,	"Répète l'entité précédente"],
+[17,-368,	'Texte : «h»'],
+[18,-368,	'Début du groupe'
+	'Groupement numéro 3'],
+[19,-388,	'Texte : «X»'],
+[20,-388,	'Fin du groupe'],
+[21,-368,	'Fin du groupe'],
+[22,-348,	"Répète l'entité précédente"],
+[23,-298,	'Début du groupe'
+	'Groupement numéro 4'],
+[24,-318,	'Texte : «*»'],
+[25,-318,	'Fin du groupe'],
+[26,-298,	'Début du groupe'
+	'Groupement numéro 5'],
+[27,-319,	'Début de liste de caractères'
+	'Remplace un unique caractère de la list'],
+[28,-359,	'Le caractère «a»'],
+[29,-359,	'Fin de liste de caractères'],
+[30,-319,	'Fin du group'],
+[31,-298,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'grep -E "(',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	'Pour terminer le texte protégé, il faut mettre un deuxième guillemet'
+	'Argument 2 : «"(» : une expression régulière étendue'],
+[10,-277,	'Groupe ouvert mais pas encore fermé']],
+[	'grep -E "(""|""a""|"")"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 2 : «"(""|""a""|"")"» : une expression régulière étendue'],
+[10,-290,	'Début du groupe'
+	'Groupement numéro 1'
+	"Correspond à l'une des possibilités suivantes :"
+	'UNE CHAINE VIDE'
+	'«a»'
+	'UNE CHAINE VIDE'],
+[11,-394,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[13,-394,	'«OU» entre la partie gauche et la droite'],
+[14,-394,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[16,-394,	'Texte : «a»'],
+[17,-394,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[19,-394,	'«OU» entre la partie gauche et la droite'],
+[20,-394,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[22,-394,	'Fin du groupe'],
+[23,-290,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'grep -E ")"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 2 : «")"» : une expression régulière étendue'],
+[10,-278,	"Il manque l'ouvrante"],
+[11,-278,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	"grep -E '(a)\\1'",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 2 : «'(a)\\1'» : une expression régulière étendue"],
+[10,-282,	'Début du groupe'
+	'Groupement numéro 1'],
+[11,-302,	'Texte : «a»'],
+[12,-302,	'Fin du groupe'],
+[13,-282,	'Il donne une signication au caractère suivant'
+	'Remplacé par ce qui a été trouvé par le groupe 1'
+	'qui correspond à : «(a)»'],
+[14,-355,	''],
+[15,-282,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[	"grep -E '(a)\\''1",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 2 : «'(a)\\''1» : une expression régulière étendue"],
+[10,-283,	'Début du groupe'
+	'Groupement numéro 1'],
+[11,-303,	'Texte : «a»'],
+[12,-303,	'Fin du groupe'],
+[13,-283,	'Il donne une signication au caractère suivant'
+	'Remplacé par ce qui a été trouvé par le groupe 1'
+	'qui correspond à : «(a)»'],
+[14,-357,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[15,-357,	'Pour terminer le texte protégé, il faut mettre une deuxième cote'],
+[16,-356,	'']],
+[	"grep '$)'",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 1 : «'$)'» : une expression régulière"],
+[7,-271,	'La fin de ligne'],
+[8,-285,	"Ces caractères n'ont aucun sens après l"],
+[9,-271,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[	"grep -E '$a|'",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 2 : «'$a|'» : une expression régulière étendue"
+	"Correspond à l'une des possibilités suivantes :"
+	'«$a»'
+	'UNE CHAINE VIDE'],
+[10,-349,	'La fin de ligne'],
+[11,-363,	"Ces caractères n'ont aucun sens après l"],
+[12,-350,	'«OU» entre la partie gauche et la droit'],
+[13,-349,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[	"grep -E '$''a|'",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 2 : «'$''a|'» : une expression régulière étendue"
+	"Correspond à l'une des possibilités suivantes :"
+	'«$a»'
+	'UNE CHAINE VIDE'],
+[10,-351,	'La fin de ligne'],
+[11,-351,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[13,-351,	"Ces caractères n'ont aucun sens après la fin de ligne"],
+[14,-352,	'«OU» entre la partie gauche et la droit'],
+[15,-351,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[	"grep '\\('",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 1 : «'\\('» : une expression régulière"],
+[7,-271,	'Il donne une signication au caractère suivant'],
+[8,-271,	"Ce n'était pas la peine d'échapper ce caractère qui est normal, cela peut au contraire lui donner un sens."],
+[9,-272,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"]],
+[	"grep -E '\\k'",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 2 : «'\\k'» : une expression régulière étendue"],
+[10,-279,	'Il donne une signication au caractère suivant'],
+[11,-279,	"Ce n'était pas la peine d'échapper ce caractère qui est normal, cela peut au contraire lui donner un sens."],
+[12,-280,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"]],
+[	"grep -E '\\b'",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 2 : «'\\b'» : une expression régulière étendue"],
+[10,-280,	'Il donne une signication au caractère suivant'
+	"Ceci représente l'emplacement aux extrémités de mot. Cet emplacement ne contient aucun caractère car il est entre 2 lettres"],
+[11,-403,	''],
+[12,-280,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"]],
+[	'grep "a.*"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 1 : «"a.*"» : une expression régulière'],
+[7,-272,	'Texte : «a»'],
+[8,-272,	'Un caractère quelconque.'
+	"Répète «.» de 0 fois (rien) à l'infini"],
+[9,-311,	"Répète l'entité précédente"],
+[10,-272,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'grep -E "a{1"",2}"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 2 : «"a{1"",2}"» : une expression régulière étendue'],
+[10,-285,	'Texte : «a»'
+	'Répète «a» de 1"" à 2 fois'],
+[11,-311,	''],
+[13,-311,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	''],
+[15,-311,	''],
+[18,-285,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'grep -E "a{2}"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 2 : «"a{2}"» : une expression régulière étendue'],
+[10,-281,	'Texte : «a»'
+	'Répète «a» exactement 2 fois'],
+[11,-309,	''],
+[14,-281,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	"grep -E 'a{'",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Syntaxe des expressions régulières étendues'
+	'Argument 1 : «-E»'],
+[8,-224,	'Un espace ou plus pour séparer les arguments.'],
+[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 2 : «'a{'» : une expression régulière étendue"],
+[10,-279,	'Texte : «a»'
+	'Répète «a» exactement  fois'],
+[11,-307,	'Indiquez le nombre de répétition ou bien un intervalle'
+	'                comme {3,7} qui autorise de 3 à 7 répétitions'],
+[12,-307,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[	"grep '[",
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        la commande cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible'
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[6,-224,	'Pour terminer le texte protégé, il faut mettre une deuxième cote'
+	"Argument 1 : «'[» : une expression régulière"],
+[7,-271,	'Une liste de caractères autorisés comme «[aeiou0-9_/@]»'
+	'Remplace un unique caractère de la lis']],
 ]

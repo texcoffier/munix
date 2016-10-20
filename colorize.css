@@ -58,6 +58,8 @@
     line-height: 1em ;
 }
 
+.help_RegExpTree UL, .help_RegExpGroup UL { margin: 0px ; }
+
 .link {
     position: absolute ;
     border: 0px ;
@@ -82,3 +84,4 @@
     background: #F00 ;
     color: #FFF ;
 }
+
