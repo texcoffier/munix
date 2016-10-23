@@ -502,621 +502,796 @@
 [	'grep a',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Texte : «a»'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Texte : «a»'
 	'Argument 1 : «a» : une expression régulière']],
 [	'grep a b',
 [0,-1,	'Texte : «grep»'
 	'La commande «grep» avec 2 arguments.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-159,	'Un espace ou plus pour séparer les arguments.'],
-[6,-159,	'Texte : «a»'
+[5,-649,	'Un espace ou plus pour séparer les arguments.'],
+[6,-649,	'Texte : «a»'
 	'Argument 1 : «a» : une expression régulière'],
-[7,-159,	'Un espace ou plus pour séparer les arguments.'],
-[8,-159,	"Chemin du fichier ou l'on cherche les lignes"
+[7,-649,	'Un espace ou plus pour séparer les arguments.'],
+[8,-649,	"Chemin du fichier ou l'on cherche les lignes"
 	'Argument 2 : «b»']],
 [	'grep a -e',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Texte : «a»'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Texte : «a»'
 	'Argument 1 : «a» : une expression régulière'],
-[7,-224,	'Un espace ou plus pour séparer les arguments.'],
-[8,-224,	'Les options doivent être en début de commande'
-	'Argument 2 : «-e»']],
+[7,-707,	'Un espace ou plus pour séparer les arguments.'],
+[8,-708,	'Les options doivent être en début de commande'
+	"Argument 2 : «-e»-e : L'argument suivant est ce qu'il faut rechercher"]],
 [	'grep -e -e f',
 [0,-1,	'Texte : «grep»'
 	'La commande «grep» avec 3 arguments.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-159,	'Un espace ou plus pour séparer les arguments.'],
-[6,-159,	"L'argument qui suit est l'expression à rechercher"
-	'Argument 1 : «-e»'],
-[8,-159,	'Un espace ou plus pour séparer les arguments.'],
-[9,-159,	'Texte : «-e»'
+[5,-649,	'Un espace ou plus pour séparer les arguments.'],
+[6,-650,	'Texte : «-e»'
+	"Argument 1 : «-e»-e : L'argument suivant est ce qu'il faut rechercher"],
+[8,-650,	'Un espace ou plus pour séparer les arguments'],
+[9,-649,	'Texte : «-e»'
 	'Argument 2 : «-e» : une expression régulière'],
-[11,-159,	'Un espace ou plus pour séparer les arguments.'],
-[12,-159,	"Chemin du fichier ou l'on cherche les lignes"
+[11,-649,	'Un espace ou plus pour séparer les arguments.'],
+[12,-649,	"Chemin du fichier ou l'on cherche les lignes"
 	'Argument 3 : «f»']],
 [	'grep a b c',
 [0,-1,	'Texte : «grep»'
 	'La commande «grep» avec 3 arguments.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-159,	'Un espace ou plus pour séparer les arguments.'],
-[6,-159,	'Texte : «a»'
+[5,-649,	'Un espace ou plus pour séparer les arguments.'],
+[6,-649,	'Texte : «a»'
 	'Argument 1 : «a» : une expression régulière'],
-[7,-159,	'Un espace ou plus pour séparer les arguments.'],
-[8,-159,	"Chemin du fichier ou l'on cherche les lignes"
+[7,-649,	'Un espace ou plus pour séparer les arguments.'],
+[8,-649,	"Chemin du fichier ou l'on cherche les lignes"
 	'Argument 2 : «b»'],
-[9,-159,	'Un espace ou plus pour séparer les arguments.'],
-[10,-159,	"Chemin du fichier ou l'on cherche les lignes"
+[9,-649,	'Un espace ou plus pour séparer les arguments.'],
+[10,-649,	"Chemin du fichier ou l'on cherche les lignes"
 	'Argument 3 : «c»']],
 [	'grep -e a -e b',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	"L'argument qui suit est l'expression à rechercher"
-	'Argument 1 : «-e»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	'Texte : «a»'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-708,	'Texte : «-e»'
+	"Argument 1 : «-e»-e : L'argument suivant est ce qu'il faut rechercher"],
+[8,-708,	'Un espace ou plus pour séparer les arguments'],
+[9,-707,	'Texte : «a»'
 	'Argument 2 : «a» : une expression régulière'],
-[10,-224,	'Un espace ou plus pour séparer les arguments.'],
-[11,-224,	"L'argument qui suit est l'expression à rechercher"
-	'Argument 3 : «-e»'],
-[13,-224,	'Un espace ou plus pour séparer les arguments.'],
-[14,-224,	'Texte : «b»'
+[10,-707,	'Un espace ou plus pour séparer les arguments.'],
+[11,-708,	'Texte : «-e»'
+	"Argument 3 : «-e»-e : L'argument suivant est ce qu'il faut rechercher"],
+[13,-708,	'Un espace ou plus pour séparer les arguments'],
+[14,-707,	'Texte : «b»'
 	'Argument 4 : «b» : une expression régulière']],
 [	'grep *',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-225,	'Attention le shell va remplacer'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-708,	'Attention le shell va remplacer'
 	'                le pattern et donc la commande grep'
 	"                ne verra pas l'expression à chercher."
 	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"]],
 [	'grep "a',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Pour terminer le texte protégé, il faut mettre un deuxième guillemet'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Pour terminer le texte protégé, il faut mettre un deuxième guillemet'
 	'Argument 1 : «"a» : une expression régulière'],
-[7,-269,	'Texte : «a»']],
+[7,-752,	'Texte : «a»']],
 [	'grep "a"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 1 : «"a"» : une expression régulière'],
-[7,-270,	'Texte : «a»'],
-[8,-270,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[7,-753,	'Texte : «a»'],
+[8,-753,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	'grep "ab*"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 1 : «"ab*"» : une expression régulière'],
-[7,-272,	'Texte : «a»'],
-[8,-272,	'Texte : «b»'
+[7,-755,	'Texte : «a»'],
+[8,-755,	'Texte : «b»'
 	"Répète «b» de 0 fois (rien) à l'infini"],
-[9,-311,	"Répète l'entité précédente"],
-[10,-272,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[9,-794,	"Répète l'entité précédente"],
+[10,-755,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	'grep "a\'\'b*"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 1 : «"a\'\'b*"» : une expression régulière'],
-[7,-274,	"Texte : «a''»"],
-[10,-274,	'Texte : «b»'
+[7,-757,	"Texte : «a''»"],
+[10,-757,	'Texte : «b»'
 	"Répète «b» de 0 fois (rien) à l'infini"],
-[11,-313,	"Répète l'entité précédente"],
-[12,-274,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[11,-796,	"Répète l'entité précédente"],
+[12,-757,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	"grep -F 'a*'",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Recherche de texte verbatim'
-	'Argument 1 : «-F»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-708,	'Texte : «-F»'
+	"Argument 1 : «-F»-F : Simple texte au lieu d'une exp. régulière"],
+[8,-708,	'Un espace ou plus pour séparer les arguments'],
+[9,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 2 : «'a*'»Texte à rechercher"],
-[10,-262,	'Texte : «a*»'],
-[12,-262,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[10,-745,	'Texte : «a*»'],
+[12,-745,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
 [	'grep "a+*"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 1 : «"a+*"» : une expression régulière'],
-[7,-272,	'Texte : «a»'],
-[8,-272,	'Texte : «+»'
+[7,-755,	'Texte : «a»'],
+[8,-755,	'Texte : «+»'
 	"Répète «+» de 0 fois (rien) à l'infini"],
-[9,-311,	"Répète l'entité précédente"],
-[10,-272,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[9,-794,	"Répète l'entité précédente"],
+[10,-755,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	'grep -E "a+*"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 2 : «"a+*"» : une expression régulière étendue'],
-[10,-280,	'Texte : «a»'
+[10,-763,	'Texte : «a»'
 	"Répète «a» de une fois à l'infini"
 	"Répète «a+» de 0 fois (rien) à l'infini"],
-[11,-354,	"Répète l'entité précédente"],
-[12,-320,	"Répète l'entité précédente"],
-[13,-280,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[11,-837,	"Répète l'entité précédente"],
+[12,-803,	"Répète l'entité précédente"],
+[13,-763,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	"grep 'a\\*'",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 1 : «'a\\*'» : une expression régulière"],
-[7,-272,	'Texte : «a»'],
-[8,-272,	"Il disparaît en annulant la signification du caractère suivant pour l'expression régulière."],
-[9,-272,	'Texte : «*»'],
-[10,-272,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[7,-755,	'Texte : «a»'],
+[8,-755,	"Il disparaît en annulant la signification du caractère suivant pour l'expression régulière."],
+[9,-755,	'Texte : «*»'],
+[10,-755,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
 [	"grep '\\\\*'",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 1 : «'\\\\*'» : une expression régulière"],
-[7,-274,	"Il disparaît en annulant la signification du caractère suivant pour l'expression régulièr"],
-[8,-272,	'Texte : «\\»'
+[7,-757,	"Il disparaît en annulant la signification du caractère suivant pour l'expression régulièr"],
+[8,-755,	'Texte : «\\»'
 	"Répète «\\» de 0 fois (rien) à l'infini"],
-[9,-311,	"Répète l'entité précédente"],
-[10,-272,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[9,-794,	"Répète l'entité précédente"],
+[10,-755,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
 [	'grep "\\\\\\\\+"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 1 : «"\\\\\\\\+"» : une expression régulière'],
-[7,-275,	'Le caractère «\\» disparaît. Il annule la signification du caractère suivant pour le shell'],
-[8,-275,	"Il disparaît en annulant la signification du caractère suivant pour l'expression régulière"],
-[9,-275,	'Le caractère «\\» disparaît. Il annule la signification du caractère suivant pour le shell'],
-[10,-274,	'Texte : «\\+»'],
-[12,-274,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[7,-758,	'Le caractère «\\» disparaît. Il annule la signification du caractère suivant pour le shell'],
+[8,-758,	"Il disparaît en annulant la signification du caractère suivant pour l'expression régulière"],
+[9,-758,	'Le caractère «\\» disparaît. Il annule la signification du caractère suivant pour le shell'],
+[10,-757,	'Texte : «\\+»'],
+[12,-757,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	'grep "[""""^a]"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 1 : «"[""""^a]"» : une expression régulière'],
-[7,-277,	'Début de liste de caractères'
+[7,-760,	'Début de liste de caractères'
 	"Remplace un unique caractère qui n'est pas dans la liste"],
-[8,-334,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
-[12,-334,	"Un caractère qui n'est pas dans la liste suivante"],
-[13,-334,	'Le caractère «a»'],
-[14,-334,	'Fin de liste de caractères'],
-[15,-277,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[8,-817,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[12,-817,	"Un caractère qui n'est pas dans la liste suivante"],
+[13,-817,	'Le caractère «a»'],
+[14,-817,	'Fin de liste de caractères'],
+[15,-760,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	'grep -E "(g(bc)+h(X))*(*)([a])"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 2 : «"(g(bc)+h(X))*(*)([a])"» : une expression régulière étendue'],
-[10,-298,	'Début du groupe'
+[10,-781,	'Début du groupe'
 	'Groupement numéro 1'
 	"Répète «(g(bc)+h(X))» de 0 fois (rien) à l'infini"],
-[11,-368,	'Texte : «g»'],
-[12,-368,	'Début du groupe'
+[11,-851,	'Texte : «g»'],
+[12,-851,	'Début du groupe'
 	'Groupement numéro 2'
 	"Répète «(bc)» de une fois à l'infini"],
-[13,-425,	'Texte : «bc»'],
-[15,-425,	'Fin du groupe'],
-[16,-405,	"Répète l'entité précédente"],
-[17,-368,	'Texte : «h»'],
-[18,-368,	'Début du groupe'
+[13,-908,	'Texte : «bc»'],
+[15,-908,	'Fin du groupe'],
+[16,-888,	"Répète l'entité précédente"],
+[17,-851,	'Texte : «h»'],
+[18,-851,	'Début du groupe'
 	'Groupement numéro 3'],
-[19,-388,	'Texte : «X»'],
-[20,-388,	'Fin du groupe'],
-[21,-368,	'Fin du groupe'],
-[22,-348,	"Répète l'entité précédente"],
-[23,-298,	'Début du groupe'
+[19,-871,	'Texte : «X»'],
+[20,-871,	'Fin du groupe'],
+[21,-851,	'Fin du groupe'],
+[22,-831,	"Répète l'entité précédente"],
+[23,-781,	'Début du groupe'
 	'Groupement numéro 4'],
-[24,-318,	'Texte : «*»'],
-[25,-318,	'Fin du groupe'],
-[26,-298,	'Début du groupe'
+[24,-801,	'Texte : «*»'],
+[25,-801,	'Fin du groupe'],
+[26,-781,	'Début du groupe'
 	'Groupement numéro 5'],
-[27,-319,	'Début de liste de caractères'
+[27,-802,	'Début de liste de caractères'
 	'Remplace un unique caractère de la list'],
-[28,-359,	'Le caractère «a»'],
-[29,-359,	'Fin de liste de caractères'],
-[30,-319,	'Fin du group'],
-[31,-298,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[28,-842,	'Le caractère «a»'],
+[29,-842,	'Fin de liste de caractères'],
+[30,-802,	'Fin du group'],
+[31,-781,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	'grep -E "(',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	'Pour terminer le texte protégé, il faut mettre un deuxième guillemet'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	'Pour terminer le texte protégé, il faut mettre un deuxième guillemet'
 	'Argument 2 : «"(» : une expression régulière étendue'],
-[10,-277,	'Groupe ouvert mais pas encore fermé']],
+[10,-760,	'Groupe ouvert mais pas encore fermé']],
 [	'grep -E "(""|""a""|"")"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 2 : «"(""|""a""|"")"» : une expression régulière étendue'],
-[10,-290,	'Début du groupe'
+[10,-773,	'Début du groupe'
 	'Groupement numéro 1'
 	"Correspond à l'une des possibilités suivantes :"
 	'UNE CHAINE VIDE'
 	'«a»'
 	'UNE CHAINE VIDE'],
-[11,-394,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
-[13,-394,	'«OU» entre la partie gauche et la droite'],
-[14,-394,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
-[16,-394,	'Texte : «a»'],
-[17,-394,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
-[19,-394,	'«OU» entre la partie gauche et la droite'],
-[20,-394,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
-[22,-394,	'Fin du groupe'],
-[23,-290,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[11,-877,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[13,-877,	'«OU» entre la partie gauche et la droite'],
+[14,-877,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[16,-877,	'Texte : «a»'],
+[17,-877,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[19,-877,	'«OU» entre la partie gauche et la droite'],
+[20,-877,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[22,-877,	'Fin du groupe'],
+[23,-773,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	'grep -E ")"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 2 : «")"» : une expression régulière étendue'],
-[10,-278,	"Il manque l'ouvrante"],
-[11,-278,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[10,-761,	"Il manque l'ouvrante"],
+[11,-761,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	"grep -E '(a)\\1'",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 2 : «'(a)\\1'» : une expression régulière étendue"],
-[10,-282,	'Début du groupe'
+[10,-765,	'Début du groupe'
 	'Groupement numéro 1'],
-[11,-302,	'Texte : «a»'],
-[12,-302,	'Fin du groupe'],
-[13,-282,	'Il donne une signication au caractère suivant'
+[11,-785,	'Texte : «a»'],
+[12,-785,	'Fin du groupe'],
+[13,-765,	'Il donne une signication au caractère suivant'
 	'Remplacé par ce qui a été trouvé par le groupe 1'
 	'qui correspond à : «(a)»'],
-[14,-355,	''],
-[15,-282,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[14,-838,	''],
+[15,-765,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
 [	"grep -E '(a)\\''1",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 2 : «'(a)\\''1» : une expression régulière étendue"],
-[10,-283,	'Début du groupe'
+[10,-766,	'Début du groupe'
 	'Groupement numéro 1'],
-[11,-303,	'Texte : «a»'],
-[12,-303,	'Fin du groupe'],
-[13,-283,	'Il donne une signication au caractère suivant'
+[11,-786,	'Texte : «a»'],
+[12,-786,	'Fin du groupe'],
+[13,-766,	'Il donne une signication au caractère suivant'
 	'Remplacé par ce qui a été trouvé par le groupe 1'
 	'qui correspond à : «(a)»'],
-[14,-357,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
-[15,-357,	'Pour terminer le texte protégé, il faut mettre une deuxième cote'],
-[16,-356,	'']],
+[14,-840,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[15,-840,	'Pour terminer le texte protégé, il faut mettre une deuxième cote'],
+[16,-839,	'']],
 [	"grep '$)'",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 1 : «'$)'» : une expression régulière"],
-[7,-271,	'La fin de ligne'],
-[8,-285,	"Ces caractères n'ont aucun sens après l"],
-[9,-271,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[7,-754,	'La fin de ligne'],
+[8,-768,	"Ces caractères n'ont aucun sens après l"],
+[9,-754,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
 [	"grep -E '$a|'",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 2 : «'$a|'» : une expression régulière étendue"
 	"Correspond à l'une des possibilités suivantes :"
 	'«$a»'
 	'UNE CHAINE VIDE'],
-[10,-349,	'La fin de ligne'],
-[11,-363,	"Ces caractères n'ont aucun sens après l"],
-[12,-350,	'«OU» entre la partie gauche et la droit'],
-[13,-349,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[10,-832,	'La fin de ligne'],
+[11,-846,	"Ces caractères n'ont aucun sens après l"],
+[12,-833,	'«OU» entre la partie gauche et la droit'],
+[13,-832,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
 [	"grep -E '$''a|'",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 2 : «'$''a|'» : une expression régulière étendue"
 	"Correspond à l'une des possibilités suivantes :"
 	'«$a»'
 	'UNE CHAINE VIDE'],
-[10,-351,	'La fin de ligne'],
-[11,-351,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
-[13,-351,	"Ces caractères n'ont aucun sens après la fin de ligne"],
-[14,-352,	'«OU» entre la partie gauche et la droit'],
-[15,-351,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[10,-834,	'La fin de ligne'],
+[11,-834,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[13,-834,	"Ces caractères n'ont aucun sens après la fin de ligne"],
+[14,-835,	'«OU» entre la partie gauche et la droit'],
+[15,-834,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
 [	"grep '\\('",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 1 : «'\\('» : une expression régulière"],
-[7,-271,	'Il donne une signication au caractère suivant'],
-[8,-271,	"Ce n'était pas la peine d'échapper ce caractère qui est normal, cela peut au contraire lui donner un sens."],
-[9,-272,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"]],
+[7,-754,	'Il donne une signication au caractère suivant'],
+[8,-754,	"Ce n'était pas la peine d'échapper ce caractère qui est normal, cela peut au contraire lui donner un sens."],
+[9,-755,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"]],
 [	"grep -E '\\k'",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 2 : «'\\k'» : une expression régulière étendue"],
-[10,-279,	'Il donne une signication au caractère suivant'],
-[11,-279,	"Ce n'était pas la peine d'échapper ce caractère qui est normal, cela peut au contraire lui donner un sens."],
-[12,-280,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"]],
+[10,-762,	'Il donne une signication au caractère suivant'],
+[11,-762,	"Ce n'était pas la peine d'échapper ce caractère qui est normal, cela peut au contraire lui donner un sens."],
+[12,-763,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"]],
 [	"grep -E '\\b'",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 2 : «'\\b'» : une expression régulière étendue"],
-[10,-280,	'Il donne une signication au caractère suivant'
+[10,-763,	'Il donne une signication au caractère suivant'
 	"Ceci représente l'emplacement aux extrémités de mot. Cet emplacement ne contient aucun caractère car il est entre 2 lettres"],
-[11,-403,	''],
-[12,-280,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"]],
+[11,-886,	''],
+[12,-763,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"]],
 [	'grep "a.*"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 1 : «"a.*"» : une expression régulière'],
-[7,-272,	'Texte : «a»'],
-[8,-272,	'Un caractère quelconque.'
+[7,-755,	'Texte : «a»'],
+[8,-755,	'Un caractère quelconque.'
 	"Répète «.» de 0 fois (rien) à l'infini"],
-[9,-311,	"Répète l'entité précédente"],
-[10,-272,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[9,-794,	"Répète l'entité précédente"],
+[10,-755,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	'grep -E "a{1"",2}"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 2 : «"a{1"",2}"» : une expression régulière étendue'],
-[10,-285,	'Texte : «a»'
+[10,-768,	'Texte : «a»'
 	'Répète «a» de 1"" à 2 fois'],
-[11,-311,	''],
-[13,-311,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[11,-794,	''],
+[13,-794,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	''],
-[15,-311,	''],
-[18,-285,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[15,-794,	''],
+[18,-768,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	'grep -E "a{2}"',
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
 	'Argument 2 : «"a{2}"» : une expression régulière étendue'],
-[10,-281,	'Texte : «a»'
+[10,-764,	'Texte : «a»'
 	'Répète «a» exactement 2 fois'],
-[11,-309,	''],
-[14,-281,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[11,-792,	''],
+[14,-764,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	"grep -E 'a{'",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Syntaxe des expressions régulières étendues'
-	'Argument 1 : «-E»'],
-[8,-224,	'Un espace ou plus pour séparer les arguments.'],
-[9,-224,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-709,	'Texte : «-E»'
+	'Argument 1 : «-E»-E : Expressions régulières étendue'],
+[8,-709,	'Un espace ou plus pour séparer les argument'],
+[9,-707,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
 	"Argument 2 : «'a{'» : une expression régulière étendue"],
-[10,-279,	'Texte : «a»'
+[10,-762,	'Texte : «a»'
 	'Répète «a» exactement  fois'],
-[11,-307,	'Indiquez le nombre de répétition ou bien un intervalle'
+[11,-790,	'Indiquez le nombre de répétition ou bien un intervalle'
 	'                comme {3,7} qui autorise de 3 à 7 répétitions'],
-[12,-307,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[12,-790,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
 [	"grep '[",
 [0,-1,	'Texte : «grep»'
 	"Comme il n'y a pas de nom de fichier,"
-	'        la commande cherche les lignes sur son entrée standard.'
-	'grep : Affiche les lignes du fichier qui passent le crible'
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
 	'Aide : man grep'
 	'Une ligne comportant : une commande simple'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
-[6,-224,	'Pour terminer le texte protégé, il faut mettre une deuxième cote'
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Pour terminer le texte protégé, il faut mettre une deuxième cote'
 	"Argument 1 : «'[» : une expression régulière"],
-[7,-271,	'Une liste de caractères autorisés comme «[aeiou0-9_/@]»'
+[7,-754,	'Une liste de caractères autorisés comme «[aeiou0-9_/@]»'
 	'Remplace un unique caractère de la lis']],
 ]

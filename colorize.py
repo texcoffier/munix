@@ -645,16 +645,12 @@ def analyse_grep(command):
                                "#F00")
                 continue
             if t == '-e':
-                v.make_comment(
-                    "L'argument qui suit est l'expression à rechercher")
                 state = "regexp"
                 continue
             if t == '-E':
-                v.make_comment("Syntaxe des expressions régulières étendues")
                 regexp = "extended"
                 continue
             if t == '-F':
-                v.make_comment("Recherche de texte verbatim")
                 regexp = "fast"
                 continue
             v.make_comment("Option non prévue par ce logiciel", "#F00")
@@ -667,7 +663,7 @@ def analyse_grep(command):
                 le <em>pattern</em> et donc la commande <tt>grep</tt>
                 ne verra pas l'expression à chercher.""")
             elif 'Variable' in c:
-                v.make_comment("""L'expression à cherche va dépendre
+                v.make_comment("""L'expression à chercher va dépendre
                 du contenu de la variable.""")
             else:
                 if regexp == 'normal':
@@ -692,14 +688,29 @@ def analyse_grep(command):
         v.make_comment("Il y a un bug, prévenez l'enseignant", "#F00")
     if is_a_filter:
         command.make_comment("""Comme il n'y a pas de nom de fichier,
-        la commande cherche les lignes sur son entrée standard.""")
+        <tt>grep</tt> cherche les lignes sur son entrée standard.""")
     return command
 
 def define_grep():
     d = define_command()
     d['name'] = 'grep'
-    d['description'] = "Affiche les lignes du fichier qui passent le crible"
+    d['description'] = "Affiche les lignes du fichier qui passent le crible."
+    d['message'] = "Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
     d['analyse'] = analyse_grep
+    d['syntax'] = "grep -e expreg1 -e expreg2 <var>file1</var> <var>file2</var>..."
+
+    d['options'] = Options(
+        Option('--extended-regexp', '-E',
+               "Expressions régulières <b>étendues</b>."),
+        Option('--fixed-strings', '-F',
+               "Simple texte au lieu d'une exp. régulière."),
+        Option('--regexp', '-e',
+               "L'argument suivant est ce qu'il faut rechercher.", True),
+        Option('--ignore-case', '-i',
+               "Ne tient pas compte de la casse."),
+        Option('--invert-match', '-v',
+               "Les lignes ne passant pas le crible.")
+        )
     return d
 
 def define_manque_point_virgule(name):
@@ -1669,6 +1680,8 @@ class Argument(Container):
         if not self.parent.command:
             return
         definition = commands[self.parent.command]
+        # if definition['analyse'] != nothing:
+        #    return
         if not definition['options']:
             return
         options = definition['options']
