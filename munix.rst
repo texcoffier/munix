@@ -112,22 +112,22 @@ Commandes : ulimit
 5 : Système et réseaux
 ---------------------------
 
-Concepts : utilisateur, groupe, droits
-Commandes : chown, chgrp, chmod
-
-Concepts : Périphérique, disque, TTY, liaison série, clavier, souris, écran
-Commandes : mount, find, sshfs, récupérer les fichiers perdus.
-
-Concepts : client, serveur, nom machine, adresse IP, clefs privés/publiques
-Commandes : ssh, scp, rsync, wget, sendmail
-
-Les impressions
-
-Concepts : Kernel. Distribution. Paquet.
-Commandes : apt-get ? virtualbox ? Installation ?
-
-Concepts : Multifenêtrage, window manager, émulateur de terminaux
-Commandes : ??????
++-------------------------------------+-----------------------------+
+|Concepts                             |Commandes                    |
++=====================================+=============================+
+|Utilisateur, groupe, droits          |chown, chgrp, chmod          |
++-------------------------------------+-----------------------------+
+|Périphérique, disque, TTY, liaison   |mount, find, sshfs, récupérer|
+|série, clavier, souris, écran        |les fichiers perdus          |
++-------------------------------------+-----------------------------+
+|Client, serveur, nom machine, adresse|ssh, scp, rsync, wget,       |
+|IP, clefs privés/publiques           |sendmail                     |
++-------------------------------------+-----------------------------+
+|Kernel. Distribution. Paquet         |apt, virtualbox, installation|
++-------------------------------------+-----------------------------+
+|Multifenêtrage, window manager,      |                             |
+|émulateur de terminaux               |                             |
++-------------------------------------+-----------------------------+
 
 
 -------------------------------

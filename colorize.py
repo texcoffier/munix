@@ -338,7 +338,9 @@ def define_wc():
     d['*'] = "Analyse ce fichier"
     d['options'] = Options(
         Option('--lines', '-l', "Affiche seulement le nombre de lignes"),
-        Option('--words', '-w', "Affiche seulement le nombre de mots")
+        Option('--words', '-w', "Affiche seulement le nombre de mots"),
+        Option('--bytes', '-c', "Affiche seulement le nombre d'octets", False),
+        Option('--chars', '-m', "Affiche seulement le nombre de caractères", False)
     )
     return d
 
@@ -644,6 +646,9 @@ def analyse_grep(command):
                 v.make_comment("Les options doivent être en début de commande",
                                "#F00")
                 continue
+            if t == '-v':
+                continue
+            t = t.replace('-v', '-')
             if t == '-e':
                 state = "regexp"
                 continue
