@@ -794,12 +794,12 @@ class Chars:
     def cleanup(self, replace_option):
         return name(self) + "(" + string(self.content) + ")"
     def html(self, position=-1):
-        s = '<div '
+        s = '<qdiv '
         if position != -1:
             s += 'id="P' + str(self.ident) + '" '
         return (s + 'class="Parsed ' + self.active(position) + name(self)
                 + '" style="color:' + self.color()[0]
-                + '">' + protect(self.content) + '</div>')
+                + '">' + protect(self.content) + '</qdiv>')
     def init_position(self, i=0, ident=0):
         self.start = i
         self.end = i + len(self.content)
@@ -1239,14 +1239,14 @@ class Container:
         else:
             return ""
     def html(self, position=-1):
-        s = '<div '
+        s = '<qdiv '
         if position != -1:
             s += 'id="P' + str(self.ident) + '" '
         return (s + 'class="Parsed ' + self.active(position) + name(self)
                 + '">' + ''.join([x.html(position)
                                   for x in self.content
                               ])
-                + '</div>')
+                + '</qdiv>')
     def init_position(self, i=0, ident=0):
         self.start = i
         for content in self.content:
