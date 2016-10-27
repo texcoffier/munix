@@ -1163,7 +1163,7 @@ class Container:
         return name(self) + '(' + ','.join([x.str()
                                             for x in self.content
                                         ]) + ')'
-    def cleanup(self, replace_option):
+    def cleanup(self, replace_option, sort_content=False):
         protected = False
         content = []
         for c in self.content:
@@ -1221,6 +1221,8 @@ class Container:
                     if command in command_aliases:
                         txt ="Argument(Normal('"+command_aliases[command]+"'))"
             clean.append(txt)
+        if sort_content:
+            clean.sort()
         return name(self) + '(' + ''.join(clean) + ')'
 
     def nice(self, depth=0):
@@ -1768,6 +1770,10 @@ class SquareBracket(Container):
         return ["#000", "#FAF"]
     def local_help(self, dummy_position):
         return "Les crochets indiquent que l'on veut un seul caractère de la liste"
+    def cleanup(self, replace_option=None):
+        # The char order is not important
+        return Container.cleanup(self, replace_option, True)
+
 class Group(Command):
     def local_help(self, dummy_position):
         return "Lance un nouveau processus"

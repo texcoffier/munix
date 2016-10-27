@@ -87,19 +87,19 @@
 "Line(Pipeline(Command(Argument(Normal('a'))))Unterminated('; ')Comment('# b'))"
 'a [ab]'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),SquareBracketChar('b'),SquareBracketStop(']'))))))"
-"Line(Pipeline(Command(Argument(Normal('a'))Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar('a')SquareBracketChar('b')SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(SquareBracket(SquareBracketChar('a')SquareBracketChar('b')SquareBracketStart('[')SquareBracketStop(']'))))))"
 'a ['
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('[')))))"
 "Line(Pipeline(Command(Argument(Normal('a'))Argument(Normal('[')))))"
 'a [a-bcd-e]'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketInterval('a-b'),SquareBracketChar('c'),SquareBracketInterval('d-e'),SquareBracketStop(']'))))))"
-"Line(Pipeline(Command(Argument(Normal('a'))Argument(SquareBracket(SquareBracketStart('[')SquareBracketInterval('a-b')SquareBracketChar('c')SquareBracketInterval('d-e')SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(SquareBracket(SquareBracketChar('c')SquareBracketInterval('a-b')SquareBracketInterval('d-e')SquareBracketStart('[')SquareBracketStop(']'))))))"
 'a []a-c-d]'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar(']'),SquareBracketInterval('a-c'),SquareBracketChar('-'),SquareBracketChar('d'),SquareBracketStop(']'))))))"
-"Line(Pipeline(Command(Argument(Normal('a'))Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar(']')SquareBracketInterval('a-c')SquareBracketChar('-')SquareBracketChar('d')SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(SquareBracket(SquareBracketChar('-')SquareBracketChar(']')SquareBracketChar('d')SquareBracketInterval('a-c')SquareBracketStart('[')SquareBracketStop(']'))))))"
 'a [!a-]]'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketNegate('!'),SquareBracketChar('a'),SquareBracketChar('-'),SquareBracketStop(']')),Normal(']')))))"
-"Line(Pipeline(Command(Argument(Normal('a'))Argument(SquareBracket(SquareBracketStart('[')SquareBracketNegate('!')SquareBracketChar('a')SquareBracketChar('-')SquareBracketStop(']'))Normal(']')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(SquareBracket(SquareBracketChar('-')SquareBracketChar('a')SquareBracketNegate('!')SquareBracketStart('[')SquareBracketStop(']'))Normal(']')))))"
 'a [1*'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Normal('[1'),Star('*')))))"
 "Line(Pipeline(Command(Argument(Normal('a'))Argument(Normal('[1')Star('*')))))"
@@ -144,19 +144,19 @@
 "Line(Pipeline(Command(Argument(Normal('a')))Unterminated('| '))Conditionnal(Unterminated('; ')Unterminated('&& '))Comment('#'))"
 '[]a]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar(']'),SquareBracketChar('a'),SquareBracketStop(']'))))))"
-"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar(']')SquareBracketChar('a')SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketChar(']')SquareBracketChar('a')SquareBracketStart('[')SquareBracketStop(']'))))))"
 '[!]]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketNegate('!'),SquareBracketChar(']'),SquareBracketStop(']'))))))"
-"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('[')SquareBracketNegate('!')SquareBracketChar(']')SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketChar(']')SquareBracketNegate('!')SquareBracketStart('[')SquareBracketStop(']'))))))"
 ' |a'
 "Line(Pipeline(Separator(' '),Unterminated('|'),Command(Argument(Normal('a')))))"
 "Line(Pipeline(Unterminated('|')Command(Argument(Normal('a')))))"
 '[$a\'$a\'"$a"\\"\\\']'
 'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\'),Variable(\'$a\'),Quote(\'\\\'\'),Normal(\'$\'),Normal(\'a\'),Quote(\'\\\'\'),Guillemet(\'"\'),Variable(\'$a\'),Guillemet(\'"\'),Backslash(\'\\\\\'),SquareBracketChar(\'"\'),Backslash(\'\\\\\'),SquareBracketChar(\'\\\'\'),SquareBracketStop(\']\'))))))'
-'Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart(\'[\')Variable(\'$a\')Normal(\'$a\')VariableProtected(\'$a\')SquareBracketChar(\'"\')SquareBracketChar(\'\\\'\')SquareBracketStop(\']\'))))))'
+'Line(Pipeline(Command(Argument(SquareBracket(Normal(\'$a\')SquareBracketChar(\'"\')SquareBracketChar(\'\\\'\')SquareBracketStart(\'[\')SquareBracketStop(\']\')Variable(\'$a\')VariableProtected(\'$a\'))))))'
 '[a\\]]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),Backslash('\\\\'),SquareBracketChar(']'),SquareBracketStop(']'))))))"
-"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar('a')SquareBracketChar(']')SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketChar(']')SquareBracketChar('a')SquareBracketStart('[')SquareBracketStop(']'))))))"
 '[a b]'
 "Line(Pipeline(Command(Argument(Normal('[a')),Separator(' '),Argument(Normal('b]')))))"
 "Line(Pipeline(Command(Argument(Normal('[a'))Argument(Normal('b]')))))"
@@ -516,7 +516,7 @@
 "Line(Pipeline(Command(Argument(Normal('[')))Command(Argument(Normal(']')))))"
 '[\\|]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),Backslash('\\\\'),SquareBracketChar('|'),SquareBracketStop(']'))))))"
-"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar('|')SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(SquareBracket(SquareBracketChar('|')SquareBracketStart('[')SquareBracketStop(']'))))))"
 'tar -c -v'
 "Line(Pipeline(Command(Argument(Normal('tar')),Separator(' '),Argument(Normal('-c')),Separator(' '),Argument(Normal('-v')))))"
 "Line(Pipeline(Command(Argument(Normal('tar'))Argument(Normal('-c')))))"
@@ -534,7 +534,7 @@
 "Line(Pipeline(Command(Argument(Normal('tar')))))"
 'echo [A][B]'
 "Line(Pipeline(Command(Argument(Normal('echo')),Separator(' '),Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar('A'),SquareBracketStop(']')),SquareBracket(SquareBracketStart('['),SquareBracketChar('B'),SquareBracketStop(']'))))))"
-"Line(Pipeline(Command(Argument(Normal('echo'))Argument(SquareBracket(SquareBracketStart('[')SquareBracketChar('A')SquareBracketStop(']'))SquareBracket(SquareBracketStart('[')SquareBracketChar('B')SquareBracketStop(']'))))))"
+"Line(Pipeline(Command(Argument(Normal('echo'))Argument(SquareBracket(SquareBracketChar('A')SquareBracketStart('[')SquareBracketStop(']'))SquareBracket(SquareBracketChar('B')SquareBracketStart('[')SquareBracketStop(']'))))))"
 'echo [A;B]'
 "Line(Pipeline(Command(Argument(Normal('echo')),Separator(' '),Argument(Normal('[A')))),DotComa(';'),Pipeline(Command(Argument(Normal('B]')))))"
 "Line(Pipeline(Command(Argument(Normal('echo'))Argument(Normal('[A'))))Pipeline(Command(Argument(Normal('B]')))))"
