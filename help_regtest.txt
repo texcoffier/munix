@@ -633,9 +633,7 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [5,-707,	'Un espace ou plus pour séparer les arguments.'],
-[6,-708,	'Attention le shell va remplacer'
-	'                le pattern et donc la commande grep'
-	"                ne verra pas l'expression à chercher."
+[6,-708,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
 	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"]],
 [	'grep "a',
 [0,-1,	'Texte : «grep»'

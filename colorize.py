@@ -1739,7 +1739,7 @@ class Argument(Container):
 
     def make_comment(self, comment=None, foreground=None):
         for i in self.content:
-            if isinstance(i, Invisible) or isinstance(i, Unterminated):
+            if name(i) != 'Normal':
                 continue
             if comment:
                 i.message = comment
