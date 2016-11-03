@@ -2663,6 +2663,9 @@ class RegExpList(RegExpTree):
             return "Remplace un unique caractère qui n'est <b>pas</b> dans la liste"
         else:
             return "Remplace un unique caractère de la liste"
+    def cleanup(self, replace_option=None):
+        # The char order is not important
+        return Container.cleanup(self, replace_option, True)
 
 class RegExpRange(RegExpTree):
     def local_help(self, dummy_position):
