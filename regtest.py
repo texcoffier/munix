@@ -680,8 +680,8 @@
 'Line(Pipeline(Command(Argument(Normal(\'grep\')),Separator(\' \'),RegExpTree(Guillemet(\'"\'),RegExpMultiply(RegExpList(RegExpBracket(\'[\'),RegExpListNormal(\'a\'),RegExpListNormal(\'-\'),RegExpBracket(\']\')),RegExpStar(\'*\')),Guillemet(\'"\')))))'
 "Line(Pipeline(Command(Argument(Normal('grep'))RegExpTree(RegExpMultiply(RegExpList(RegExpBracket('[')RegExpBracket(']')RegExpListNormal('-')RegExpListNormal('a'))RegExpStar('*'))))))"
 'grep "[]]"'
-'Line(Pipeline(Command(Argument(Normal(\'grep\')),Separator(\' \'),RegExpTree(Guillemet(\'"\'),RegExpList(RegExpBracket(\'[\'),RegExpListNormal(\']\'),RegExpBracket(\']\')),Guillemet(\'"\')))))'
-"Line(Pipeline(Command(Argument(Normal('grep'))RegExpTree(RegExpList(RegExpBracket('[')RegExpBracket(']')RegExpListNormal(']'))))))"
+'Line(Pipeline(Command(Argument(Normal(\'grep\')),Separator(\' \'),RegExpTree(Guillemet(\'"\'),RegExpList(RegExpBracket(\'[\'),Unterminated(\']\'),RegExpBracket(\']\')),Guillemet(\'"\')))))'
+"Line(Pipeline(Command(Argument(Normal('grep'))RegExpTree(RegExpList(RegExpBracket('[')RegExpBracket(']')Unterminated(']'))))))"
 "grep '[''a"
 "Line(Pipeline(Command(Argument(Normal('grep')),Separator(' '),RegExpTree(Quote('\\''),RegExpList(Unterminated('['),Quote('\\''),Unterminated('\\''),RegExpListNormal('a'))))))"
 "Line(Pipeline(Command(Argument(Normal('grep'))RegExpTree(RegExpList(RegExpListNormal('a')Unterminated('[')Unterminated('\\''))))))"

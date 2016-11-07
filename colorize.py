@@ -2868,6 +2868,14 @@ def regexpparser_list(root, i, j, extended):
         i = len(root.content)
     else:
         root_content.append(Normal(root.content[i].content[j:]))
+        if len(content) == 3 and isinstance(content[1], RegExpListNormal):
+            content[1] = Unterminated(
+                content[1].content,
+                """Il est plus court de taper <tt>a</tt>
+                plutôt que <tt>[a]</tt>.<br>
+                Il est plus court de taper <tt>\\.</tt>
+                plutôt que <tt>[.]</tt>.
+                """)
     root = new_content(root, i_start, i+1, root_content)
     return regexpparser(root, extended)
 
