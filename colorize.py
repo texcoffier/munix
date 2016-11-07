@@ -954,7 +954,9 @@ class Unterminated(Chars):
         if "\\" in self.content:
             return "Le caractère suivant n'aura pas de signification particulière"
         if ";" in self.content:
-            return "Vous pouvez taper une autre commande ou faire un pipeline"
+            return """Vous pouvez taper une autre commande ou faire un pipeline.
+            Si vous n'ajoutez rien derrière, votre réponse sera refusée
+            car inutilement allongée."""
         if "&&" in self.content:
             return "Vous pouvez taper une autre commande ou faire un pipeline qui sera exécutée si la précédente se termine bien"
         if "(" in self.content:
