@@ -405,6 +405,15 @@ def define_sleep():
     d['cleanup'] = replace_minutes
     return d
 
+def analyse_tar(command):
+    (position, dummy_t, dummy_v) = get_argument(command, 0)
+    (position, t, v) = get_argument(command, position)
+    if t and len(t) > 0 and t[0] != '-':
+        v.make_comment("""Bien que la commande accepte les options sans tiret,
+        c'est une très mauvaise pratique et votre réponse sera refusée.""",
+                       "#F00")
+    return command
+
 def define_tar():
     d = define_command()
     d['name'] = 'tar'
@@ -417,6 +426,7 @@ def define_tar():
                "Le nom de l'archive générée ou lue", True),
         Option('--verbose', '-v', "Mode verbeux", False, False, True)
         )
+    d['analyse'] = analyse_tar
     return d
 
 def define_echo():
