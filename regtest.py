@@ -757,3 +757,6 @@
 'echo $(grep ^a)'
 "Line(Pipeline(Command(Argument(Normal('echo')),Separator(' '),Argument(Replacement(GroupStart('$('),Line(Pipeline(Command(Argument(Normal('grep')),Separator(' '),RegExpTree(RegExpBegin('^'),Normal('a'))))),GroupStop(')'))))))"
 "Line(Pipeline(Command(Argument(Normal('echo'))Argument(Replacement(GroupStart Line(Pipeline(Command(Argument(Normal('grep'))RegExpTree(RegExpBegin('^')Normal('a')))))GroupStop )))))"
+'grep -E "ab?"'
+'Line(Pipeline(Command(Argument(Normal(\'grep\')),Separator(\' \'),Argument(Normal(\'-E\')),Separator(\' \'),RegExpTree(Guillemet(\'"\'),Normal(\'a\'),RegExpMultiply(Normal(\'b\'),RegExpStar(\'?\')),Guillemet(\'"\')))))'
+"Line(Pipeline(Command(Argument(Normal('grep'))Argument(Normal('-E'))RegExpTree(Normal('a')RegExpMultiply(Normal('b')RegExpStar('?'))))))"

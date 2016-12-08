@@ -2697,8 +2697,12 @@ class RegExpStar(RegExpChar):
     def how_many(self):
         if self.content == '*':
             return "de 0 fois (rien) à l'infini"
-        else:
+        elif self.content == "+":
             return "de une fois à l'infini"
+        elif self.content == "?":
+            return "zéro ou une fois"
+        else:
+            return "Il y a un bug dans le programme !"
     def local_help(self, dummy_position):
         return "Répète l'entité précédente"
 
@@ -2981,7 +2985,7 @@ def regexpparser(root, extended):
                                       RegExpBadEscape(char), extended)
                 continue
             if ((char == '*'
-                or char in '+{' and extended
+                or char in '?+{' and extended
                  )
                 and (j != 0 or index_last_element is not None)
                 ):
