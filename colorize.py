@@ -1433,6 +1433,15 @@ class Container:
     def make_comment(self, comment=None):
         self.message = comment
 
+    def init_group_number(self, group_number):
+        if isinstance(self, RegExpGroup):
+            self.group_number = group_number
+            self.get_groups().append(self)
+            group_number += 1
+        for c in self.content:
+            group_number = c.init_group_number(group_number)
+        return group_number
+
 class Line(Container):
     def color(self):
         return ["#000", "#EEE"]
@@ -2591,15 +2600,6 @@ class RegExpTree(Argument):
             top = top.parent
         return top.groups
 
-    def init_group_number(self, group_number):
-        if isinstance(self, RegExpGroup):
-            self.group_number = group_number
-            self.get_groups().append(self)
-            group_number += 1
-        for c in self.content:
-            group_number = c.init_group_number(group_number)
-        return group_number
-
     def or_list(self, content):
         t = []
         s = ''
@@ -2900,6 +2900,9 @@ def regexpparser(root, extended):
     index_last_element = None
     group_start = None
     for i, element in enumerate(root.content):
+        if (not isinstance(element, Chars)
+            and not isinstance(element, RegExpTree)):
+            return # Abort parsing
         if element.begin_regexp:
             if isinstance(element, RegExpParenthesis):
                 group_start = i
@@ -3032,6 +3035,12 @@ def regexpparser(root, extended):
 
 def regexpparser_top(root, extended):
     r = regexpparser(root, extended)
+    if not r:
+        root.message = """<p style="background:#F00; color:#FFF">Cette expression régulière ne peut être
+        analysée car le shell va d'abord la remplacer par la liste
+        des fichiers qui rentrent dans le <em>pattern</em>.
+        Il faut donc la protéger.</p>"""
+        return root
     t = RegExpTree()
     t.content = r.content
     t.extended = extended

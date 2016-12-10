@@ -1320,4 +1320,28 @@
 	'Répète «b» zéro ou une fois'],
 [12,-791,	"Répète l'entité précédente"],
 [13,-763,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."]],
+[	'grep ^[a-z]$',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-708,	'Le début de ligne'
+	"Argument 1 : «^[a-z]$» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule.Cette expression régulière ne peut être"
+	"        analysée car le shell va d'abord la remplacer par la liste"
+	'        des fichiers qui rentrent dans le pattern.'
+	'        Il faut donc la protéger'],
+[7,-1024,	'Début de la liste des caractères possibles.'
+	"Les crochets indiquent que l'on veut un seul caractère de la list"],
+[8,-1090,	"Tous les caractères dans l'intervalle «a-z» sont autorisés"],
+[11,-1090,	'Fin de la liste des caractères possibles.'],
+[12,-1023,	'Texte : «$»']],
 ]
