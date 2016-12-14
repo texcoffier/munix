@@ -2982,7 +2982,7 @@ def regexpparser(root, extended):
                     new_content(root, index_last_element, i, [node]) 
                     return regexpparser(root, extended)
                 if (char not in '*.^$\\[.'
-                    and (not extended or char not in '()|')):
+                    and (not extended or char not in '()|+')):
                     root.content[index_last_element].escape = 0
                     return split_char(root, element, i, j,
                                       RegExpBadEscape(char), extended)
