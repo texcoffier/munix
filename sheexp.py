@@ -45,7 +45,7 @@ def sheexp(container):
     update.input.onclick    = update
     update.input.onpaste    = update
     update.input.focus()
-    setInterval(update, 100)
+    setInterval(update, 20)
 
 def update():
     update_real_fast()

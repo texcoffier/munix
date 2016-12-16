@@ -1344,4 +1344,67 @@
 [8,-1090,	"Tous les caractères dans l'intervalle «a-z» sont autorisés"],
 [11,-1090,	'Fin de la liste des caractères possibles.'],
 [12,-1023,	'Texte : «$»']],
+[	"sed -r -e 's/(aa*)b/\\1\\2&\\&\\\\/gj' -e 's/c//' *",
+[0,-1,	'Texte : «sed»'
+	'La commande «sed» avec 4 arguments.'
+	'sed : Transforme un flux de lignes de textes'
+	'Syntaxe : '
+	"sed -e 's/expreg/texte/g' f1 f2..."
+	'Options :'
+	"\xa0\xa0\xa0--regexp-extended (-r)  : Expressions régulières étendues.\xa0\xa0\xa0--expression (-e)  : L'argument suivant indique le traitement.\xa0\xa0\xa0--in-place (-i)  : Modifie les fichiers au lieu d'afficher le résultat."
+	'Aide : man sed'
+	'Une ligne comportant : une commande simple'
+	''],
+[4,-401,	'Un espace ou plus pour séparer les arguments.'],
+[5,-403,	'Texte : «-r»'
+	'Argument 1 : «-r»-r : Expressions régulières étendue'],
+[7,-403,	'Un espace ou plus pour séparer les argument'],
+[8,-402,	'Texte : «-e»'
+	"Argument 2 : «-e»-e : L'argument suivant indique le traitement"],
+[10,-402,	'Un espace ou plus pour séparer les arguments'],
+[11,-401,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	'Fait toutes les substitutions sur la ligne(aa*)b &#8594; \\1\\2&amp;\\&amp;\\\\'],
+[12,-478,	"Le traitement que doit faire la commande\xa0:'s' : Remplacement d'une expression régulière par un text"],
+[13,-478,	"Indique le début de l'expression régulièr"],
+[14,-476,	'Début du groupe'
+	'Groupement numéro 1'
+	'une expression régulière étendue'],
+[15,-529,	'Texte : «a»'],
+[16,-529,	'Texte : «a»'
+	"Répète «a» de 0 fois (rien) à l'infini"],
+[17,-568,	"Répète l'entité précédente"],
+[18,-529,	'Fin du groupe'],
+[19,-509,	'Texte : «b»'],
+[20,-476,	"Indique le début de la chaîne qui va remplacer ce qui rentre dans l'expression régulière."],
+[21,-500,	'Remplacé par ce qui a été trouvé par le groupe 1'
+	'qui correspond à : «(aa*)»'
+	'La chaîne qui remplacera les textes correspondant'
+	'        à'],
+[23,-560,	'Remplacé par ce qui a été trouvé par le groupe 2'
+	"mais ce groupe n'existe pas"],
+[25,-560,	"Représente ce qui a été trouvé par l'expression régulière"],
+[26,-560,	"Annule la signification du caractère suivant pour 'sed'"],
+[27,-560,	'Texte : «&amp;»'],
+[28,-560,	"Annule la signification du caractère suivant pour 'sed'"],
+[29,-560,	'Texte : «\\»'],
+[30,-477,	'Indique le début des options de remplacement'],
+[31,-477,	'Le remplacement est fait pour toutes les occurrences trouvées dans la ligne et pas seulement la première'],
+[32,-476,	'Option inconnue'],
+[33,-476,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[34,-401,	'Un espace ou plus pour séparer les arguments.'],
+[35,-402,	'Texte : «-e»'
+	"Argument 3 : «-e»-e : L'argument suivant indique le traitement"],
+[37,-402,	'Un espace ou plus pour séparer les arguments'],
+[38,-401,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	'Fait la première substitution sur chaque lignec &#8594; '],
+[39,-460,	"Le traitement que doit faire la commande\xa0:'s' : Remplacement d'une expression régulière par un text"],
+[40,-460,	"Indique le début de l'expression régulièr"],
+[41,-458,	'Texte : «c»'
+	'une expression régulière étendue'],
+[42,-458,	"Indique le début de la chaîne qui va remplacer ce qui rentre dans l'expression régulière."],
+[43,-459,	'Indique le début des options de remplacement'],
+[44,-459,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"],
+[45,-401,	'Un espace ou plus pour séparer les arguments.'],
+[46,-402,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
+	"Argument 4 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"]],
 ]

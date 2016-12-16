@@ -728,6 +728,82 @@ def define_grep():
         )
     return d
 
+def analyse_sed(command):
+    (position, dummy_t, dummy_v) = get_argument(command, 0)
+    state = "start"
+    is_a_filter = True
+    regexp = "normal"
+    in_place = False
+    while True:
+        (position, t, v) = get_argument(command, position)
+        if v is None:
+            break
+        if len(t) > 0 and t[0] == '-' and state != "expression":
+            if state == "only-filename":
+                v.make_comment("Les options doivent être en début de commande",
+                               "#F00")
+                continue
+            if t == '-e':
+                state = "expression"
+                continue
+            if t == '-r':
+                regexp = "extended"
+                continue
+            if t == '-i':
+                in_place = True
+                continue
+            v.make_comment("Option non prévue par ce logiciel", "#F00")
+            continue
+
+        if state == "start" or state == "expression":
+            c = v.cleanup(replace_option=False)
+            if v.first_of(Pattern):
+                v.make_comment("""Attention le shell va remplacer
+                le <em>pattern</em> et donc la commande <tt>sed</tt>
+                ne verra pas la transformation à faire.""")
+            elif 'Variable' in c:
+                v.make_comment("""La transformation va dépendre
+                du contenu de la variable.""")
+            else:
+                v.message = "Transformation à effectuer sur les lignes"
+                if regexp == 'extended':
+                    v.message += " Expression régulière étendue"
+                command.content[position-1] = sedparser_top(
+                    v, regexp == "extended")
+            if state == "start":
+                state = "only-filename"
+            else:
+                state = "filename"
+            continue
+        if state == "filename" or state == "only-filename":
+            v.make_comment("Chemin du fichier à traiter", "#000")
+            state = "only-filename"
+            is_a_filter = False
+            continue
+        v.make_comment("Il y a un bug, prévenez l'enseignant", "#F00")
+    if is_a_filter:
+        command.make_comment("""Comme il n'y a pas de nom de fichier,
+        <tt>sed</tt> traite les lignes lues sur son entrée standard.""")
+    return command
+
+def define_sed():
+    d = define_command()
+    d['name'] = 'sed'
+    d['description'] = "Transforme un flux de lignes de textes"
+    d['message'] = ""
+    d['analyse'] = analyse_sed
+    d['syntax'] = "sed -e 's/expreg/texte/g' <var>f1</var> <var>f2</var>..."
+
+    d['options'] = Options(
+        Option('--regexp-extended', '-r',
+               "Expressions régulières <b>étendues</b>."),
+        Option('--expression', '-e',
+               "L'argument suivant indique le traitement.", True),
+        Option('--in-place', '-i',
+               "Modifie les fichiers au lieu d'afficher le résultat.")
+        )
+    return d
+
 def define_manque_point_virgule(name):
     d = define_command()
     d['description'] = '<span class="command_help_error">N\'auriez-vous pas oublié un point-virgule avant ?</span>'
@@ -757,7 +833,7 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_done(), define_for(),
           define_if(), define_then(), define_else(), define_fi(),
           define_read(), define_test(), define_test_bracket(),
-          define_grep()
+          define_grep(), define_sed()
 ]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
@@ -2571,11 +2647,15 @@ class RegExpTree(Argument):
     begin_regexp = False
     def local_help(self, position):
         r = Argument.local_help(self, position)
+        if r != '':
+            r += ' : '
         if not isinstance(self.parent, RegExpTree):
-            r += " : une expression régulière"
+            r += "une expression régulière"
             if self.extended:
                 r += " <b>étendue</b>"
             r += self.or_list(self.content)
+        if self.message:
+            r += self.message
         return r
     def color(self):
         return ["#080", "#8F8"]
@@ -2829,7 +2909,7 @@ def regexpparser_multiply(root, i, j, index_last_element, element, char,
 
 def regexpparser_get(root, i, j, content):
     if len(root.content[i].content) == j:
-        while True:
+        while True: # Search a Normal Element.
             i += 1
             if i == len(root.content):
                 return None, None, None
@@ -3045,3 +3125,203 @@ def regexpparser_top(root, extended):
     t.content = r.content
     t.extended = extended
     return t
+
+class SedReplacementText(Container):
+    def local_help(self, dummy_position):
+        if self.parent.first_of(SedSeparator3):
+            m = "."
+        else:
+            m = " <b>il faut la terminer par <em>slash</em> '/'</b>."
+        return """La chaîne qui remplacera les textes correspondant
+        à l'expression régulière""" + m
+    def color(self):
+        return ["#088", "#8FF"]
+
+class SedReplacement(SedReplacementText):
+    def local_help(self, dummy_position):
+        a = self.first_of(SedAction)
+        if not a:
+            return "Indiquez la lettre 's' pour faire une substitution."
+        e = self.first_of(RegExpTree)
+        if e:
+            e = e.html()
+        else:
+            e = '?'
+        t = self.first_of(SedReplacementText)
+        if t:
+            t = t.html()
+        else:
+            t = '?'
+        if self.multiple:
+            m = "Fait toutes les substitutions sur la ligne"
+        else:
+            m = "Fait la première substitution sur chaque ligne"
+        return m + '<br>' + e + ' &#8594; ' + t
+
+    def color(self):
+        if self.first_of(SedSeparator3):
+            return ["#088", "#8FF"]
+        else:
+            return ["#088", "#F88"]
+
+class SedChar(Chars):
+    def color(self):
+        return ["#088", "#8FF"]
+
+class SedSeparator1(SedChar):
+    def local_help(self, dummy_position):
+        return "Indique le début de l'expression régulière."
+
+class SedSeparator2(SedChar):
+    def local_help(self, dummy_position):
+        return "Indique le début de la chaîne qui va remplacer ce qui rentre dans l'expression régulière."
+
+class SedSeparator3(SedChar):
+    def local_help(self, dummy_position):
+        return "Indique le début des options de remplacement."
+
+class SedOption(SedChar):
+    def local_help(self, dummy_position):
+        if self.content == 'g':
+            return "Le remplacement est fait pour toutes les occurrences trouvées dans la ligne et pas seulement la première."
+
+class SedAmpersand(SedChar):
+    def local_help(self, dummy_position):
+        return "Représente ce qui a été trouvé par l'expression régulière"
+
+class SedAction(SedChar):
+    def local_help(self, dummy_position):
+        if self.content == 's':
+            t = "Remplacement d'une expression régulière par un texte."
+        return ("Le traitement que doit faire la commande :<br>"
+                + "'" + self.content + "' : " + t)
+
+class SedBackslash(SedChar):
+    def local_help(self, dummy_position):
+        return """Annule la signification du caractère suivant pour 'sed'"""
+
+class SedBackslashSpecial(SedChar):
+    def local_help(self, dummy_position):
+        groups = self.regexptree.groups
+        n = int(self.content[-1]) - 1
+        if n < len(groups):
+            more = "qui correspond à : «" + groups[n].html() + "»"
+        else:
+            more = "mais ce groupe n'existe pas"
+        return ("Remplacé par ce qui a été trouvé par le groupe "
+                + str(n+1) + '<br>\n' + more)
+    def color(self):
+        if len(self.content) == 0 or int(self.content[-1]) - 1 < len(self.regexptree.groups):
+            return ["#088", "#8FF"]
+        else:
+            return ["#F00", "#F88"]
+
+def sedparser_top(root, extended):
+    i = 0
+    j = 0
+    content = []
+    while root.content[i] and not isinstance(root.content[i], Normal):
+        content.append(root.content[i])
+        i += 1
+    if not root.content[i]:
+        return root
+    i, j, char = regexpparser_get(root, i, j, content)
+    if char != 's':
+        root.make_comment("""Seul le traitement 's' de substitution
+        est pris en compte par cette application. Désolé.""", "#F00")
+        return root
+    content.append(SedAction(char))
+    i, j, char = regexpparser_get(root, i, j, content)
+    if i is not None:
+        if char != '/':
+            content.append(Unterminated(char,
+                                        "NON : remplacez ce caractère par '/'"))
+        else:
+            content.append(SedSeparator1(char))
+
+    re = []
+    char = None
+    while i is not None:
+        i, j, char = regexpparser_get(root, i, j, re)
+        if i is None:
+            break
+        if char == '\\':
+            i, j, char = regexpparser_get(root, i, j, re)
+            if i is None:
+                re.append(Unterminated('\\'))
+                break
+            re.append(RegExpBackslash('\\'))
+            re.append(Normal(char))
+            continue
+        if char == '/':
+            break
+        if len(re) and isinstance(re[-1], Normal):
+            re[-1].content += char
+        else:
+            re.append(Normal(char))
+
+    if len(re):
+        x = RegExpTree()
+        x.content = re
+        r = regexpparser(x, extended)
+        r.extended = extended
+        content.append(r)
+
+    if char == '/':
+        content.append(SedSeparator2(char))
+    else:
+        if len(re):
+            r.message = " <b>qu'il faut terminer par un <em>slash</em> '/'</b>"
+
+    char = None
+    x = SedReplacementText()
+    content.append(x)
+    while i is not None:
+        i, j, char = regexpparser_get(root, i, j, x.content)
+        if i is None:
+            break
+        if char == '&':
+            x.content.append(SedAmpersand(char))
+            continue
+        if char == '\\':
+            i, j, char = regexpparser_get(root, i, j, x.content)
+            if i is None:
+                re.append(Unterminated('\\'))
+                break
+            if extended and char in "123456789":
+                x.content.append(SedBackslashSpecial('\\' + char))
+                x.content[-1].regexptree = r
+            elif char in '\\&/':
+                x.content.append(SedBackslash('\\'))
+                x.content.append(Normal(char))
+            else:
+                x.content.append(SedBackslash('\\'))
+                x.content.append(RegExpBadEscape(char))
+            continue
+        if char == '/':
+            break
+        if len(x.content) and isinstance(x.content[-1], Normal):
+            x.content[-1].content += char
+        else:
+            x.content.append(Normal(char))
+
+    if char == '/':
+        content.append(SedSeparator3(char))
+
+    char = None
+    multiple = False
+    while i is not None:
+        i, j, char = regexpparser_get(root, i, j, content)
+        if i is None:
+            break
+        if char == 'g':
+            content.append(SedOption(char))
+            multiple = True
+        else:
+            content.append(Unterminated(char, "Option inconnue"))
+
+    root = SedReplacement()
+    root.content = content
+    root.multiple = multiple
+    return root
+
