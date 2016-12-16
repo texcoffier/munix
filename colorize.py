@@ -24,6 +24,11 @@ digit = "0123456789"
 names = alpha + digit
 logins= names + '-.'
 
+il_est_plus_court = """Il est plus court de taper <tt>a</tt>
+plutôt que <tt>[a]</tt>.<br>
+Il est plus court de taper <tt>\\*</tt>
+plutôt que <tt>[*]</tt>."""
+
 def name(obj):
     try:
         return obj.__class__.__name__
@@ -1122,8 +1127,25 @@ class SquareBracketStop(Pattern):
     def local_help(self, dummy_position):
         return "Fin de la liste des caractères possibles."
 class SquareBracketChar(Pattern):
+    def unsane(self):
+        if not hasattr(self, 'parent'):
+            return False
+        p = self.parent.content
+        return (len(p) == 3
+                and self is p[1]
+                and isinstance(p[2], SquareBracketStop)
+        )
+    def color(self):
+        if self.unsane():
+            return ["#F00", "#F88"]
+        else:
+            return Pattern.color(self)
+
     def local_help(self, dummy_position):
-        return "Le caractère «" + self.content + "» est autorisé"
+        if self.unsane():
+            return il_est_plus_court
+        else:
+            return "Le caractère «" + self.content + "» est autorisé"
 class SquareBracketInterval(Pattern):
     def color(self):
         return ["#808", "#D8D"]
@@ -2965,13 +2987,7 @@ def regexpparser_list(root, i, j, extended):
     else:
         root_content.append(Normal(root.content[i].content[j:]))
         if len(content) == 3 and isinstance(content[1], RegExpListNormal):
-            content[1] = Unterminated(
-                content[1].content,
-                """Il est plus court de taper <tt>a</tt>
-                plutôt que <tt>[a]</tt>.<br>
-                Il est plus court de taper <tt>\\.</tt>
-                plutôt que <tt>[.]</tt>.
-                """)
+            content[1] = Unterminated(content[1].content, il_est_plus_court)
     root = new_content(root, i_start, i+1, root_content)
     return regexpparser(root, extended)
 
