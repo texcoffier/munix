@@ -2851,9 +2851,14 @@ class RegExpNegate(RegExpBracket):
     def local_help(self, dummy_position):
         return "Un caractère qui n'est pas dans la liste suivante"
 
-class RegExpListNormal(Normal):
+class RegExpListNormal(RegExpChar):
     def local_help(self, dummy_position):
         return "Le caractère «" + self.content + "»"
+    def color(self):
+        if hasattr(self, "parent") and isinstance(self.parent, RegExpRange):
+            return ["#040", "#8F8"]
+        else:
+            return ["#080", "#8F8"]
 
 class RegExpBackslash(Invisible):
     escape = True
