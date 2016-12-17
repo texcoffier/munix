@@ -144,7 +144,8 @@ def define_command():
         "min_arg": 0,
         "options": None,
         "cleanup": nothing, # sleep 1m => sleep 60
-        "analyse": nothing  # see 'define_test'
+        "analyse": nothing,  # see 'define_test'
+        "color": ["#000", "#CFC"]
         }
 
 def define_builtin():
@@ -823,6 +824,15 @@ def define_then (): return define_manque_point_virgule('then')
 def define_else (): return define_manque_point_virgule('else')
 def define_fi   (): return define_manque_point_virgule('fi')
 
+def define_bash(name):
+    d = define_command()
+    d['description'] = "<span class=\"command_help_error\">C'est une commande 'bash'. Elle ne fonctionne pas en shell.</span>"
+    d['name'] = name
+    d["color"] = ["#F00", "#FCC"]
+    d["builtin"] = None
+    return d
+
+
 command_aliases = {
     'more': 'less'
 }
@@ -838,7 +848,9 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_done(), define_for(),
           define_if(), define_then(), define_else(), define_fi(),
           define_read(), define_test(), define_test_bracket(),
-          define_grep(), define_sed()
+          define_grep(), define_sed(),
+
+          define_bash('[[')
 ]:
     if x['name'] in commands:
         print("duplicate_name: " + x['name'])
@@ -1593,6 +1605,8 @@ class Pipeline(Line):
 class Command(Container):
     message = None
     def color(self):
+        #if getattr(self, "command", None):
+        #    return commands[self.command]["color"]
         return ["#000", "#CFC"]
     def local_help(self, position):
         if self.message:
@@ -1632,6 +1646,9 @@ class Command(Container):
                     command = command[1][1:-2]
                     if command in commands:
                         self.command = command
+                        def color():
+                            return commands[command]['color']
+                        content.content[0].color = color
                 arg_number += 1
                 continue
             if argument_for_option:
@@ -1665,11 +1682,14 @@ class Command(Container):
         if definition["options"]:
             s.append("Options :<br>")
             s.append(definition["options"].html())
-        s.append("Aide : <tt>"
-                 + (definition["builtin"]
-                    and format_help(definition)
-                    or format_man(definition))
-                 + "</tt><br>")
+        if definition["builtin"] == True:
+            h = format_help(definition)
+        elif definition["builtin"] == False:
+            h = format_man(definition)
+        else:
+            h = None
+        if h:
+            s.append("Aide : <tt>" + h + "</tt><br>")
         if self.nr_argument < definition["min_arg"]:
             s.append('<span class="command_help_error">'
                      + 'Votre commande manque d\'argument !</span><br>')
