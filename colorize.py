@@ -1869,7 +1869,7 @@ class Argument(Container):
         elif len(definition["*"]):
             text = definition["*"]
         else:
-            if definition["unknown"]:
+            if definition["unknown"] and self.text_content() != '-':
                 text = ('<div class="command_help_error">'
                         + definition["unknown"] + '</div>')
             else:
