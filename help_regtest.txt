@@ -1406,4 +1406,35 @@
 [45,-401,	'Un espace ou plus pour séparer les arguments.'],
 [46,-402,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
 	"Argument 4 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"]],
+[	'kill -14 8 ; kill -TERM 8',
+[0,-1,	'Texte : «kill»'
+	'La commande «kill» avec 2 arguments.'
+	'kill : Envoit un signal aux processus'
+	'Syntaxe : '
+	'kill -SIGNAL PID1 PID2...'
+	'Options :'
+	'Aide : man kill'
+	'Une ligne comportant : 2 commandes simples'
+	''],
+[5,-187,	'Un espace ou plus pour séparer les arguments.'],
+[6,-187,	'Texte : «-14»'
+	'Argument 1 : «-14»-14 : Timer signal from alarm(2)'],
+[9,-187,	'Un espace ou plus pour séparer les arguments.'],
+[10,-187,	'Texte : «8»'
+	'Argument 2 : «8»PID a qui envoyer le signal'],
+[11,-45,	'Le «;» permet de séparer les commandes.'],
+[14,-45,	'Texte : «kill»'
+	'La commande «kill» avec 2 arguments.'
+	'kill : Envoit un signal aux processus'
+	'Syntaxe : '
+	'kill -SIGNAL PID1 PID2...'
+	'Options :'
+	'Aide : man kill'
+	''],
+[18,-187,	'Un espace ou plus pour séparer les arguments.'],
+[19,-187,	'Texte : «-TERM»'
+	'Argument 1 : «-TERM»-TERM : Termination signal'],
+[24,-187,	'Un espace ou plus pour séparer les arguments.'],
+[25,-187,	'Texte : «8»'
+	'Argument 2 : «8»PID a qui envoyer le signal']],
 ]

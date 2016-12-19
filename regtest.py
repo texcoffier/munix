@@ -793,3 +793,6 @@
 'read -r A'
 "Line(Pipeline(Command(Argument(Normal('read')),Separator(' '),Argument(Normal('-r')),Separator(' '),Argument(Normal('A')))))"
 "Line(Pipeline(Command(Argument(Normal('read'))Argument(Normal('A')))))"
+'kill -TERM 8'
+"Line(Pipeline(Command(Argument(Normal('kill')),Separator(' '),Argument(Normal('-TERM')),Separator(' '),Argument(Normal('8')))))"
+"Line(Pipeline(Command(Argument(Normal('kill'))Argument(Normal(''))Argument(Normal('8')))))"

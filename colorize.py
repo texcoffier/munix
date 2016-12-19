@@ -87,11 +87,17 @@ class Options:
     def __init__(self, *options):
         self.options = options
         self.long_opt = {}
+        self.single_letter_option = True
         for option in options:
             self.long_opt[option.option] = option
+            if len(option.option) > 2 and option.option[1] != '-':
+                self.single_letter_option = False # kill, find
         self.short_opt = {}
         for option in options:
-            self.short_opt[option.short] = option
+            if option.short != '':
+                if not self.single_letter_option:
+                    it_is_no_possible
+                self.short_opt[option.short] = option
 
     def get_option(self, value):
         if value.split("=")[0] in self.long_opt:
@@ -836,6 +842,41 @@ def define_ps():
     vous devez donc mettre un tiret devant les options."""
     return d
 
+all_signals = [
+    ['HUP' , 1, 'Hangup detected on controlling terminal'],
+    ['INT' , 2, 'Interrupt from keyboard'],
+    ['QUIT', 3, 'Quit from keyboard'],
+    ['ILL' , 4, 'Illegal Instruction'],
+    ['ABRT', 6, 'Abort signal from abort(3)'],
+    ['FPE' , 8, 'Floating point exception'],
+    ['KILL', 9, 'Kill signal'],
+    ['SEGV',11, 'Invalid memory reference'],
+    ['PIPE',13, 'Broken pipe: write to pipe with no readers'],
+    ['ALRM',14, 'Timer signal from alarm(2)'],
+    ['TERM',15, 'Termination signal']
+]
+
+def signal_to_numbers(txt):
+    for name, number, message in all_signals:
+        txt = txt.replace('Normal(SIG' + name + ')', str(number))
+        txt = txt.replace('Normal(' + name + ')', str(number))
+    return txt
+
+def define_kill():
+    d = define_command()
+    d['name'] = 'kill'
+    d['description'] = "Envoit un signal aux processus"
+    d['*'] = "PID a qui envoyer le signal"
+    d['syntax'] = "kill -SIGNAL PID1 PID2..."
+    d['cleanup'] = signal_to_numbers
+    options = []
+    for name, number, message in all_signals:
+        options.append(Option('-' + name, '', message, False, False))
+        options.append(Option('-SIG' + name, '', message, False, False))
+        options.append(Option('-' + str(number), '', message, False, False))
+    d['options'] = Options(*options)
+    return d
+
 
 def define_manque_point_virgule(name):
     d = define_command()
@@ -875,7 +916,9 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_done(), define_for(),
           define_if(), define_then(), define_else(), define_fi(),
           define_read(), define_test(), define_test_bracket(),
-          define_grep(), define_sed(), define_ps(),
+          define_grep(), define_sed(),
+
+          define_ps(), define_kill(),
 
           define_bash('[[')
 ]:
@@ -1834,6 +1877,7 @@ class Argument(Container):
         options = definition['options']
         value = self.text_content()
         if (len(value) > 2
+            and options.single_letter_option
             and value[0] == '-' and value[1] != "-" and position is not None):
             # Single letter option: take the good one
             value = "-" + value[position - self.start - 1]
@@ -1858,8 +1902,8 @@ class Argument(Container):
         if not definition['options']:
             return
         options = definition['options']
-        if c[1] == "-":
-            d = c.split("=")[0]
+        d = c.split("=")[0]
+        if c[1] == "-" or not options.single_letter_option:
             self.option_argument_position = len(d)
             if d in options.long_opt:
                 option = options.long_opt[d]
