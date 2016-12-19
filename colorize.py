@@ -192,6 +192,16 @@ def define_read():
     )
     return d
 
+def define_exit():
+    d = define_builtin()
+    d['name'] = 'exit'
+    d['description'] = "Termine le shell courant"
+    d['message'] = "Retourne la valeur indiquée ou celle de la dernière commande"
+    d['syntax'] = "exit entier_optionnel"
+    d['1'] = "Valeur entière qui va être retournée au père."
+    d['unknown'] = "Argument est complètement inutile."
+    return d
+
 def define_ls():
     d = define_command()
     d['name'] = 'ls'
@@ -918,7 +928,7 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_read(), define_test(), define_test_bracket(),
           define_grep(), define_sed(),
 
-          define_ps(), define_kill(),
+          define_ps(), define_kill(), define_exit(),
 
           define_bash('[[')
 ]:
