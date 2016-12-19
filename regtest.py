@@ -510,10 +510,10 @@
 "Line(Pipeline(Command(Argument(Normal('tail'))Argument(Normal('-n5')))))"
 '[ ]'
 "Line(Pipeline(Command(Argument(Normal('[')),Separator(' '),Argument(Normal(']')))))"
-"Line(Pipeline(Command(Argument(Normal('['))Argument(Normal(']')))))"
+"Line(Pipeline(Command(Argument(Normal('test')))))"
 '[|]'
 "Line(Pipeline(Command(Argument(Normal('['))),Pipe('|'),Command(Argument(Normal(']')))))"
-"Line(Pipeline(Command(Argument(Normal('[')))Command(Argument(Normal(']')))))"
+"Line(Pipeline(Command(Argument(Normal('test')))Command(Argument(Normal(']')))))"
 '[\\|]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),Backslash('\\\\'),SquareBracketChar('|'),SquareBracketStop(']'))))))"
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketChar('|')SquareBracketStart('[')SquareBracketStop(']'))))))"
@@ -627,10 +627,10 @@
 "Line(Pipeline(Command(Argument(Normal('test'))ArgumentGroup(Argument(Normal('a'))Argument(Normal('='))Argument(Normal('b'))))))"
 '[ -d a ]'
 "Line(Pipeline(Command(Argument(Normal('[')),Separator(' '),ArgumentGroup(Argument(Normal('-d')),Separator(' '),Argument(Normal('a'))),Separator(' '),Argument(Normal(']')))))"
-"Line(Pipeline(Command(Argument(Normal('['))ArgumentGroup(Argument(Normal('-d'))Argument(Normal('a')))Argument(Normal(']')))))"
+"Line(Pipeline(Command(Argument(Normal('test'))ArgumentGroup(Argument(Normal('-d'))Argument(Normal('a'))))))"
 '[ a = b -o c -eq d ]'
 "Line(Pipeline(Command(Argument(Normal('[')),Separator(' '),ArgumentGroup(ArgumentGroup(Argument(Normal('a')),Separator(' '),Argument(Normal('=')),Separator(' '),Argument(Normal('b'))),Separator(' '),Argument(Normal('-o')),Separator(' '),ArgumentGroup(Argument(Normal('c')),Separator(' '),Argument(Normal('-eq')),Separator(' '),Argument(Normal('d'))),Separator(' ')),Argument(Normal(']')))))"
-"Line(Pipeline(Command(Argument(Normal('['))ArgumentGroup(ArgumentGroup(Argument(Normal('a'))Argument(Normal('='))Argument(Normal('b')))Argument(Normal('-o'))ArgumentGroup(Argument(Normal('c'))Argument(Normal('-eq'))Argument(Normal('d'))))Argument(Normal(']')))))"
+"Line(Pipeline(Command(Argument(Normal('test'))ArgumentGroup(ArgumentGroup(Argument(Normal('a'))Argument(Normal('='))Argument(Normal('b')))Argument(Normal('-o'))ArgumentGroup(Argument(Normal('c'))Argument(Normal('-eq'))Argument(Normal('d')))))))"
 'grep "a*"'
 'Line(Pipeline(Command(Argument(Normal(\'grep\')),Separator(\' \'),RegExpTree(Guillemet(\'"\'),RegExpMultiply(Normal(\'a\'),RegExpStar(\'*\')),Guillemet(\'"\')))))'
 "Line(Pipeline(Command(Argument(Normal('grep'))RegExpTree(RegExpMultiply(Normal('a')RegExpStar('*'))))))"
@@ -790,3 +790,6 @@
 'sed s/a/b/g'
 "Line(Pipeline(Command(Argument(Normal('sed')),Separator(' '),SedReplacement(SedAction('s'),SedSeparator1('/'),RegExpTree(Normal('a')),SedSeparator2('/'),SedReplacementText(Normal('b')),SedSeparator3('/'),SedOption('g')))))"
 "Line(Pipeline(Command(Argument(Normal('sed'))SedReplacement(SedAction('s')SedSeparator1('/')RegExpTree(Normal('a'))SedSeparator2('/')SedReplacementText(Normal('b'))SedSeparator3('/')SedOption('g')))))"
+'read -r A'
+"Line(Pipeline(Command(Argument(Normal('read')),Separator(' '),Argument(Normal('-r')),Separator(' '),Argument(Normal('A')))))"
+"Line(Pipeline(Command(Argument(Normal('read'))Argument(Normal('A')))))"

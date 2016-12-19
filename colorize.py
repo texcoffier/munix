@@ -74,7 +74,7 @@ def choices(keywords):
                         ])
 
 class Option:
-    def __init__(self, option , short, message, argument=False, display=True,
+    def __init__(self, option, short, message, argument=False, display=True,
                  cleanup=False):
         self.option   = option   # long option as --verbose
         self.short    = short    # short option as -v
@@ -175,11 +175,15 @@ def define_pwd():
 def define_read():
     d = define_builtin()
     d['name'] = 'read'
-    d['description'] = "Lecture d'un ligne de l'entrée standard"
+    d['description'] = "Lecture d'une ligne de l'entrée standard"
     d['message'] = "La ligne est stockée dans les variables indiquées"
     d['syntax'] = "read TITI TATA TOTO"
     d['*'] = "Nom de la variable où stocker le n<sup>ème</sup> mot"
     d['$'] = "Nom de la variable où stocker le reste de la ligne"
+    d['options'] = Options(
+        Option('', '-r', "(r=raw) traite les <tt>\\</tt> comme des caractères normaux.",
+               False, False, True)
+    )
     return d
 
 def define_ls():
@@ -643,9 +647,17 @@ def define_test():
     d['analyse'] = analyse_test
     return d
 
+final_bracket = "Argument(Normal(']')))"
+def remove_brackets(txt):
+    txt = txt.replace("Normal('[')", "Normal('test')", 1)
+    if txt[-len(final_bracket):] == final_bracket:
+        txt = txt[:-len(final_bracket)] + ')'
+    return txt
+
 def define_test_bracket():
     d = define_test()
     d['name'] = '['
+    d['cleanup'] = remove_brackets
     return d
 
 def analyse_grep(command):
@@ -810,6 +822,21 @@ def define_sed():
         )
     return d
 
+def define_ps():
+    d = define_command()
+    d['name'] = 'ps'
+    d['description'] = "Liste les processus"
+
+    d['options'] = Options(
+        Option('', '-e', "Tous les processus."),
+        Option('', '-H', "Hiérarchie des processus."),
+        Option('', '-f', "(<em>full</em>) Affiche plus d'informations.")
+        )
+    d['unknown'] = """La syntaxe UNIX BSD n'est pas acceptée,
+    vous devez donc mettre un tiret devant les options."""
+    return d
+
+
 def define_manque_point_virgule(name):
     d = define_command()
     d['description'] = '<span class="command_help_error">N\'auriez-vous pas oublié un point-virgule avant ?</span>'
@@ -848,7 +875,7 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_done(), define_for(),
           define_if(), define_then(), define_else(), define_fi(),
           define_read(), define_test(), define_test_bracket(),
-          define_grep(), define_sed(),
+          define_grep(), define_sed(), define_ps(),
 
           define_bash('[[')
 ]:

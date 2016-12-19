@@ -81,7 +81,7 @@ Les redirections dans les fichiers (pas le pipe). /dev/null
 
 Les expressions régulières.
 
-Les commandes : grep, sed, awk
+Les commandes : grep, sed, (awk???)
 
 Expressions régulières dans vi, emacs, en Javascript, Python, C ?
 
