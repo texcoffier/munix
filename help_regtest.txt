@@ -1437,4 +1437,28 @@
 [24,-187,	'Un espace ou plus pour séparer les arguments.'],
 [25,-187,	'Texte : «8»'
 	'Argument 2 : «8»PID a qui envoyer le signal']],
+[	'grep "[aca]"',
+[0,-1,	'Texte : «grep»'
+	"Comme il n'y a pas de nom de fichier,"
+	'        grep cherche les lignes sur son entrée standard.'
+	'grep : Affiche les lignes du fichier qui passent le crible.'
+	"Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
+	'Syntaxe : '
+	'grep -e expreg1 -e expreg2 file1 file2...'
+	'Options :'
+	"\xa0\xa0\xa0--extended-regexp (-E)  : Expressions régulières étendues.\xa0\xa0\xa0--fixed-strings (-F)  : Simple texte au lieu d'une exp. régulière.\xa0\xa0\xa0--regexp (-e)  : L'argument suivant est ce qu'il faut rechercher.\xa0\xa0\xa0--ignore-case (-i)  : Ne tient pas compte de la casse.\xa0\xa0\xa0--invert-match (-v)  : Les lignes ne passant pas le crible."
+	'Aide : man grep'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-707,	'Un espace ou plus pour séparer les arguments.'],
+[6,-707,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'
+	'Argument 1 : «"[aca]"» : une expression régulière'],
+[7,-757,	'Début de liste de caractères'
+	'Remplace un unique caractère de la liste'],
+[8,-798,	'Le caractère «a»'],
+[9,-799,	'Le caractère «c'],
+[10,-798,	'"Ce caractère autorisé est déjà présent dans la liste,'
+	"cela ne sert à rien de l'indiquer à nouveau."],
+[11,-798,	'Fin de liste de caractères'],
+[12,-757,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 ]

@@ -28,6 +28,8 @@ il_est_plus_court = """Il est plus court de taper <tt>a</tt>
 plutôt que <tt>[a]</tt>.<br>
 Il est plus court de taper <tt>\\*</tt>
 plutôt que <tt>[*]</tt>."""
+msg_duplicate = """"Ce caractère autorisé est déjà présent dans la liste,
+cela ne sert à rien de l'indiquer à nouveau."""
 
 def name(obj):
     try:
@@ -1030,6 +1032,20 @@ class Chars:
         pass # To easely stop container recursion
     def init_group_number(self, group_number):
         return group_number # To easely stop container recursion
+    def is_duplicate(self):
+        if not hasattr(self, "parent"):
+            return False
+        n = 0
+        for c in self.parent.content:
+            if c.content == self.content:
+                if n == 0 and c is self:
+                    return False # The first is not a duplicate
+                n += 1
+        if n > 1:
+            return True
+        if n == 0:
+            print("There is a bug")
+        return False
         
 
 class Normal(Chars):
@@ -1228,7 +1244,7 @@ class SquareBracketChar(Pattern):
                 and isinstance(p[2], SquareBracketStop)
         )
     def color(self):
-        if self.unsane():
+        if self.unsane() or self.is_duplicate():
             return ["#F00", "#F88"]
         else:
             return Pattern.color(self)
@@ -1236,6 +1252,8 @@ class SquareBracketChar(Pattern):
     def local_help(self, dummy_position):
         if self.unsane():
             return il_est_plus_court
+        elif self.is_duplicate():
+            return msg_duplicate
         else:
             return "Le caractère «" + self.content + "» est autorisé"
 class SquareBracketInterval(Pattern):
@@ -2954,12 +2972,16 @@ class RegExpNegate(RegExpBracket):
 
 class RegExpListNormal(RegExpChar):
     def local_help(self, dummy_position):
+        if self.is_duplicate():
+            return msg_duplicate
         return "Le caractère «" + self.content + "»"
     def color(self):
-        if hasattr(self, "parent") and isinstance(self.parent, RegExpRange):
-            return ["#040", "#8F8"]
-        else:
-            return ["#080", "#8F8"]
+        if hasattr(self, "parent"):
+            if isinstance(self.parent, RegExpRange):
+                return ["#040", "#8F8"]
+            if self.is_duplicate():
+                return ["#F00", "#F88"]
+        return ["#080", "#8F8"]
 
 class RegExpBackslash(Invisible):
     escape = True
