@@ -53,6 +53,12 @@ except:
 def string(t):
     return "'" + t.replace(slashslash, "\\\\").replace(quote, "\\'") + "'"
 
+def mystrip(txt, c):
+    while txt and txt[0] in c:
+        txt = txt[1:]
+    while txt and txt[-1] in c:
+        txt = txt[:-1]
+    return txt
 def unused_color(element):
     i = 0
     my_color = element.color()[1]
@@ -2049,14 +2055,30 @@ class Conditionnal(Line):
         return "Suite conditionnelle de commandes ou pipelines"
 
 class Affectation(Container):
+    def unsane(self):
+        if len(self.content) <= 2:
+            return False
+        t = ''
+        for content in self.content[2:]:
+            if isinstance(content, Unterminated):
+                return False
+            t += content.text()
+        return mystrip(t, '"') == '$' + self.content[0].text()
     def color(self):
-        return ["#000", "#FFA"]
+        if self.unsane():
+            return ["#F00", "#F88"]
+        else:
+            return ["#000", "#FFA"]
     def local_help(self, dummy_position):
         v = ''
         for content in self.content[2:]:
             v += content.html()
+        if self.unsane():
+            more = "<br>La variable ne change pas de valeur, si vous n'ajoutez rien, cette opération est inutile."
+        else:
+            more = ""
         return ('Enregistre «' + v + '» dans la variable : «'
-                + self.content[0].html() + '»')
+                + self.content[0].html() + '».' + more)
 
 class ForLoop(Command):
     def local_help(self, dummy_position):

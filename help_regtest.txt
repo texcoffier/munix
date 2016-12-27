@@ -1461,4 +1461,27 @@
 	"cela ne sert à rien de l'indiquer à nouveau."],
 [11,-798,	'Fin de liste de caractères'],
 [12,-757,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'A=$A ; B="$B" ; C="$C',
+[0,-1,	'Nom de la variable'
+	"Enregistre «$A» dans la variable : «A».La variable ne change pas de valeur, si vous n'ajoutez rien, cette opération est inutile."
+	'Une commande vide !'
+	'Une ligne comportant : 3 commandes simples'
+	''],
+[2,-194,	'Affectation'],
+[3,-194,	'«$A» est remplacé par le shell par le contenu de la variable «A». Le nom de la variable disparaît.'],
+[5,-45,	'Le «;» permet de séparer les commandes.'],
+[8,-45,	'Nom de la variable'
+	'Enregistre «"$B"» dans la variable : «B».La variable ne change pas de valeur, si vous n\'ajoutez rien, cette opération est inutile.'
+	'Une commande vide !'],
+[9,-196,	'Affectation'],
+[10,-196,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.'],
+[11,-197,	'«$B» est remplacé par le shell par le contenu de la variable «B». Le nom de la variable disparaît'],
+[13,-197,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar'],
+[14,-45,	'Le «;» permet de séparer les commandes.'],
+[17,-45,	'Nom de la variable'
+	'Enregistre «"$C» dans la variable : «C».'
+	'Une commande vide !'],
+[18,-106,	'Affectation'],
+[19,-106,	'Pour terminer le texte protégé, il faut mettre un deuxième guillemet'],
+[20,-106,	'«$C» est remplacé par le shell par le contenu de la variable «C». Le nom de la variable disparaît.']],
 ]
