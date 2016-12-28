@@ -1107,7 +1107,7 @@ class NewLine(Separator):
 
 special_variables = {
     "#": "le nombre d'arguments du script shell",
-    "?": "la valeur de retour du processus précédent",
+    "?": "la valeur de retour de la dernière commande",
     "$": "le PID du shell en train de s'exécuter",
     "0": "le nom du script shell en train de s'exécuter",
     "*": "tous les arguments du script shell : <b>ne pas utiliser car cela ne permet pas de manipuler les arguments avec un espace</b>",
@@ -2022,14 +2022,30 @@ class Group(Command):
     def local_help(self, dummy_position):
         return "Lance un nouveau processus"
 class Replacement(Container):
+    def unsane(self):
+        if isinstance(self.parent, Affectation):
+            return False
+        s = self.str()
+        e = "Replacement(GroupStart('$('),Line(Pipeline(Command(Argument(Normal('echo'))"
+        if s[:len(e)] != e:
+            return False
+        s = s[len(e):]
+        if 'Command' in s:
+            return False
+        return True
     def color(self):
         return ["#000", "#CCF"]
     def is_a_pattern(self):
         return False
     def local_help(self, dummy_position):
+        if self.unsane():
+            more = '<br><span class="command_help_error">Il est très rare d\'avoir besoin de faire «$(echo *)», il est plus simple d\'écrire «*» directement.</span>'
+        else:
+            more = ''
         return ("Lance un nouveau processus pour évaluer le contenu. "
                 + "Ces caractères sont remplacés par ce qui a été "
                 + "écrit par le processus sur sa sortie standard."
+                + more
                 )
 class ReplacementProtected(Container):
     pass

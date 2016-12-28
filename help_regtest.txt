@@ -1484,4 +1484,52 @@
 [18,-106,	'Affectation'],
 [19,-106,	'Pour terminer le texte protégé, il faut mettre un deuxième guillemet'],
 [20,-106,	'«$C» est remplacé par le shell par le contenu de la variable «C». Le nom de la variable disparaît.']],
+[	'echo $(echo *) ; A=$(echo *)',
+[0,-1,	'Texte : «echo»'
+	'La commande «echo» avec un argument.'
+	'echo : affiche ses arguments'
+	' (builtin)'
+	'Elle affiche un espace entre chaque argument'
+	'Syntaxe : '
+	'echo arg1 arg2 arg3...'
+	'Aide : help echo'
+	'Une ligne comportant : 2 commandes simples'
+	''],
+[5,-222,	'Un espace ou plus pour séparer les arguments.'],
+[6,-222,	'Début du groupement'
+	"Lance un nouveau processus pour évaluer le contenu. Ces caractères sont remplacés par ce qui a été écrit par le processus sur sa sortie standard.Il est très rare d'avoir besoin de faire «$(echo *)», il est plus simple d'écrire «*» directement."
+	'Argument 1 : «$(echo *)»'],
+[8,-491,	'Texte : «echo»'
+	'La commande «echo» avec un argument.'
+	'echo : affiche ses arguments'
+	' (builtin)'
+	'Elle affiche un espace entre chaque argument'
+	'Syntaxe : '
+	'echo arg1 arg2 arg3...'
+	'Aide : help echo'
+	'Une ligne comportant : une commande simple'],
+[12,-711,	'Un espace ou plus pour séparer les arguments.'],
+[13,-712,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
+	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"],
+[14,-491,	'Fin du groupement'],
+[15,-45,	'Le «;» permet de séparer les commandes.'],
+[18,-45,	'Nom de la variable'
+	'Enregistre «$(echo *)» dans la variable : «A».'
+	'Une commande vide !'],
+[19,-112,	'Affectation'],
+[20,-112,	'Début du groupement'
+	'Lance un nouveau processus pour évaluer le contenu. Ces caractères sont remplacés par ce qui a été écrit par le processus sur sa sortie standard.'],
+[22,-258,	'Texte : «echo»'
+	'La commande «echo» avec un argument.'
+	'echo : affiche ses arguments'
+	' (builtin)'
+	'Elle affiche un espace entre chaque argument'
+	'Syntaxe : '
+	'echo arg1 arg2 arg3...'
+	'Aide : help echo'
+	'Une ligne comportant : une commande simple'],
+[26,-478,	'Un espace ou plus pour séparer les arguments.'],
+[27,-479,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
+	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"],
+[28,-258,	'Fin du groupement']],
 ]
