@@ -210,6 +210,14 @@ def define_exit():
     d['unknown'] = "Argument est complètement inutile."
     return d
 
+def define_export():
+    d = define_builtin()
+    d['name'] = 'export'
+    d['description'] = "Exporte la variable aux futurs shell enfants"
+    d['syntax'] = "export VARNAME"
+    d['*'] = "Nom de variable à exporter"
+    return d
+
 def define_ls():
     d = define_command()
     d['name'] = 'ls'
@@ -936,7 +944,7 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_read(), define_test(), define_test_bracket(),
           define_grep(), define_sed(),
 
-          define_ps(), define_kill(), define_exit(),
+          define_ps(), define_kill(), define_exit(), define_export(),
 
           define_bash('[[')
 ]:
@@ -1108,7 +1116,8 @@ class NewLine(Separator):
 special_variables = {
     "#": "le nombre d'arguments du script shell",
     "?": "la valeur de retour de la dernière commande",
-    "$": "le PID du shell en train de s'exécuter",
+    "$": "le PID du shell qui a analysé la commande",
+    "!": "le PID de la dernière commande lancée en arrière plan",
     "0": "le nom du script shell en train de s'exécuter",
     "*": "tous les arguments du script shell : <b>ne pas utiliser car cela ne permet pas de manipuler les arguments avec un espace</b>",
     "@": "tous les arguments du script shell",
