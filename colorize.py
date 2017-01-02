@@ -718,6 +718,8 @@ def analyse_grep(command):
             if t == '-F':
                 regexp = "fast"
                 continue
+            if t == '--color'[:len(t)]:
+                continue
             v.make_comment("Option non prévue par ce logiciel", "#F00")
             continue
 
@@ -774,7 +776,10 @@ def define_grep():
         Option('--ignore-case', '-i',
                "Ne tient pas compte de la casse."),
         Option('--invert-match', '-v',
-               "Les lignes ne passant pas le crible.")
+               "Les lignes <b>ne passant pas</b> le crible."),
+        Option('--color', '--color',
+               "Colorie ce qui correspond à l'expression régulière.",
+               False, False)
         )
     return d
 
