@@ -724,12 +724,11 @@ def analyse_grep(command):
             continue
 
         if state == "start" or state == "regexp":
-            c = v.cleanup(replace_option=False)
-            if v.first_of(Pattern):
+            if v.contains_a_pattern():
                 v.make_comment("""Attention le shell va remplacer
                 le <em>pattern</em> et donc la commande <tt>grep</tt>
                 ne verra pas l'expression à chercher.""")
-            elif 'Variable' in c:
+            elif v.contains(Variable):
                 v.make_comment("""L'expression à chercher va dépendre
                 du contenu de la variable.""")
             else:
@@ -811,12 +810,11 @@ def analyse_sed(command):
             continue
 
         if state == "start" or state == "expression":
-            c = v.cleanup(replace_option=False)
-            if v.first_of(Pattern):
+            if v.contains_a_pattern():
                 v.make_comment("""Attention le shell va remplacer
                 le <em>pattern</em> et donc la commande <tt>sed</tt>
                 ne verra pas la transformation à faire.""")
-            elif 'Variable' in c:
+            elif v.contains(Variable):
                 v.make_comment("""La transformation va dépendre
                 du contenu de la variable.""")
             else:
@@ -1065,7 +1063,8 @@ class Chars:
         if n == 0:
             print("There is a bug")
         return False
-        
+    def contains(self, the_class):
+        return isinstance(self, the_class)
 
 class Normal(Chars):
     def local_help(self, position):
@@ -1669,6 +1668,16 @@ class Container:
         for c in self.content:
             group_number = c.init_group_number(group_number)
         return group_number
+
+    def contains_a_pattern(self):
+        return self.first_of(Pattern) or self.first_of(SquareBracket)
+
+    def contains(self, the_class):
+        if isinstance(self, the_class):
+            return True
+        for c in self.content:
+            if c.contains(the_class):
+                return True
 
 class Line(Container):
     def color(self):
@@ -3309,13 +3318,16 @@ def regexpparser(root, extended):
             '(', 'Groupe ouvert mais pas encore fermé')
     return root
 
+def pattern_regexp_conflict(root):
+    root.message = """<p style="background:#F00; color:#FFF">Cette expression régulière ne peut être
+    analysée car le shell va d'abord la remplacer par la liste
+    des fichiers qui rentrent dans le <em>pattern</em>.
+    Il faut donc la protéger.</p>"""
+
 def regexpparser_top(root, extended):
     r = regexpparser(root, extended)
     if not r:
-        root.message = """<p style="background:#F00; color:#FFF">Cette expression régulière ne peut être
-        analysée car le shell va d'abord la remplacer par la liste
-        des fichiers qui rentrent dans le <em>pattern</em>.
-        Il faut donc la protéger.</p>"""
+        pattern_regexp_conflict(root)
         return root
     t = RegExpTree()
     t.content = r.content
@@ -3460,6 +3472,9 @@ def sedparser_top(root, extended):
         x = RegExpTree()
         x.content = re
         r = regexpparser(x, extended)
+        if not r:
+            pattern_regexp_conflict(root)
+            return root
         r.extended = extended
         content.append(r)
 
