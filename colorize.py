@@ -1579,7 +1579,7 @@ class Container:
             self.append(self.content[-1].content.pop())
     def replace_unexpected(self):
         if (isinstance(self, Pipeline)
-            and isinstance(self.content[0], Done)
+            and len(self.content) > 0 and isinstance(self.content[0], Done)
         ):
             self.content[0] = Unexpected(self.content[0].content)
         for i, content in enumerate(self.content):
@@ -2299,7 +2299,7 @@ class Parser:
     def parse_group(self, eat_separator=True):
         parsed = Group()
         self.next()
-        parsed.append(GroupStart("("))
+        parsed.append(GroupStart("(" + self.skip(' \t\n')))
         parsed.append(self.parse(0))
         if self.empty():
             parsed.content[0] = Unterminated("(")

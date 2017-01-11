@@ -113,16 +113,16 @@
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Unexpected('('))))"
 "Line(Pipeline(Command(Argument(Normal('a'))Unexpected('('))))"
 '( d ; e )'
-"Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('d')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('e'))))),GroupStop(' )'))))"
+"Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('d')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('e'))))),GroupStop(' )'))))"
 "Line(Pipeline(Group(GroupStart Line(Pipeline(Command(Argument(Normal('d'))))Pipeline(Command(Argument(Normal('e')))))GroupStop )))"
 'a ; ( b ) ; c'
-"Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('b'))))),GroupStop(' ) '))),DotComa('; '),Pipeline(Command(Argument(Normal('c')))))"
+"Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('b'))))),GroupStop(' ) '))),DotComa('; '),Pipeline(Command(Argument(Normal('c')))))"
 "Line(Pipeline(Command(Argument(Normal('a'))))Pipeline(Group(GroupStart Line(Pipeline(Command(Argument(Normal('b')))))GroupStop ))Pipeline(Command(Argument(Normal('c')))))"
 '( a ; b ) | ( c ; d )'
-"Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('a')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('b'))))),GroupStop(' ) ')),Pipe('| '),Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('c')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('d'))))),GroupStop(' )'))))"
+"Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('b'))))),GroupStop(' ) ')),Pipe('| '),Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('c')))),DotComa(' ; '),Pipeline(Command(Argument(Normal('d'))))),GroupStop(' )'))))"
 "Line(Pipeline(Group(GroupStart Line(Pipeline(Command(Argument(Normal('a'))))Pipeline(Command(Argument(Normal('b')))))GroupStop )Group(GroupStart Line(Pipeline(Command(Argument(Normal('c'))))Pipeline(Command(Argument(Normal('d')))))GroupStop )))"
 '( a ) >b'
-"Line(Pipeline(Group(GroupStart('('),Line(Pipeline(Command(Separator(' '),Argument(Normal('a'))))),GroupStop(' ) '),Redirection(Fildes(''),Direction('>'),File(Normal('b'))))))"
+"Line(Pipeline(Group(GroupStart('( '),Line(Pipeline(Command(Argument(Normal('a'))))),GroupStop(' ) '),Redirection(Fildes(''),Direction('>'),File(Normal('b'))))))"
 "Line(Pipeline(Group(GroupStart Line(Pipeline(Command(Argument(Normal('a')))))GroupStop Redirection(Fildes('')Direction('>')File(Normal('b'))))))"
 'A=B'
 "Line(Pipeline(Command(Affectation(VariableName('A'),Equal('='),Normal('B')))))"
@@ -805,3 +805,9 @@
 'A=) a'
 "Line(Pipeline(Command(Affectation(VariableName('A'),Equal('=')))),Unexpected(') '),Pipeline(Command(Argument(Normal('a')))))"
 "Line(Pipeline(Command(Affectation(VariableName('A')Equal('='))))Unexpected(') ')Pipeline(Command(Argument(Normal('a')))))"
+'a;();b'
+"Line(Pipeline(Command(Argument(Normal('a')))),DotComa(';'),Pipeline(Group(GroupStart('('),Line(),GroupStop(')'))),DotComa(';'),Pipeline(Command(Argument(Normal('b')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))))Pipeline(Group(GroupStart Line()GroupStop ))Pipeline(Command(Argument(Normal('b')))))"
+'a ; ( ) ; b'
+"Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Group(GroupStart('( '),Line(),GroupStop(') '))),DotComa('; '),Pipeline(Command(Argument(Normal('b')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))))Pipeline(Group(GroupStart Line()GroupStop ))Pipeline(Command(Argument(Normal('b')))))"
