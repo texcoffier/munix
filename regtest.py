@@ -799,3 +799,9 @@
 'sed s/^[ab]'
 "Line(Pipeline(Command(Argument(Normal('sed')),Separator(' '),Argument(Normal('s/^'),SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),SquareBracketChar('b'),SquareBracketStop(']'))))))"
 "Line(Pipeline(Command(Argument(Normal('sed'))Argument(Normal('s/^')SquareBracket(SquareBracketChar('a')SquareBracketChar('b')SquareBracketStart('[')SquareBracketStop(']'))))))"
+'a ) b'
+"Line(Pipeline(Command(Argument(Normal('a')))),Separator(' '),Unexpected(') '),Pipeline(Command(Argument(Normal('b')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))))Unexpected(') ')Pipeline(Command(Argument(Normal('b')))))"
+'A=) a'
+"Line(Pipeline(Command(Affectation(VariableName('A'),Equal('=')))),Unexpected(') '),Pipeline(Command(Argument(Normal('a')))))"
+"Line(Pipeline(Command(Affectation(VariableName('A')Equal('='))))Unexpected(') ')Pipeline(Command(Argument(Normal('a')))))"

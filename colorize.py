@@ -2213,7 +2213,9 @@ class Parser:
         while not self.empty():
             if self.get() == ')':
                 if init:
-                    parsed.append(Unexpected(")"))
+                    self.next()
+                    parsed.append(Unexpected(")" + self.skip(" \t")))
+                    continue
                 break
             pipeline = self.parse_pipeline(init)
             if not parsed.empty() and isinstance(parsed.content[-1],
