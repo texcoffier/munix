@@ -811,3 +811,9 @@
 'a ; ( ) ; b'
 "Line(Pipeline(Command(Argument(Normal('a')))),DotComa(' ; '),Pipeline(Group(GroupStart('( '),Line(),GroupStop(') '))),DotComa('; '),Pipeline(Command(Argument(Normal('b')))))"
 "Line(Pipeline(Command(Argument(Normal('a'))))Pipeline(Group(GroupStart Line()GroupStop ))Pipeline(Command(Argument(Normal('b')))))"
+'A=()'
+"Line(Pipeline(Command(Affectation(VariableName('A'),Equal('=')),Unexpected('('))),Unexpected(')'))"
+"Line(Pipeline(Command(Affectation(VariableName('A')Equal('='))Unexpected('(')))Unexpected(')'))"
+'A=( )'
+"Line(Pipeline(Command(Affectation(VariableName('A'),Equal('=')),Unexpected('('))),Separator(' '),Unexpected(')'))"
+"Line(Pipeline(Command(Affectation(VariableName('A')Equal('='))Unexpected('(')))Unexpected(')'))"

@@ -2538,9 +2538,10 @@ class Parser:
                     return parsed
                 if self.get() == '`' and self.in_back_cote:
                     return parsed
-                while not self.empty() and self.get() in '(':
+                if self.get() == '(':
                     parsed.append(Unexpected("("))
                     self.next()
+                    return parsed
             if not self.empty():
                 before_command = parsed.number_of(Argument)==0
                 parsed.append(self.parse_argument(parse_equal = before_command))
