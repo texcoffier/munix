@@ -140,6 +140,8 @@ class ArgumentGroup:
     pass # To turn around a RapydScript bug
 class Char:
     pass # To turn around a RapydScript bug
+class RegExpBadEscape:
+    pass # To turn around a RapydScript bug
 
 def nothing(txt):
     return txt
@@ -2628,15 +2630,19 @@ class Parser:
                 redirection.append(f)
         parsed.append(redirection)
 
-    def read_backslash(self, parsed):
+    def read_backslash(self, parsed, allowed=None):
         if self.get() != '\\':
             return True
         self.next()
         if self.empty():
             parsed.append(Unterminated("\\"))
         else:
-            parsed.append(Backslash("\\"))
-            parsed.append(Normal(self.get()))
+            if allowed is not None and self.get() not in allowed:
+                parsed.append(RegExpBadEscape("\\"))
+                parsed.append(Normal(self.get()))
+            else:
+                parsed.append(Backslash("\\"))
+                parsed.append(Normal(self.get()))
             self.next()
     def read_dollar(self, parsed):
         if self.get() != '$':
@@ -2719,7 +2725,7 @@ class Parser:
             i = len(parsed.content)
             parsed.append(Guillemet('"'))
             while not self.empty():
-                if (self.read_backslash(parsed)
+                if (self.read_backslash(parsed, '\\$"')
                     and self.read_dollar(parsed)
                     and self.read_replacement(parsed)):
                     c = self.get()
@@ -3021,7 +3027,7 @@ class RegExpBadRange(RegExpGarbage):
 
 class RegExpBadEscape(RegExpGarbage):
     def local_help(self, dummy_position):
-        return "Ce n'était pas la peine d'échapper ce caractère qui est normal, cela peut au contraire lui donner un sens."
+        return "Ce n'est pas la peine d'échapper ce caractère qui est normal dans ce contexte, cela peut au contraire lui donner un sens."
 
 class RegExpBracket(RegExpChar):
     def local_help(self, dummy_position):

@@ -817,3 +817,6 @@
 'A=( )'
 "Line(Pipeline(Command(Affectation(VariableName('A'),Equal('=')),Unexpected('('))),Separator(' '),Unexpected(')'))"
 "Line(Pipeline(Command(Affectation(VariableName('A')Equal('='))Unexpected('(')))Unexpected(')'))"
+'echo "\\\'"'
+'Line(Pipeline(Command(Argument(Normal(\'echo\')),Separator(\' \'),Argument(Guillemet(\'"\'),RegExpBadEscape(\'\\\\\'),Normal(\'\\\'\'),Guillemet(\'"\')))))'
+"Line(Pipeline(Command(Argument(Normal('echo'))Argument(RegExpBadEscape('\\\\')Normal('\\'')))))"
