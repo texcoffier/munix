@@ -1559,4 +1559,31 @@
 [12,-800,	'Fin de liste de caractères'],
 [13,-760,	'La fin de lign'],
 [14,-759,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'K=5 ; for K in a ; do b ; done',
+[0,-1,	'Nom de la variable'
+	'Enregistre «5» dans la variable : «K».Cela ne sert à rien de mettre une valeur dans'
+	'            cette variable car la boucle for va immédiatement'
+	"            l'effacer."
+	'Une commande vide !'
+	'Une ligne comportant : 2 commandes simples'
+	''],
+[2,-234,	'Affectation'],
+[3,-234,	'Texte : «5»'],
+[4,-45,	'Le «;» permet de séparer les commandes.'],
+[7,-45,	'Début de boucle'
+	'Boucle en parcourant les valeurs indiquées'],
+[10,-89,	"Le nom de la variable d'indic"],
+[11,-89,	'Nom de la variable qui va changer de valeur dans la boucl'],
+[12,-89,	'Indiquer les valeurs que la variable va prendr'],
+[16,-89,	'Texte : «a»'
+	'«a» est une des valeurs possibles'
+	'Les valeurs que va prendre la variabl'],
+[17,-100,	'Termine la liste des valeurs prises par'],
+[19,-88,	'Mettre le mot-clef «do»'],
+[20,-88,	'Les instructions qui seront dans la boucle'
+	'Les commandes qui sont répétées'],
+[23,-120,	'Texte : «b»'
+	'Commande : «b» sans argument'],
+[24,-120,	'Le «;» permet de séparer les commandes.'],
+[27,-120,	'Fin de la définition du corps de la boucle']],
 ]

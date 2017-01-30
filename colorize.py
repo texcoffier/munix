@@ -1148,6 +1148,15 @@ class VariableProtected(Variable):
 class VariableName(Variable):
     def local_help(self, dummy_position):
         return "Nom de la variable"
+    def color(self):
+        if (hasattr(self, 'parent') # XXX create_doc
+            and isinstance(self.parent, Affectation)
+            and (self.parent.unsane_for() or self.parent.unsane())
+            ):
+            return ["#F00", "#F88"]
+        else:
+            return Variable.color(self)
+
 class LoopVariable(VariableName):
     def local_help(self, dummy_position):
         return "Nom de la variable qui va changer de valeur dans la boucle"
@@ -1681,6 +1690,14 @@ class Container:
             if c.contains(the_class):
                 return True
 
+    def content_index(self):
+        if not hasattr(self, "parent"):
+            return # XXX create_doc
+        for i, c in enumerate(self.parent.content):
+            if self is c:
+                return i
+        There_is_a_bug
+
 class Line(Container):
     def color(self):
         return ["#000", "#EEE"]
@@ -2105,17 +2122,35 @@ class Affectation(Container):
                 return False
             t += content.text()
         return mystrip(t, '"') == '$' + self.content[0].text()
+    def unsane_for(self):
+        if not hasattr(self, "parent"):
+            return # XXX create_doc
+        i = self.parent.parent.content_index()
+        try:
+            f = self.parent.parent.parent.content[i+2].content[0].content[0]
+            if isinstance(f, ForLoop):
+                return f.loop_variable() == self.affectation_variable()
+        except:
+            pass
     def color(self):
-        if self.unsane():
+        if self.unsane() or self.unsane_for():
             return ["#F00", "#F88"]
         else:
             return ["#000", "#FFA"]
+    def affectation_variable(self):
+        v = self.first_of(VariableName)
+        if v:
+            return v.content
     def local_help(self, dummy_position):
         v = ''
         for content in self.content[2:]:
             v += content.html()
         if self.unsane():
             more = "<br>La variable ne change pas de valeur, si vous n'ajoutez rien, cette opération est inutile."
+        elif self.unsane_for():
+            more = """<br>Cela ne sert à rien de mettre une valeur dans
+            cette variable car la boucle <tt>for</tt> va immédiatement
+            l'effacer."""
         else:
             more = ""
         return ('Enregistre «' + v + '» dans la variable : «'
@@ -2124,6 +2159,10 @@ class Affectation(Container):
 class ForLoop(Command):
     def local_help(self, dummy_position):
         return "Boucle en parcourant les valeurs indiquées"
+    def loop_variable(self):
+        v = self.first_of(LoopVariable)
+        if v:
+            return v.content
         
 class WhileLoop(Command):
     def local_help(self, dummy_position):
