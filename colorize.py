@@ -708,7 +708,7 @@ def analyse_grep(command):
                 v.make_comment("Les options doivent être en début de commande",
                                "#F00")
                 continue
-            if t == '-v':
+            if t == '-v' or t == '-h':
                 continue
             t = t.replace('-v', '-')
             if t == '-e':
@@ -780,6 +780,9 @@ def define_grep():
                "Les lignes <b>ne passant pas</b> le crible."),
         Option('--color', '--color',
                "Colorie ce qui correspond à l'expression régulière.",
+               False, False),
+        Option('--no-filename', '-h',
+               "N'affiche pas le nom du fichier où la ligne est trouvée.",
                False, False)
         )
     return d
