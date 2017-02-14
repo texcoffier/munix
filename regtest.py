@@ -823,3 +823,9 @@
 'sleep 5s'
 "Line(Pipeline(Command(Argument(Normal('sleep')),Separator(' '),Argument(Normal('5s')))))"
 "Line(Pipeline(Command(Argument(Normal('sleep'))Argument(Normal('5')))))"
+'grep -e a'
+"Line(Pipeline(Command(Argument(Normal('grep')),Separator(' '),Argument(Normal('-e')),Separator(' '),RegExpTree(Normal('a')))))"
+"Line(Pipeline(Command(Argument(Normal('grep'))RegExpTree(Normal('a')))))"
+'grep -e -a'
+"Line(Pipeline(Command(Argument(Normal('grep')),Separator(' '),Argument(Normal('-e')),Separator(' '),RegExpTree(Normal('-a')))))"
+"Line(Pipeline(Command(Argument(Normal('grep'))Argument(Normal('-e'))RegExpTree(Normal('-a')))))"

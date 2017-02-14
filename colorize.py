@@ -782,12 +782,19 @@ def analyse_grep(command):
         <tt>grep</tt> cherche les lignes sur son entrée standard.""")
     return command
 
+def cleanup_grep(txt):
+    # Remove -e if it is not necessary
+    if len(txt.split("Normal('-")) != 2:
+        return txt
+    return txt.replace("Argument(Normal('-e'))", "")
+
 def define_grep():
     d = define_command()
     d['name'] = 'grep'
     d['description'] = "Affiche les lignes du fichier qui passent le crible."
     d['message'] = "Le «-e» est optionnel s'il y a une seule chaîne. Quand il y en a plusieurs, on cherche l'une des chaînes."
     d['analyse'] = analyse_grep
+    d['cleanup'] = cleanup_grep
     d['syntax'] = "grep -e expreg1 -e expreg2 <var>file1</var> <var>file2</var>..."
 
     d['options'] = Options(
