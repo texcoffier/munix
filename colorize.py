@@ -53,6 +53,12 @@ except:
 def string(t):
     return "'" + t.replace(slashslash, "\\\\").replace(quote, "\\'") + "'"
 
+def is_a_number(txt):
+    for i in txt:
+        if i not in '0123456789':
+            return False
+    return True
+
 def mystrip(txt, c):
     while txt and txt[0] in c:
         txt = txt[1:]
@@ -318,6 +324,16 @@ def define_man():
         )
     return d
 
+def analyse_tail(command):
+    (position, dummy_t, dummy_v) = get_argument(command, 0)
+    (position, t, v) = get_argument(command, position)
+    if v is not None:
+        if len(t) > 0 and t[0] in '-+':
+            if is_a_number(t[1:]):
+                v.make_comment("""Cette syntaxe est obsolette et ne
+                doit plus être utilisée.""", "#F00")
+    return command
+
 def define_tail():
     d = define_command()
     d['name'] = 'tail'
@@ -331,6 +347,7 @@ def define_tail():
         Option('--bytes', '-c', "Choisir le nombre d'octets à afficher",
                "Nombre d'octets à afficher", False)
     )
+    d['analyse'] = analyse_tail
     return d
 
 def define_du():
