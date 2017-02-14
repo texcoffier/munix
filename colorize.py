@@ -934,6 +934,258 @@ def define_bash(name):
     d["builtin"] = None
     return d
 
+def analyse_find(command):
+    (position, dummy_t, dummy_v) = get_argument(command, 0)
+    state = "places"
+    nb_places = 0
+    unprotected_pattern = False
+    stack = ['']
+    def add(txt):
+        for i in range(len(stack)):
+            stack[i] += ' ' + txt
+    def reset():
+        stack[-1] = ''
+    def left():
+        return stack[-1]
+    def empty():
+        return left() == ''
+    while True:
+        (position, t, v) = get_argument(command, position)
+        if v is None:
+            break
+        if state == "places":
+            if (len(t) > 0 and t[0] != '-' and t[0] != '('
+                or t == '' and v.html() != ''):
+                v.make_comment("Emplacement ou chercher")
+                nb_places += 1
+                continue
+            state = "start"
+        if nb_places == 0:
+            v.make_comment("Il manque l'endroit où chercher", "#F00")
+            continue
+        if state == "start":
+            if t == "-name":
+                state = t
+                v.make_comment("""Ce qui suit est un <em>pattern</em> indiquant
+                les noms des fichiers à rechercher.""")
+                add(t)
+                continue
+            if t == "-iname":
+                state = t
+                v.make_comment("""Ce qui suit est un <em>pattern</em> indiquant
+                les noms des fichiers à rechercher <b>sans tenir compte
+                de la casse</b> (différence entre majuscule et minuscule).""")
+                add(t)
+                continue
+            if t == "-size":
+                state = t
+                v.make_comment("""Ce qui suit est une taille de fichier
+                <ul><li> éventuellement préfixée par '+' ou '-' pour indiquer
+                que l'on cherche des fichiers plus petit ou plus grand
+                que la taille indiquée.
+                <li> éventuellement suffixée par c, b, k, M, G pour
+                indiqué l'unité de la taille.
+                </ul>
+                """)
+                add(t)
+                continue
+            if t == '-type':
+                state = t
+                v.make_comment("""Ce qui suit indique le type du fichier:
+                <ul>
+                <li> f : <em><b>f</b>ile</em> (fichier texte normal)
+                <li> d : <em><b>d</b>irectory</em> (répertoire)
+                <li> l : <em><b>s</b>ymbolic link</em> (lien symoblique)
+                </ul>""")
+                add(t)
+                continue
+            if t == '-mtime':
+                state = t
+                v.make_comment("""Ce qui suit est un nombre de jours
+                éventuellement préfixés par '+' ou '-' pour indiquer
+                que le fichier a été modifié plus ou moins récemment
+                que le nombre de jours indiqué.""")
+                add(t)
+                continue
+            if t == "-print":
+                if left() != '':
+                    v.make_comment("Les chemins trouvés par<br><tt>" + left()
+                                   + "</tt><br>vont être affichés.")
+                else:
+                    v.make_comment("Tous les chemins vont être affichés.")
+                add(t)
+                continue
+            if t == "-exec":
+                exec_tst = left()
+                state = t
+                if left() != '':
+                    v.make_comment("""La commande qui suit va être lancée en
+                    remplaçant <tt>{}</tt> par les chemins trouvés par<br><tt>
+                    """ + left() + "</tt>.")
+                else:
+                    v.make_comment("""La commande qui suit va être lancée en
+                    remplaçant <tt>{}</tt>
+                    par les chemins de toutes les entités.""")
+                add(t)
+                exec_cmd = ''
+                continue
+            if t == "-o":
+                if empty():
+                    v.make_comment("Il faut une expression à gauche", "#F00")
+                    continue
+                v.make_comment("Fait un 'ou' logique entre<br><tt>" + left()
+                               + "</tt><br>et ce qui est à droite.")
+                reset()
+                continue
+            if t == "-a":
+                if empty():
+                    v.make_comment("Il faut une expression à gauche", "#F00")
+                    continue
+                v.make_comment("Fait un 'et' logique entre<br><tt>" + left()
+                               + """</tt><br>et ce qui est à droite.
+                               Cet opérateur est inutile car c'est l'opération
+                               par défaut si vous ne l'indiquez pas.
+                               """)
+                add(t)
+                continue
+            if t == "(":
+                add(t)
+                stack.append('')
+                continue
+            if t == ")":
+                if len(stack) == 1:
+                    v.make_comment("Il manque la parenthèse ouvrante", "#F00")
+                else:
+                    stack.pop()
+                add(t)
+                continue
+            v.make_comment("""Mot-clef imprévu, on attend :
+            -name, -iname, -size, -type, -mtime, -print, -exec, -o, '(', ')'""",
+                           "#F00")
+            continue
+        if state == '-name':
+            if v.contains_a_pattern():
+                unprotected_pattern = True
+            v.make_comment("Le <em>pattern</em> qui doit être recherché.")
+            add(v.html())
+            state = "start"
+            continue
+        if state == '-iname':
+            if v.contains_a_pattern():
+                unprotected_pattern = True
+            v.make_comment("""Le <em>pattern</em> qui doit être recherché sans
+            tenir compte de la casse.""")
+            add(v.html())
+            state = "start"
+            continue
+        if state == '-mtime':
+            add(v.html())
+            state = "start"
+            oper = ""
+            if len(t) > 0:
+                if t[0] == '-':
+                    oper = 'moins de'
+                    t = t[1:]
+                elif t[0] == '+':
+                    oper = 'plus de'
+                    t = t[1:]
+            v.make_comment("Le fichier a été modifié il y a "
+                           + oper + " '" + t + "' jours")
+            continue
+        if state == '-size':
+            add(v.html())
+            if len(t) > 0:
+                if t[0] == '-':
+                    oper = '&lt;'
+                    t = t[1:]
+                elif t[0] == '+':
+                    oper = '&gt;'
+                    t = t[1:]
+                elif t[0] in "0123456789":
+                    oper = "égale à"
+                else:
+                    v.make_comment("Taille de fichier invalide", "#F00")
+                    continue
+            if len(t) > 0:
+                units = {"c": "octets", "k": "kilo-octets", "M": "Méga-octets",
+                         "G": "Giga-octets", "b": "blocs de 512 octets"}
+                if t[-1] in units:
+                    unite = units[t[-1]]
+                    t = t[:-1]
+                else:
+                    unite = units["b"]
+                
+            v.make_comment("Taille du fichier " + oper + " "
+                           + t + " " + unite)
+            state = "start"
+            continue
+        if state == "-exec":
+            add(v.html())
+            if exec_cmd == '':
+                v.make_comment("La commande qui va être exécutée.")
+                exec_cmd_name = t
+            else:
+                v.make_comment("Argument de <tt>" + exec_cmd_name + '</tt>')
+            exec_cmd += ' ' + t
+            if '{}' in t:
+                v.make_comment("""<tt>{}</tt> est le chemin du fichier trouvé
+                si on termine <tt>exec</tt> par <tt>;</tt>
+                ou de plusieurs fichiers si on le termine par <tt>+</tt>"""
+                )
+                continue
+            fin = ("La commande <tt>"
+                   + exec_cmd[:-1] + """</tt> est exécuté
+                   si la condition <tt>""" + exec_tst
+                   + "</tt> est réalisée en remplaçant {} par ")
+            if t == '+':
+                v.make_comment(fin + """un paquet de
+                chemin de fichiers trouvés. Mais pas forcément tous.""",
+                               "#00F")
+                state = "start"
+                continue
+            if t == ';':
+                v.make_comment(fin + """un unique chemin de fichier trouvé.""",
+                               "#00F")
+                state = "start"
+                continue
+            continue
+        if state == '-type':
+            add(v.html())
+            file_types = {'f': "fichier texte normal",
+            "d": "répertoire",
+            "l": "lien symbolique"}
+            if t not in file_types:
+                v.make_comment("Je ne comprend pas ce type de fichier", "#F00")
+            else:
+                v.make_comment("On veut un " + file_types[t])
+            state = "start"
+            continue
+        raise ValueError("state=" + state)
+    if state == "-exec" and '{}' in exec_cmd:
+        command.make_comment("""<span class="command_help_error">
+        Terminez le <tt>-exec</tt>
+        par <tt>;</tt> (en le protégeant) ou <tt>+</tt>.</span>""")
+    if state[0] == "-":
+        command.make_comment("""<span class="command_help_error">
+        Il manque l'argument de <tt>""" + state + "</tt></span>")
+    if unprotected_pattern:
+        command.make_comment("""<span class="command_help_error">
+        Vous avez oublié de protéger
+        un <em>pattern</em> qui doit être recherché.
+        Le shell peut le remplacer par des noms
+        de fichiers : la commande <tt>find</tt> ne verra
+        pas le <em>pattern</em> que vous voulez rechercher.</span>""")
+    return command
+
+def define_find():
+    d = define_command()
+    d['description'] = "Cherche des entités dans le système de fichier"
+    d['name'] = "find"
+    d['message'] = "Les paramètres définissent une expression"
+    d['analyse'] = analyse_find
+    d['syntax'] = "find <var>DesLieux</var> DesTests DesActions"
+    return d
+
 
 command_aliases = {
     'more': 'less'
@@ -950,7 +1202,7 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_done(), define_for(),
           define_if(), define_then(), define_else(), define_fi(),
           define_read(), define_test(), define_test_bracket(),
-          define_grep(), define_sed(),
+          define_grep(), define_sed(), define_find(),
 
           define_ps(), define_kill(), define_exit(), define_export(),
 

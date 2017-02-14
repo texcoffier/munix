@@ -105,7 +105,7 @@ Script : argument, commentaire, exit, $?, export
 
 Le 'if'
 
-Commandes : ulimit
+Commandes : find, xarg, ulimit
 
 
 ---------------------------
@@ -117,7 +117,7 @@ Commandes : ulimit
 +=====================================+=============================+
 |Utilisateur, groupe, droits          |chown, chgrp, chmod          |
 +-------------------------------------+-----------------------------+
-|Périphérique, disque, TTY, liaison   |mount, find, sshfs, récupérer|
+|Périphérique, disque, TTY, liaison   |mount, sshfs, récupérer      |
 |série, clavier, souris, écran        |les fichiers perdus          |
 +-------------------------------------+-----------------------------+
 |Client, serveur, nom machine, adresse|ssh, scp, rsync, wget,       |

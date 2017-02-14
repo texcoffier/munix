@@ -28,6 +28,9 @@ munix.html:munix.rst colorize.js
 doc_colorize.html:colorize.py create_doc.py
 	./create_doc.py >doc_colorize.html
 
+fyp.js:fyp.py
+	RapydScript/bin/rapydscript --prettify --bare <$? | \
+	sed 's/ՐՏ/JS/g' | iconv -f utf-8 -t ISO8859-15 >fyp.js
 
 regtest:colorize.js
 	./colorize_regtest.py

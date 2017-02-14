@@ -1586,4 +1586,205 @@
 	'Commande : «b» sans argument'],
 [24,-120,	'Le «;» permet de séparer les commandes.'],
 [27,-120,	'Fin de la définition du corps de la boucle']],
+[	'find -n',
+[0,-1,	'Texte : «find»'
+	'La commande «find» avec un argument.'
+	'find : Cherche des entités dans le système de fichier'
+	'Les paramètres définissent une expression'
+	'Syntaxe : '
+	'find DesLieux DesTests DesActions'
+	'Aide : man find'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-243,	'Un espace ou plus pour séparer les arguments.'],
+[6,-243,	"Il manque l'endroit où chercher"
+	'Argument 1 : «-n»']],
+[	'find . -name',
+[0,-1,	'Texte : «find»'
+	"        Il manque l'argument de -name"
+	'find : Cherche des entités dans le système de fichier'
+	'Les paramètres définissent une expression'
+	'Syntaxe : '
+	'find DesLieux DesTests DesActions'
+	'Aide : man find'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-245,	'Un espace ou plus pour séparer les arguments.'],
+[6,-245,	'Emplacement ou chercher'
+	'Argument 1 : «.»'],
+[7,-245,	'Un espace ou plus pour séparer les arguments.'],
+[8,-245,	'Ce qui suit est un pattern indiquant'
+	'                les noms des fichiers à rechercher.'
+	'Argument 2 : «-name»']],
+[	"find a* -name x -type f -size -5 -mtime -4 -exec ls {} ';' -exec mv {} X +",
+[0,-1,	'Texte : «find»'
+	'La commande «find» avec 18 arguments.'
+	'find : Cherche des entités dans le système de fichier'
+	'Les paramètres définissent une expression'
+	'Syntaxe : '
+	'find DesLieux DesTests DesActions'
+	'Aide : man find'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-244,	'Un espace ou plus pour séparer les arguments.'],
+[6,-245,	'Emplacement ou chercher'
+	"Argument 1 : «a*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"],
+[7,-364,	"L'étoile représente une suite quelconque de caractères pouvant être vide."],
+[8,-245,	'Un espace ou plus pour séparer les arguments'],
+[9,-244,	'Ce qui suit est un pattern indiquant'
+	'                les noms des fichiers à rechercher.'
+	'Argument 2 : «-name»'],
+[14,-244,	'Un espace ou plus pour séparer les arguments.'],
+[15,-244,	'Le pattern qui doit être recherché.'
+	'Argument 3 : «x»'],
+[16,-244,	'Un espace ou plus pour séparer les arguments.'],
+[17,-244,	'Ce qui suit indique le type du fichier:'
+	'                '
+	'                 f : file (fichier texte normal)'
+	'                 d : directory (répertoire)'
+	'                 l : symbolic link (lien symoblique)'
+	'                '
+	'Argument 4 : «-type»'],
+[22,-244,	'Un espace ou plus pour séparer les arguments.'],
+[23,-244,	'On veut un fichier texte normal'
+	'Argument 5 : «f»'],
+[24,-244,	'Un espace ou plus pour séparer les arguments.'],
+[25,-244,	'Ce qui suit est une taille de fichier'
+	"                 éventuellement préfixée par '+' ou '-' pour indiquer"
+	"                que l'on cherche des fichiers plus petit ou plus grand"
+	'                que la taille indiquée.'
+	'                 éventuellement suffixée par c, b, k, M, G pour'
+	"                indiqué l'unité de la taille."
+	'                '
+	'                '
+	'Argument 6 : «-size»'],
+[30,-244,	'Un espace ou plus pour séparer les arguments.'],
+[31,-244,	'Taille du fichier &lt; 5 blocs de 512 octets'
+	'Argument 7 : «-5»'],
+[33,-244,	'Un espace ou plus pour séparer les arguments.'],
+[34,-244,	'Ce qui suit est un nombre de jours'
+	"                éventuellement préfixés par '+' ou '-' pour indiquer"
+	'                que le fichier a été modifié plus ou moins récemment'
+	'                que le nombre de jours indiqué.'
+	'Argument 8 : «-mtime»'],
+[40,-244,	'Un espace ou plus pour séparer les arguments.'],
+[41,-244,	"Le fichier a été modifié il y a moins de '4' jours"
+	'Argument 9 : «-4»'],
+[43,-244,	'Un espace ou plus pour séparer les arguments.'],
+[44,-244,	'La commande qui suit va être lancée en'
+	'                    remplaçant {} par les chemins trouvés par'
+	'                     -name x -type f -size -5 -mtime -4.'
+	'Argument 10 : «-exec»'],
+[49,-244,	'Un espace ou plus pour séparer les arguments.'],
+[50,-244,	'La commande qui va être exécutée.'
+	'Argument 11 : «ls»'],
+[52,-244,	'Un espace ou plus pour séparer les arguments.'],
+[53,-244,	'{} est le chemin du fichier trouvé'
+	'                si on termine exec par ;'
+	'                ou de plusieurs fichiers si on le termine par +'
+	'Argument 12 : «{}»'],
+[55,-244,	'Un espace ou plus pour séparer les arguments.'],
+[56,-244,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 13 : «';'»"],
+[57,-265,	'La commande  ls {}  est exécuté'
+	'                   si la condition  -name x -type f -size -5 -mtime -4 est réalisée en remplaçant {} par un unique chemin de fichier trouvé'],
+[58,-265,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée"],
+[59,-244,	'Un espace ou plus pour séparer les arguments.'],
+[60,-244,	'La commande qui suit va être lancée en'
+	'                    remplaçant {} par les chemins trouvés par'
+	"                     -name x -type f -size -5 -mtime -4 -exec ls {} ';'."
+	'Argument 14 : «-exec»'],
+[65,-244,	'Un espace ou plus pour séparer les arguments.'],
+[66,-244,	'La commande qui va être exécutée.'
+	'Argument 15 : «mv»'],
+[68,-244,	'Un espace ou plus pour séparer les arguments.'],
+[69,-244,	'{} est le chemin du fichier trouvé'
+	'                si on termine exec par ;'
+	'                ou de plusieurs fichiers si on le termine par +'
+	'Argument 16 : «{}»'],
+[71,-244,	'Un espace ou plus pour séparer les arguments.'],
+[72,-244,	'Argument de mv'
+	'Argument 17 : «X»'],
+[73,-244,	'Un espace ou plus pour séparer les arguments.'],
+[74,-244,	'La commande  mv {} X  est exécuté'
+	"                   si la condition  -name x -type f -size -5 -mtime -4 -exec ls {} ';' est réalisée en remplaçant {} par un paquet de"
+	'                chemin de fichiers trouvés. Mais pas forcément tous.'
+	'Argument 18 : «+»']],
+[	"find . -name x* -type l -o '(' -size +5k -o -mtime +4 ')' -print",
+[0,-1,	'Texte : «find»'
+	'        Vous avez oublié de protéger'
+	'        un pattern qui doit être recherché.'
+	'        Le shell peut le remplacer par des noms'
+	'        de fichiers\xa0: la commande find ne verra'
+	'        pas le pattern que vous voulez rechercher.'
+	'find : Cherche des entités dans le système de fichier'
+	'Les paramètres définissent une expression'
+	'Syntaxe : '
+	'find DesLieux DesTests DesActions'
+	'Aide : man find'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-435,	'Un espace ou plus pour séparer les arguments.'],
+[6,-435,	'Emplacement ou chercher'
+	'Argument 1 : «.»'],
+[7,-435,	'Un espace ou plus pour séparer les arguments.'],
+[8,-435,	'Ce qui suit est un pattern indiquant'
+	'                les noms des fichiers à rechercher.'
+	'Argument 2 : «-name»'],
+[13,-435,	'Un espace ou plus pour séparer les arguments.'],
+[14,-436,	'Le pattern qui doit être recherché.'
+	"Argument 3 : «x*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"],
+[15,-556,	"L'étoile représente une suite quelconque de caractères pouvant être vide"],
+[16,-436,	'Un espace ou plus pour séparer les arguments'],
+[17,-435,	'Ce qui suit indique le type du fichier:'
+	'                '
+	'                 f : file (fichier texte normal)'
+	'                 d : directory (répertoire)'
+	'                 l : symbolic link (lien symoblique)'
+	'                '
+	'Argument 4 : «-type»'],
+[22,-435,	'Un espace ou plus pour séparer les arguments.'],
+[23,-435,	'On veut un lien symbolique'
+	'Argument 5 : «l»'],
+[24,-435,	'Un espace ou plus pour séparer les arguments.'],
+[25,-435,	"Fait un 'ou' logique entre -name x* -type let ce qui est à droite."
+	'Argument 6 : «-o»'],
+[27,-435,	'Un espace ou plus pour séparer les arguments.'],
+[28,-435,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 7 : «'('»"],
+[29,-454,	'Texte : «(»'],
+[30,-454,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[31,-435,	'Un espace ou plus pour séparer les arguments.'],
+[32,-435,	'Ce qui suit est une taille de fichier'
+	"                 éventuellement préfixée par '+' ou '-' pour indiquer"
+	"                que l'on cherche des fichiers plus petit ou plus grand"
+	'                que la taille indiquée.'
+	'                 éventuellement suffixée par c, b, k, M, G pour'
+	"                indiqué l'unité de la taille."
+	'                '
+	'                '
+	'Argument 8 : «-size»'],
+[37,-435,	'Un espace ou plus pour séparer les arguments.'],
+[38,-435,	'Taille du fichier &gt; 5 kilo-octets'
+	'Argument 9 : «+5k»'],
+[41,-435,	'Un espace ou plus pour séparer les arguments.'],
+[42,-435,	"Fait un 'ou' logique entre -size +5ket ce qui est à droite."
+	'Argument 10 : «-o»'],
+[44,-435,	'Un espace ou plus pour séparer les arguments.'],
+[45,-435,	'Ce qui suit est un nombre de jours'
+	"                éventuellement préfixés par '+' ou '-' pour indiquer"
+	'                que le fichier a été modifié plus ou moins récemment'
+	'                que le nombre de jours indiqué.'
+	'Argument 11 : «-mtime»'],
+[51,-435,	'Un espace ou plus pour séparer les arguments.'],
+[52,-435,	"Le fichier a été modifié il y a plus de '4' jours"
+	'Argument 12 : «+4»'],
+[54,-435,	'Un espace ou plus pour séparer les arguments.'],
+[55,-435,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."
+	"Argument 13 : «')'»"],
+[56,-455,	'Texte : «)»'],
+[57,-455,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
+[58,-435,	'Un espace ou plus pour séparer les arguments.'],
+[59,-435,	'Les chemins trouvés par ( -size +5k -mtime +4 )vont être affichés.'
+	'Argument 14 : «-print»']],
 ]
