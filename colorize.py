@@ -438,6 +438,12 @@ def replace_minutes(txt):
                 return "'".join(t)
             except ValueError:
                 pass
+        if mot and mot[-1] == "s":
+            try:
+                t[i] = mot[:-1]
+                return "'".join(t)
+            except ValueError:
+                pass
     return txt
 
 def define_sleep():

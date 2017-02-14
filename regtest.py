@@ -820,3 +820,6 @@
 'echo "\\\'"'
 'Line(Pipeline(Command(Argument(Normal(\'echo\')),Separator(\' \'),Argument(Guillemet(\'"\'),RegExpBadEscape(\'\\\\\'),Normal(\'\\\'\'),Guillemet(\'"\')))))'
 "Line(Pipeline(Command(Argument(Normal('echo'))Argument(RegExpBadEscape('\\\\')Normal('\\'')))))"
+'sleep 5s'
+"Line(Pipeline(Command(Argument(Normal('sleep')),Separator(' '),Argument(Normal('5s')))))"
+"Line(Pipeline(Command(Argument(Normal('sleep'))Argument(Normal('5')))))"
