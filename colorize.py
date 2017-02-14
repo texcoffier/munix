@@ -3114,7 +3114,7 @@ class Parser:
             return True
         self.next()
         n = self.skip(logins)
-        if self.empty() or self.get() == '/':
+        if self.empty() or self.get() == '/' or self.get() == ' ':
             parsed.append(Home("~" + n))
         else:
             parsed.append(Unterminated("~" + n))
