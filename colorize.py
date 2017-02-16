@@ -1221,6 +1221,108 @@ def define_find():
     d['syntax'] = "find <var>DesLieux</var> DesTests DesActions"
     return d
 
+the_rights = {"r": "de <b>lire</b>", "w": "d'<b>écrire</b>",
+              "x": "d'<b>exécuter</b>",
+              "X": "d'<b>exécuter s'il était déjà présent ailleurs</b>"}
+the_perimeter = {"u": "l'utilisateur", "g": "tous les membres du groupe",
+                 "o": "tous les autres", "a": "tout le monde"}
+the_action = {"+": "<b>ajoute</b> le droit", "-": "<b>enlève</b> le droit",
+              "=": "les droits sont"}
+def analyse_mode(txt):
+    if is_a_number(txt) and len(txt) >= 3:
+        def mode(i):
+            s = ''
+            if i & 1:
+                s += 'x'
+            if i & 2:
+                s += 'w'
+            if i & 4:
+                s += 'r'
+            return s
+        txt = 'u='+mode(txt[-3]) + ',g='+mode(txt[-2]) + ',o='+mode(txt[-1])
+
+    txt = txt.split(",")
+    msg = []
+    for t in txt:
+        for s in the_action:
+            tt = t.split(s)
+            if len(tt) == 1:
+                continue
+            if len(tt) != 2:
+                return False, "Trop de «" + s + '»'
+            rights = []
+            for d in tt[1]:
+                if d not in the_rights:
+                    return False, "Mauvais droit d'acces :" + d
+                rights.push(the_rights[d])
+            rights = ' et '.join(rights)
+
+            if len(rights) == 0 and s != '=':
+                return False, "Cela n'a pas de sens de ne rien ajouter/enlever."
+
+            who = []
+            for d in tt[0]:
+                if d not in the_perimeter:
+                    return False, "Mauvais groupe d'accès :" + d
+                who.push(the_perimeter[d])
+            who = ' et '.join(who)
+
+            if len(rights) == 0:
+                msg.append("Aucun droits pour " + who)
+            else:
+                msg.append("Pour " + who + ' ' + the_action[s]
+                           + ' ' + rights + '.')
+    if len(msg) > 0:
+        return True, "<br>".join(msg)
+    return False, "Le mode n'est pas compéhensible"
+
+def analyse_chmod(command):
+    (position, dummy_t, dummy_v) = get_argument(command, 0)
+    state = "option"
+    while True:
+        (position, t, v) = get_argument(command, position)
+        if v is None:
+            break
+        if len(t) > 0 and t[0] == '-':
+            if state != "option":
+                v.make_comment("On met obligatoirement les options au début.",
+                               "#F00")
+            continue
+        if state == "option":
+            v.make_comment("""Un changement de mode comme :
+            <ul>
+            <li> <tt>u+w,g-w,o=rx</tt> :
+            donne le droit d'écrire à l'utilisateur,
+            enlève le droit d'écrire au groupe, les autres peuvent
+            lire et exécuter.
+            <li> <tt>a+r</tt> : donne le droit de lire à tous le monde,
+            équivalent à <tt>ugo+r</tt>
+            <li> <tt>644</tt> : équivalent à <tt>u=rw,g=r,o=r</tt>
+            </ul>""")
+            state = "file"
+            ok, message = analyse_mode(t)
+            if not ok:
+                message = ('<span class="command_help_error">'
+                           + message + '</span>')
+            continue
+        if state == "file":
+            v.make_comment("Change le mode de cette entité :<br>" + message)
+    return command
+
+def define_chmod():
+    d = define_command()
+    d['description'] = "Change les droits d'accès"
+    d['name'] = "chmod"
+    d['message'] = "Le mode peut être défini de nombreuses manières."
+    d['analyse'] = analyse_chmod
+    d['syntax'] = "chmod LeMode <var>f1</var> <var>f2</var> <var>d1</var>..."
+    d['options'] = Options(
+        Option('--recursive', '-R',
+               "Applique le changement dans toute la hiérarchie.")
+        )
+    return d
+
+
 
 command_aliases = {
     'more': 'less'
@@ -1237,7 +1339,7 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_done(), define_for(),
           define_if(), define_then(), define_else(), define_fi(),
           define_read(), define_test(), define_test_bracket(),
-          define_grep(), define_sed(), define_find(),
+          define_grep(), define_sed(), define_find(), define_chmod(),
 
           define_ps(), define_kill(), define_exit(), define_export(),
 
