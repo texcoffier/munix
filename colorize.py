@@ -1224,8 +1224,9 @@ def define_find():
 the_rights = {"r": "de <b>lire</b>", "w": "d'<b>écrire</b>",
               "x": "d'<b>exécuter</b>",
               "X": "d'<b>exécuter s'il était déjà présent ailleurs</b>"}
-the_perimeter = {"u": "l'utilisateur", "g": "tous les membres du groupe",
-                 "o": "tous les autres", "a": "tout le monde"}
+the_perimeter = {"u": "l'<b>utilisateur</b>",
+                 "g": "tous les membres du <b>groupe</b>",
+                 "o": "tous les <b>autres</b>", "a": "<b>tout le monde</b>"}
 the_action = {"+": "<b>ajoute</b> le droit", "-": "<b>enlève</b> le droit",
               "=": "les droits sont seulement"}
 def analyse_mode(txt):
@@ -1273,7 +1274,7 @@ def analyse_mode(txt):
             if len(rights) == 0:
                 msg.append("Aucun droits pour " + who)
             else:
-                msg.append("Pour " + who + ' ' + the_action[s]
+                msg.append("Pour " + who + ', ' + the_action[s]
                            + ' ' + rights + '.')
     if len(msg) > 0:
         return True, "<br>".join(msg)
