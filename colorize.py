@@ -235,7 +235,9 @@ def define_ls():
     d['options'] = Options(
         Option('-l', '-l', "(l=long) affiche plein d'informations"),
         Option('--all', '-a',
-               "affiche aussi les fichiers dont le nom commence par '.'")
+               "affiche aussi les fichiers dont le nom commence par '.'"),
+        Option('-t', '-t', "trie les fichiers par date",
+               False, False, False)
     )
     return d
 
