@@ -1227,10 +1227,13 @@ the_rights = {"r": "de <b>lire</b>", "w": "d'<b>écrire</b>",
 the_perimeter = {"u": "l'utilisateur", "g": "tous les membres du groupe",
                  "o": "tous les autres", "a": "tout le monde"}
 the_action = {"+": "<b>ajoute</b> le droit", "-": "<b>enlève</b> le droit",
-              "=": "les droits sont"}
+              "=": "les droits sont seulement"}
 def analyse_mode(txt):
     if is_a_number(txt) and len(txt) >= 3:
+        if '8' in txt or '9' in txt:
+            return False, "Un nombre octal ne peut contenir 8 ou 9"
         def mode(i):
+            i = int(i)
             s = ''
             if i & 1:
                 s += 'x'
@@ -1253,7 +1256,7 @@ def analyse_mode(txt):
             rights = []
             for d in tt[1]:
                 if d not in the_rights:
-                    return False, "Mauvais droit d'acces :" + d
+                    return False, "Mauvais droit d'acces : " + d
                 rights.push(the_rights[d])
             rights = ' et '.join(rights)
 
@@ -1263,7 +1266,7 @@ def analyse_mode(txt):
             who = []
             for d in tt[0]:
                 if d not in the_perimeter:
-                    return False, "Mauvais groupe d'accès :" + d
+                    return False, "Mauvais groupe d'accès : " + d
                 who.push(the_perimeter[d])
             who = ' et '.join(who)
 
