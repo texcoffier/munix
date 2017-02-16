@@ -575,11 +575,12 @@ def parse_test(command, position, allow_bool=True):
             position = merge_into(command, old_position, position,
                                   ArgumentGroup(),
                                   "Regroupe ces opérations")
-    elif t in ('-e', '-d'):
+    elif t in ('-e', '-d', '-f'):
         v.make_comment(
            {
-               '-e': "Vrai si le chemin pointe sur une entité qui existe",
-               '-d': "Vrai si le chemin suivant pointe sur un répertoire"
+               '-e': "Vrai si le chemin suivant pointe sur une entité qui existe",
+               '-f': "Vrai si le chemin suivant pointe sur un fichier texte.",
+               '-d': "Vrai si le chemin suivant pointe sur un répertoire."
            }[t], "#080")
         (position, t2, v2) = get_argument(command, position)
         if v2 is None:
@@ -589,6 +590,7 @@ def parse_test(command, position, allow_bool=True):
             return position
         else:
             m = {
+               '-f': "un fichier texte",
                '-e': "une entité qui existe",
                '-d': "un répertoire"
             }[t]

@@ -137,7 +137,7 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [2,-181,	'Un espace ou plus pour séparer les arguments.'],
-[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire.'
 	'Argument 1 : «-d»']],
 [	'[ -d ',
 [0,-1,	'Tapez un espace puis la condition'
@@ -148,7 +148,7 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [2,-181,	'Un espace ou plus pour séparer les arguments.'],
-[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire.'
 	'Argument 1 : «-d»'],
 [5,-181,	'Indiquez le chemin']],
 [	'[ -d a',
@@ -160,10 +160,10 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [2,-181,	'Un espace ou plus pour séparer les arguments.'],
-[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire.'
 	'Vrai si «a» est un répertoire'
 	''],
-[5,-212,	'Un espace ou plus pour séparer les arguments.'],
+[5,-213,	'Un espace ou plus pour séparer les arguments'],
 [6,-212,	'Le chemin testé']],
 [	'[ -d a ',
 [0,-1,	"Manque le ']' final"
@@ -174,10 +174,10 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [2,-181,	'Un espace ou plus pour séparer les arguments.'],
-[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire.'
 	'Vrai si «a» est un répertoire'
 	''],
-[5,-212,	'Un espace ou plus pour séparer les arguments.'],
+[5,-213,	'Un espace ou plus pour séparer les arguments'],
 [6,-212,	'Le chemin testé'],
 [7,-181,	"Vous pouvez terminer le test avec un ']'"]],
 [	'[ -d a b',
@@ -189,10 +189,10 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [2,-181,	'Un espace ou plus pour séparer les arguments.'],
-[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire.'
 	'Vrai si «a» est un répertoire'
 	''],
-[5,-212,	'Un espace ou plus pour séparer les arguments.'],
+[5,-213,	'Un espace ou plus pour séparer les arguments'],
 [6,-212,	'Le chemin testé'],
 [7,-181,	'Un espace ou plus pour séparer les arguments.'],
 [8,-181,	"Ici on devrait trouver '-o' ou '-a'"
@@ -206,10 +206,10 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [2,-181,	'Un espace ou plus pour séparer les arguments.'],
-[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire.'
 	'Vrai si «a» est un répertoire'
 	''],
-[5,-212,	'Un espace ou plus pour séparer les arguments.'],
+[5,-213,	'Un espace ou plus pour séparer les arguments'],
 [6,-212,	'Le chemin testé'],
 [7,-181,	'Un espace ou plus pour séparer les arguments.'],
 [8,-181,	'Texte : «]»'
@@ -223,16 +223,16 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [2,-181,	'Un espace ou plus pour séparer les arguments.'],
-[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire'
+[3,-181,	'Vrai si le chemin suivant pointe sur un répertoire.'
 	'Vrai si «a» est un répertoire'
 	'OU booléen'
 	''],
-[5,-224,	'Un espace ou plus pour séparer les arguments.'],
+[5,-225,	'Un espace ou plus pour séparer les arguments'],
 [6,-224,	'Le chemin testé'],
 [7,-193,	'Un espace ou plus pour séparer les arguments.'],
 [8,-193,	"'OU' booléen entre ce qui est à gauche et à droite"],
 [10,-193,	'Un espace ou plus pour séparer les arguments.'],
-[11,-193,	'Vrai si le chemin pointe sur une entité qui existe'
+[11,-193,	'Vrai si le chemin suivant pointe sur une entité qui existe'
 	'Vrai si «k» est une entité qui existe'
 	'ET booléen'
 	''],
@@ -299,16 +299,16 @@
 [4,-218,	'Texte : «(»'],
 [5,-218,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
 [6,-219,	'Un espace ou plus pour séparer les arguments'],
-[7,-218,	'Vrai si le chemin suivant pointe sur un répertoire'
+[7,-218,	'Vrai si le chemin suivant pointe sur un répertoire.'
 	'Vrai si «a» est un répertoire'
 	'OU booléen'
 	''],
-[9,-261,	'Un espace ou plus pour séparer les arguments.'],
+[9,-262,	'Un espace ou plus pour séparer les arguments'],
 [10,-261,	'Le chemin testé'],
 [11,-230,	'Un espace ou plus pour séparer les arguments.'],
 [12,-230,	"'OU' booléen entre ce qui est à gauche et à droite"],
 [14,-230,	'Un espace ou plus pour séparer les arguments.'],
-[15,-230,	'Vrai si le chemin pointe sur une entité qui existe'
+[15,-230,	'Vrai si le chemin suivant pointe sur une entité qui existe'
 	'Vrai si «k» est une entité qui existe'
 	''],
 [17,-269,	'Un espace ou plus pour séparer les arguments.'],
@@ -1787,4 +1787,25 @@
 [58,-435,	'Un espace ou plus pour séparer les arguments.'],
 [59,-435,	'Les chemins trouvés par ( -size +5k -mtime +4 )vont être affichés.'
 	'Argument 14 : «-print»']],
+[	'test ! -f "$A.c"',
+[0,-1,	'Texte : «test»'
+	'La commande «test» avec un argument.'
+	'test : Evaluateur de condition'
+	'La commande termine sans erreur si la condition est vraie'
+	'Aide : man test'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-190,	'Un espace ou plus pour séparer les arguments.'],
+[6,-190,	"Négation de l'expression qui suit"
+	'Négation booléenne'
+	''],
+[7,-210,	'Un espace ou plus pour séparer les arguments.'],
+[8,-210,	'Vrai si le chemin suivant pointe sur un fichier texte.'
+	'Vrai si «"$A.c"» est un fichier texte'
+	''],
+[10,-250,	'Un espace ou plus pour séparer les arguments'],
+[11,-250,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar'],
+[12,-250,	'«$A» est remplacé par le shell par le contenu de la variable «A». Le nom de la variable disparaît'],
+[14,-249,	'Le chemin testé'],
+[16,-249,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 ]
