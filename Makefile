@@ -29,8 +29,11 @@ doc_colorize.html:colorize.py create_doc.py
 	./create_doc.py >doc_colorize.html
 
 fyp.js:fyp.py
-	RapydScript/bin/rapydscript --prettify --bare <$? | \
-	sed 's/ՐՏ/JS/g' | iconv -f utf-8 -t ISO8859-15 >fyp.js
+	RapydScript/bin/rapydscript --prettify --bare <$? >fyp.js
+
+install-fyp:fyp.js
+	scp -p fyp.js fyp.html highscores.py munix@demo710.univ-lyon1.fr:FYP
+	ssh munix@demo710.univ-lyon1.fr "pkill --exact -f 'python3 ./highscores.py' ; cd FYP ; nohup ./highscores.py 2>/dev/null >&2 & sleep 1"
 
 regtest:colorize.js
 	./colorize_regtest.py
