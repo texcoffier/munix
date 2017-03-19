@@ -703,13 +703,13 @@ class Graph:
             if node.link_to_edge:
                 node.link_to_edge.followed = False
 
-    def get_a_dir(self, min_depth, min_sibling):
+    def get_a_node(self, min_depth, min_sibling, only_dir):
         t = []
         for node in self.nodes:
             node = self.nodes[node]
             if node.hide:
                 continue
-            if not node.is_dir():
+            if only_dir and not node.is_dir():
                 continue
             depth = len(node.name.split("/"))
             if depth < min_depth:
@@ -718,6 +718,9 @@ class Graph:
                 continue
             t.append(node.name)
         return t[floor(Math.random() * len(t))]
+
+    def get_a_dir(self, min_depth, min_sibling):
+        return self.get_a_node(min_depth, min_sibling, True)
 
     def create_path(self):
         self.traveler_path = []
@@ -1204,6 +1207,9 @@ class S8(S1):
                 # Use symbolic link
                 self.set_current_and_goal_()
                 return
+            else:
+                c = self.graph.get_a_dir(0, 0)
+                g = self.graph.get_a_node(0, 0)
             if self.graph.current != c and self.graph.goal != g:
                 break
         self.graph.current = c
@@ -1257,7 +1263,7 @@ class S9(S1):
         return ''
 
 class S10(S8):
-    level = 5
+    level = 10
     current_and_goal = [
         ["/etc/alternatives", "/usr/bin/vim.tiny"],
         ["/tmp", "/usr/include/GL/gl.h"],
