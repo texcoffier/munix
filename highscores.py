@@ -36,6 +36,11 @@ with open("fyp.html", "r") as f:
 with open("fyp.js", "r") as f:
     js = f.read().encode("utf-8")
 
+images = {}
+for img in ():
+    with open(img[1:], "rb") as f:
+        images[img] = f.read()
+    
 style = """
 <style>
 BODY { font-family: sans-serif; white-space: nowrap; overflow: hidden }
@@ -184,6 +189,15 @@ class MyRequestBroker(http.server.BaseHTTPRequestHandler):
                              'application/x-javascript;charset=utf-8')
             self.send_header('Cache-Control', 'no-cache')
             self.send_header('Content-Length', str(len(js)))
+            self.send_header('Connection', 'close')
+            self.end_headers()
+            self.wfile.write(js)
+        elif self.path in images:
+            image = images[self.path]
+            self.send_response(200)
+            self.send_header('Content-Type', 'image/png')
+            self.send_header('Cache-Control', 'no-cache')
+            self.send_header('Content-Length', str(len(image)))
             self.send_header('Connection', 'close')
             self.end_headers()
             self.wfile.write(js)

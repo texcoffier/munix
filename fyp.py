@@ -66,12 +66,16 @@ translations = {
                  "fr": "Pour cette partie :"},
     "High": {"en": "Your highscore:",
              "fr": "Votre meilleur score :"},
-    "Help": {"en": "F1: français, F2: english,\nF3: change your name,\nF4: toggle arcs animation.\nF9: toogle goal change animation.\nTab: completion",
-             "fr": "F1 : français, F2 : english,\nF3 : changer de pseudo,\nF4 : animation des arcs.\nF9 : animation du changement d'objectif.\nTab: complétion"},
+    "Help": {"en": "F1: français, F2: english,\nF3: change your name,\nF4: toggle arcs animation.\nF9: toogle goal change animation.\nF11, F12: change pictures.\nTab: completion",
+             "fr": "F1 : français, F2 : english,\nF3 : changer de pseudo,\nF4 : animation des arcs.\nF9 : animation du changement d'objectif.\nF11, F12: mettre des images.\nTab: complétion"},
     "Level": {"en": "Level",
              "fr": "Niveau"},
     "EnterAlias": {"en": "Enter your nickname for highscores or leave empty:",
                    "fr": "Entrez votre pseudo (optionnel) :"},
+    "current": {"en": "Enter the URL of your picture:",
+                   "fr": "Entrez l'URL de votre photo :"},
+    "goal": {"en": "Enter the URL of the goal picture:",
+             "fr": "Entrez l'URL de la photo de l'objectif :"},
     "/_not_needed": {"en": "The path should not start by '/'",
                      "fr": "Le '/' initial est inutile."},
     "/_needed": {"en": "The path should start by '/'",
@@ -375,6 +379,26 @@ class Node:
             s.append('\n\t' + edge.string())
         return ''.join(s)
 
+    def plot_image(self, ctx, imgid):
+        img = document.getElementById(imgid)
+        if not img:
+            return
+        if img.width == 0 or img.height == 0:
+            return
+        radius = arc_length
+        if img.width > img.height:
+            w = radius
+            h = radius * img.height / img.width
+        else:
+            w = radius * img.width / img.height
+            h = radius
+        ctx.globalAlpha = 0.7
+        ctx.drawImage(img,
+                      0, 0, img.width, img.height,
+                      self.particle.x - w, self.particle.y - h, 2*w, 2*h)
+        ctx.globalAlpha = 1
+        return True
+
     def plot_disc_current(self, ctx, t):
         ctx.fillStyle = color_current
         ctx.beginPath()
@@ -394,6 +418,7 @@ class Node:
                 0, 2 * Math.PI)
         ctx.stroke()
         ctx.lineWidth = 1
+        self.plot_image(ctx, "goal")
 
     def plot_disc(self, ctx, t):
         if self.hide:
@@ -788,6 +813,15 @@ class Graph:
         iframe.src = ("?name=" + encodeURIComponent(self.name)
                       + '&score=' + floor(self.score))
 
+    def plot_traveler(self, ctx, x, y):
+        traveler = Node("")
+        traveler.particle.x, traveler.particle.y = x, y
+        if not traveler.plot_image(ctx, "current"):
+            ctx.fillStyle = color_traveler
+            ctx.beginPath()
+            ctx.arc(x, y, arc_length / 4, 0, 2 * Math.PI)
+            ctx.fill()
+        
     def traveler(self, ctx):
         if len(self.traveler_path) == 0:
             return
@@ -809,11 +843,9 @@ class Graph:
             p = floor(self.traveler_pos)
         edge = self.traveler_path[p]
         x, y = edge.get_pos(self.traveler_pos - p)
-        ctx.fillStyle = color_traveler
-        ctx.beginPath()
-        ctx.arc(x, y, arc_length / 4, 0, 2 * Math.PI)
-        ctx.fill()
-        self.traveler_pos += traveler_speed * Math.log((self.score + self.score_add))
+        self.plot_traveler(ctx, x, y)
+        self.traveler_pos += traveler_speed * Math.log(
+            (self.score + self.score_add))
         return goal
 
     def plot(self, ctx):
@@ -1009,11 +1041,16 @@ class Graph:
             self.draw_particles = not self.draw_particles
         elif event.key == 'F9':
             self.do_goal_animation = not self.do_goal_animation
+        elif event.key == 'F11':
+            document.getElementById("current").src = prompt(_("current"))
+        elif event.key == 'F12':
+            document.getElementById("goal").src = prompt(_("goal"))
         elif len(event.key) == 1:
             self.answer += event.key
         else:
             print(event)
             return
+        window.location.hash = document.getElementById("current").src + '¤' + document.getElementById("goal").src
         event.stopPropagation()
         event.preventDefault()
 
@@ -1307,6 +1344,7 @@ def fyp():
     g.start_animation = g.time - 1
             
     if javascript:
+        (document.getElementById("current").src, document.getElementById("goal").src) = decodeURI(window.location.hash[1:]).split('¤')
         def keypress(event):
             g.keypress(event)
         document.addEventListener("keydown", keypress);
