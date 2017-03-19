@@ -66,8 +66,8 @@ translations = {
                  "fr": "Pour cette partie :"},
     "High": {"en": "Your highscore:",
              "fr": "Votre meilleur score :"},
-    "Help": {"en": "F1: français, F2: english,\nF3: change your name,\nF4: toggle animation.\nTab: completion",
-             "fr": "F1 : français, F2 : english,\nF3 : changer de pseudo,\nF4 : arrêter/démarrer les animations.\nTab: complétion"},
+    "Help": {"en": "F1: français, F2: english,\nF3: change your name,\nF4: toggle arcs animation.\nF9: toogle goal change animation.\nTab: completion",
+             "fr": "F1 : français, F2 : english,\nF3 : changer de pseudo,\nF4 : animation des arcs.\nF9 : animation du changement d'objectif.\nTab: complétion"},
     "Level": {"en": "Level",
              "fr": "Niveau"},
     "EnterAlias": {"en": "Enter your nickname for highscores or leave empty:",
@@ -602,6 +602,7 @@ class Graph:
         self.show_absolute_path = True
         self.score_add = 10
         self.nr_symbolic_links = 0
+        self.do_goal_animation = True
 
     def askname(self):
         name = prompt(_("EnterAlias"), localStorage["name"] or '')
@@ -819,7 +820,7 @@ class Graph:
         for node in self.nodes:
             self.nodes[node].plot_disc(ctx, self.t_frozen)
         t = (self.time - self.start_animation) / move_animation
-        if t >= 1:
+        if t >= 1 or not self.do_goal_animation:
             t = 0.999
         n = Node("")
         n.particle.x, n.particle.y = self.current_anim.get_pos(t)
@@ -1002,6 +1003,8 @@ class Graph:
             return
         elif event.key == 'F6':
             self.draw_particles = not self.draw_particles
+        elif event.key == 'F9':
+            self.do_goal_animation = not self.do_goal_animation
         elif len(event.key) == 1:
             self.answer += event.key
         else:
