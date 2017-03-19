@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-# score + avec level
-
 debug = False
 
 try:
@@ -39,6 +37,7 @@ menu_width = 300
 
 question_animation = 100
 traveler_speed = 0.005
+move_animation = 10
 
 score_multiply = 0.999
 
@@ -259,6 +258,11 @@ class Particle:
         self.fx = self.fy = 0
         self.fixed = fixed
         self.links = []
+    def copy(self):
+        p = Particle(self.fixed)
+        p.x = self.x
+        p.y = self.y
+        return p
     def add(self, particle):
         self.links.append(particle)
     def string(self):
@@ -315,6 +319,11 @@ class Node:
         self.particle = Particle(True)
         self.depth = 0
 
+    def copy(self):
+        n = Node(self.name, self.link_to)
+        n.particle = self.particle.copy()
+        return n
+        
     def add(self, edge):
         self.edges.append(edge)
 
@@ -366,63 +375,41 @@ class Node:
             s.append('\n\t' + edge.string())
         return ''.join(s)
 
-    def plot_disc(self, ctx, t, what=None):
+    def plot_disc_current(self, ctx, t):
+        ctx.fillStyle = color_current
+        ctx.beginPath()
+        ctx.arc(self.particle.x, self.particle.y, arc_length / 2,
+                0, 2 * Math.PI)
+        ctx.fill()
+
+    def plot_disc_goal(self, ctx, t):
+        radius = 1.4 * arc_length / 2
+        p =  2 * Math.PI * radius / 16
+        ctx.lineDashOffset = t * dash_speed
+        ctx.strokeStyle = color_goal
+        ctx.lineWidth = 18
+        ctx.setLineDash([p, p])
+        ctx.beginPath()
+        ctx.arc(self.particle.x, self.particle.y, radius,
+                0, 2 * Math.PI)
+        ctx.stroke()
+        ctx.lineWidth = 1
+
+    def plot_disc(self, ctx, t):
         if self.hide:
             return
-        ctx.fillStyle = color_normal
         radius = arc_length / 2
         t /= -10
         if self.followed:
             ctx.fillStyle = color_followed
-            ctx.beginPath()
-            ctx.arc(self.particle.x, self.particle.y, radius, 0, 2 * Math.PI)
-            ctx.fill()
-
-        if "current" in what:
-            ctx.fillStyle = color_current
-            if True:
-                ctx.beginPath()
-                ctx.arc(self.particle.x, self.particle.y,
-                        radius, 0, 2 * Math.PI)
-                ctx.fill()
-            if False:
-                ctx.setLineDash([1,0])
-                ctx.lineWidth = 2
-                ctx.strokeStyle = color_current
-                for i in range(3):
-                    ctx.beginPath()
-                    ctx.arc(self.particle.x, self.particle.y,
-                            (i*radius/3 - t*2) % radius, 0, 2*Math.PI)
-                    ctx.stroke()
-            if False:
-                ctx.beginPath()
-                ctx.moveTo(self.particle.x, self.particle.y)
-                ctx.arc(self.particle.x, self.particle.y, radius,
-                        t, t + Math.PI/2)
-                ctx.moveTo(self.particle.x, self.particle.y)
-                ctx.fill()
-                ctx.beginPath()
-                ctx.moveTo(self.particle.x, self.particle.y)
-                ctx.arc(self.particle.x, self.particle.y, radius,
-                        t + Math.PI, t + 3*Math.PI/2)
-                ctx.moveTo(self.particle.x, self.particle.y)
-                ctx.fill()
         else:
-            ctx.beginPath()
-            ctx.arc(self.particle.x, self.particle.y, radius, 0, 2 * Math.PI)
-            ctx.fill()
+            ctx.fillStyle = color_normal
 
-        if "goal" in what:
-            radius *= 1.4
-            p =  2 * Math.PI * radius / 16
-            ctx.lineDashOffset = 10 * t * dash_speed
-            ctx.strokeStyle = color_goal
-            ctx.lineWidth = 18
-            ctx.setLineDash([p, p])
-            ctx.beginPath()
-            ctx.arc(self.particle.x, self.particle.y, radius, 0, 2 * Math.PI)
-            ctx.stroke()
-            ctx.lineWidth = 1
+        ctx.beginPath()
+        ctx.arc(self.particle.x, self.particle.y, arc_length / 2,
+                0, 2 * Math.PI)
+        ctx.fill()
+
 
     def plot_text(self, ctx):
         if self.hide:
@@ -707,7 +694,7 @@ class Graph:
         t = []
         for node in self.nodes:
             node = self.nodes[node]
-            if node.hide:
+            if node.tmp:
                 continue
             if only_dir and not node.is_dir():
                 continue
@@ -830,12 +817,17 @@ class Graph:
 
     def plot(self, ctx):
         for node in self.nodes:
-            what = ""
-            if node == self.current:
-                what += "current"
-            if node == self.goal:
-                what += "goal"
-            self.nodes[node].plot_disc(ctx, self.t_frozen, what)
+            self.nodes[node].plot_disc(ctx, self.t_frozen)
+        t = (self.time - self.start_animation) / move_animation
+        if t >= 1:
+            t = 0.999
+        n = Node("")
+        n.particle.x, n.particle.y = self.current_anim.get_pos(t)
+        n.plot_disc_current(ctx, self.t_frozen)
+        
+        n.particle.x, n.particle.y = self.goal_anim.get_pos(t)
+        n.plot_disc_goal(ctx, self.t_frozen)
+
         goal = self.traveler(ctx)
         if self.show_absolute_path:
             for node in self.nodes:
@@ -933,14 +925,14 @@ class Graph:
         n = Node("CD")
         n.particle.x = x + arc_length
         n.particle.y = y
-        n.plot_disc(ctx, self.t_frozen, what="current")
+        n.plot_disc_current(ctx, self.t_frozen)
         ctx.fillStyle = color_static
         ctx.fillText(_("Current"), x + 2 * arc_length, y + 6)
 
         y += line_height
         n.particle.x = x + arc_length
         n.particle.y = y
-        n.plot_disc(ctx, self.t_frozen, what="goal")
+        n.plot_disc_goal(ctx, self.t_frozen)
         ctx.fillStyle = color_static
         ctx.fillText(_("Goal"), x + 2 * arc_length, y + 6)
 
@@ -948,7 +940,7 @@ class Graph:
         n.particle.x = x + arc_length
         n.particle.y = y
         n.followed = True
-        n.plot_disc(ctx, self.t_frozen, what="")
+        n.plot_disc(ctx, self.t_frozen)
         ctx.fillStyle = color_static
         ctx.fillText(_("Path"), x + 2 * arc_length, y + 6)
 
@@ -1055,8 +1047,25 @@ class S1:
         self.graph.score_add *= 2
 
     def init(self):
+        n = Node("")
+        n.particle.x = 0
+        n.particle.y = 0
+        current = self.graph.nodes[self.graph.current]
+        goal = self.graph.nodes[self.graph.goal]
+        if current:
+            old_current = current.copy()
+        else:
+            old_current = n
+        if goal:
+            old_goal = goal.copy()
+        else:
+            old_goal = n
         self.set_current_and_goal()
         self.graph.answer = ""
+        self.graph.current_anim = Edge("", old_current,
+                                       self.graph.nodes[self.graph.current], 0)
+        self.graph.goal_anim = Edge("", old_goal,
+                                    self.graph.nodes[self.graph.goal], 0)
         
     def set_current(self):
         if len(self.random_currents) == 0:
