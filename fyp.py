@@ -984,13 +984,17 @@ class Graph:
         elif event.key == 'Tab':
             t = []
             name = self.answer.split("/")[-1]
+            is_dir = {}
             if name != '':
                 for i in self.nodes[self.new_current].parent.edges:
                     if not i.destination.tmp and i.name.startswith(name):
                         t.append(i.name)
+                        is_dir[i.name] = i.destination.is_dir()
             if len(t) != 0:
                 t.sort()
                 self.answer = self.answer[:-len(name)] + t[0]
+                if is_dir[t[0]]:
+                    self.answer += '/'
         elif event.key == 'F1':
             _.language = 'fr'
         elif event.key == 'F2':
