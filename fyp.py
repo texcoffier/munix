@@ -66,8 +66,8 @@ translations = {
                  "fr": "Pour cette partie :"},
     "High": {"en": "Your highscore:",
              "fr": "Votre meilleur score :"},
-    "Help": {"en": "F1: français, F2: english,\nF3: change your name,\nF4: toggle animation.",
-             "fr": "F1 : français, F2 : english,\nF3 : changer de pseudo,\nF4 : arrêter/démarrer les animations."},
+    "Help": {"en": "F1: français, F2: english,\nF3: change your name,\nF4: toggle animation.\nTab: completion",
+             "fr": "F1 : français, F2 : english,\nF3 : changer de pseudo,\nF4 : arrêter/démarrer les animations.\nTab: complétion"},
     "Level": {"en": "Level",
              "fr": "Niveau"},
     "EnterAlias": {"en": "Enter your nickname for highscores or leave empty:",
@@ -980,6 +980,16 @@ class Graph:
             self.answer = self.answer[:-1]
         elif event.key == 'Shift':
             pass
+        elif event.key == 'Tab':
+            t = []
+            name = self.answer.split("/")[-1]
+            if name != '':
+                for i in self.nodes[self.new_current].parent.edges:
+                    if not i.destination.tmp and i.name.startswith(name):
+                        t.append(i.name)
+            if len(t) != 0:
+                t.sort()
+                self.answer = self.answer[:-len(name)] + t[0]
         elif event.key == 'F1':
             _.language = 'fr'
         elif event.key == 'F2':
