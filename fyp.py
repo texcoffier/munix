@@ -562,6 +562,7 @@ class Edge:
             ctx.strokeStyle = self.symbolic_link_color()
             ctx.setLineDash([6, 6])
         else:
+            ctx.lineDashOffset = -t * dash_speed
             ctx.lineWidth = 1
             if animate:
                 ctx.setLineDash([6, 2])
@@ -766,6 +767,7 @@ class Graph:
                 node = n
             node.followed = True
             node.hide = False
+            self.new_current_real = node.name
             while node.link_to:
                 node.followed = True
                 node.hide = False
@@ -831,7 +833,8 @@ class Graph:
             self.traveler_pos = len(self.traveler_path) - 1
         self.traveler_last_len = len(self.answer)
         if (self.traveler_pos >= len(self.traveler_path)
-            and self.new_current == self.goal
+            and (self.new_current == self.goal
+                 or self.new_current_real == self.goal)
             or debug and self.answer.startswith('*')
         ):
                 goal = True
@@ -1359,7 +1362,6 @@ def fyp():
                 g.t_frozen += 1
             ctx.fillStyle = "#FFFFFF"
             ctx.fillRect(0, 0, c.width, c.height)
-            ctx.lineDashOffset = -g.time * dash_speed
             g.move()
             g.plot(ctx)
 
