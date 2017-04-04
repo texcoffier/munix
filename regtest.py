@@ -829,3 +829,9 @@
 'grep -e -a'
 "Line(Pipeline(Command(Argument(Normal('grep')),Separator(' '),Argument(Normal('-e')),Separator(' '),RegExpTree(Normal('-a')))))"
 "Line(Pipeline(Command(Argument(Normal('grep'))Argument(Normal('-e'))RegExpTree(Normal('-a')))))"
+'a $( b'
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Replacement(Unterminated('$( '),Line(Pipeline(Command(Argument(Normal('b'))))))))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(Replacement(Unterminated('$( ')Line(Pipeline(Command(Argument(Normal('b'))))))))))"
+'a ` b'
+"Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Replacement(Unterminated('` '),Pipeline(Command(Argument(Normal('b')))))))))"
+"Line(Pipeline(Command(Argument(Normal('a'))Argument(Replacement(Unterminated('` ')Pipeline(Command(Argument(Normal('b')))))))))"

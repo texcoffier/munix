@@ -2739,7 +2739,7 @@ class Parser:
         parsed.append(GroupStart("(" + self.skip(' \t\n')))
         parsed.append(self.parse(0))
         if self.empty():
-            parsed.content[0] = Unterminated("(")
+            parsed.content[0] = Unterminated(parsed.content[0].content)
         else:
             if self.get() == ')':
                 self.next()
