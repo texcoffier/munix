@@ -13,6 +13,9 @@ try:
     def startswith(v):
         return this.substr(0, len(v)) == v
     String.prototype.startswith = startswith
+    def endswith(v):
+        return this.substr(len(this) - len(v)) == v
+    String.prototype.endswith = endswith
     javascript = True
     def classname(obj):
         return obj.__proto__.constructor.name
@@ -1044,16 +1047,24 @@ class Graph:
             self.draw_particles = not self.draw_particles
         elif event.key == 'F9':
             self.do_goal_animation = not self.do_goal_animation
-        elif event.key == 'F11':
-            document.getElementById("current").src = prompt(_("current"))
-        elif event.key == 'F12':
-            document.getElementById("goal").src = prompt(_("goal"))
+        elif event.key == 'F11' or event.key == 'F12':
+            if event.key == 'F11':
+                what = "current"
+            else:
+                what = "goal"
+            document.getElementById(what).src = prompt(_(what))
+            t = []
+            for i in ["current", "goal"]:
+                src = document.getElementById(i).src
+                if src.endswith('/undefined') or src.endswith('/null'):
+                    src = ''
+                t.append(src)
+            window.location.hash = '¤'.join(t)
         elif len(event.key) == 1:
             self.answer += event.key
         else:
             print(event)
             return
-        window.location.hash = document.getElementById("current").src + '¤' + document.getElementById("goal").src
         event.stopPropagation()
         event.preventDefault()
 
