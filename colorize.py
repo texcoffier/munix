@@ -1573,7 +1573,9 @@ class Unterminated(Chars):
             Si vous n'ajoutez rien derrière, votre réponse sera refusée
             car inutilement allongée."""
         if "&&" in self.content:
-            return "Vous pouvez taper une autre commande ou faire un pipeline qui sera exécutée si la précédente se termine bien"
+            return "Vous pouvez taper une autre commande ou faire un pipeline qui sera exécutée si la précédente se termine bien."
+        if "&" in self.content:
+            return "Il manque la commande à mettre en arrière plan."
         if "(" in self.content:
             return "Les commandes jusqu'à la parenthèse fermante seront exécutées dans un nouveau processus"
         if ">" in self.content or '<' in self.content:
@@ -2671,6 +2673,7 @@ class Parser:
                 parsed.append(DotComa(";" + self.skip(" \t")))
                 if self.empty():
                     break
+                continue
             if self.get() == '\n':
                 self.next()
                 parsed.append(NewLine("\n" + self.skip(" \t\n")))
@@ -2688,7 +2691,10 @@ class Parser:
                 if not self.empty() and self.get() == '&':
                     self.add_to_conditionnal(parsed, '&&')
                 else:
-                    if parsed.empty():
+                    if (parsed.empty()
+                        or parsed.content[-1].empty()
+                        or parsed.content[-1].content[-1].empty()
+                        ):
                         parsed.append(Unterminated("&"))
                     else:
                         b = Backgrounded()

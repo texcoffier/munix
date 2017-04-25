@@ -140,8 +140,8 @@
 "Line(Pipeline(Command(Argument(Normal('a')))),Unterminated('; '),DotComa(';'),Pipeline(Command(Argument(Normal('b')))))"
 "Line(Pipeline(Command(Argument(Normal('a'))))Unterminated('; ')Pipeline(Command(Argument(Normal('b')))))"
 'a | ; && #'
-"Line(Pipeline(Command(Argument(Normal('a'))),Separator(' '),Unterminated('| ')),Conditionnal(Unterminated('; '),Unterminated('&& ')),Comment('#'))"
-"Line(Pipeline(Command(Argument(Normal('a')))Unterminated('| '))Conditionnal(Unterminated('; ')Unterminated('&& '))Comment('#'))"
+"Line(Pipeline(Command(Argument(Normal('a'))),Separator(' '),Unterminated('| ')),DotComa('; '),Conditionnal(Unterminated('&& ')),Comment('#'))"
+"Line(Pipeline(Command(Argument(Normal('a')))Unterminated('| '))Conditionnal(Unterminated('&& '))Comment('#'))"
 '[]a]'
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketStart('['),SquareBracketChar(']'),SquareBracketChar('a'),SquareBracketStop(']'))))))"
 "Line(Pipeline(Command(Argument(SquareBracket(SquareBracketChar(']')SquareBracketChar('a')SquareBracketStart('[')SquareBracketStop(']'))))))"
@@ -341,8 +341,8 @@
 "Line(Pipeline(Command(ForLoop(For('for '),LoopVariable('i'),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Backgrounded(Pipeline(Command(Argument(Normal('a'))))),Background(' & '),Backgrounded(Pipeline(Command(Argument(Normal('b'))))),Background(' & '),Done('done'))))))"
 "Line(Pipeline(Command(ForLoop(LoopVariable('i')ForValues(Argument(Normal('a')))Body(Backgrounded(Pipeline(Command(Argument(Normal('a')))))Backgrounded(Pipeline(Command(Argument(Normal('b'))))))))))"
 'for i in a ; do & done'
-"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable('i'),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Backgrounded(),Background('& '),Pipeline(Unexpected('done')))))))"
-"Line(Pipeline(Command(ForLoop(Unterminated('for ')LoopVariable('i')ForValues(Argument(Normal('a')))Body(Backgrounded()Pipeline(Unexpected('done')))))))"
+"Line(Pipeline(Command(ForLoop(Unterminated('for '),LoopVariable('i'),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Unterminated('&'),Pipeline(Unexpected(' done')))))))"
+"Line(Pipeline(Command(ForLoop(Unterminated('for ')LoopVariable('i')ForValues(Argument(Normal('a')))Body(Unterminated('&')Pipeline(Unexpected(' done')))))))"
 'for i in a ; do a&done'
 "Line(Pipeline(Command(ForLoop(For('for '),LoopVariable('i'),In(' in '),ForValues(Argument(Normal('a'))),EndOfValues(' ; '),Body(Do('do '),Backgrounded(Pipeline(Command(Argument(Normal('a'))))),Background('&'),Done('done'))))))"
 "Line(Pipeline(Command(ForLoop(LoopVariable('i')ForValues(Argument(Normal('a')))Body(Backgrounded(Pipeline(Command(Argument(Normal('a'))))))))))"
@@ -835,3 +835,21 @@
 'a ` b'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Argument(Replacement(Unterminated('` '),Pipeline(Command(Argument(Normal('b')))))))))"
 "Line(Pipeline(Command(Argument(Normal('a'))Argument(Replacement(Unterminated('` ')Pipeline(Command(Argument(Normal('b')))))))))"
+'a;|b'
+"Line(Pipeline(Command(Argument(Normal('a')))),DotComa(';'),Pipeline(Unterminated('|'),Command(Argument(Normal('b')))))"
+"Line(Pipeline(Command(Argument(Normal('a'))))Pipeline(Unterminated('|')Command(Argument(Normal('b')))))"
+'|a'
+"Line(Pipeline(Unterminated('|'),Command(Argument(Normal('a')))))"
+"Line(Pipeline(Unterminated('|')Command(Argument(Normal('a')))))"
+'a;&'
+"Line(Pipeline(Command(Argument(Normal('a')))),DotComa(';'),Unterminated('&'))"
+"Line(Pipeline(Command(Argument(Normal('a'))))Unterminated('&'))"
+'a|&'
+"Line(Pipeline(Command(Argument(Normal('a'))),Unterminated('|')),Unterminated('&'))"
+"Line(Pipeline(Command(Argument(Normal('a')))Unterminated('|'))Unterminated('&'))"
+'&'
+"Line(Unterminated('&'))"
+"Line(Unterminated('&'))"
+'&|b'
+"Line(Unterminated('&'),Pipeline(Unterminated('|'),Command(Argument(Normal('b')))))"
+"Line(Unterminated('&')Pipeline(Unterminated('|')Command(Argument(Normal('b')))))"

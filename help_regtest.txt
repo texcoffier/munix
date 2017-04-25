@@ -1808,4 +1808,11 @@
 [12,-250,	'«$A» est remplacé par le shell par le contenu de la variable «A». Le nom de la variable disparaît'],
 [14,-249,	'Le chemin testé'],
 [16,-249,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
+[	'&|b',
+[0,-1,	'Il manque la commande à mettre en arrière plan.'
+	'Une ligne comportant : une commande simple'
+	''],
+[2,-45,	'Il manque une commande à gauche du pipe'],
+[3,-45,	'Texte : «b»'
+	'Commande : «b» sans argument']],
 ]
