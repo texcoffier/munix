@@ -562,7 +562,7 @@ def parse_test(command, position, allow_bool=True):
                               ArgumentGroup(),
                               "Négation booléenne")
     elif t == '(':
-        v.make_comment(foreground="#080")
+        v.make_comment(None, "#080")
         position = parse_test(command, position)
         (position, t2, v2) = get_argument(command, position)
         if v2 is None:
@@ -573,7 +573,7 @@ def parse_test(command, position, allow_bool=True):
             v2.make_comment("Il devrait y avoir une parenthèse fermante",
                             "#F00")
         else:
-            v.make_comment(foreground="#080")
+            v.make_comment(None, "#080")
             position = merge_into(command, old_position, position,
                                   ArgumentGroup(),
                                   "Regroupe ces opérations")
@@ -586,7 +586,7 @@ def parse_test(command, position, allow_bool=True):
            }[t], "#080")
         (position, t2, v2) = get_argument(command, position)
         if v2 is None:
-            v.make_comment(foreground="#F00")
+            v.make_comment(None, "#F00")
             command.content[position-1].message = "Indiquez le chemin"
             command.fail = True
             return position
@@ -689,11 +689,11 @@ def analyse_test(command):
                 last.message = "Continuez la condition"
             # else: last.message = name(last) + str(command.nr_argument)
         else:
-            v1.make_comment(foreground="#080")
+            v1.make_comment(None, "#080")
             if t != ']':
                 v.make_comment("Cela devrait être un ']'", "#F00")
             else:
-                v.make_comment(foreground="#080")
+                v.make_comment(None, "#080")
             (position, t, v) = get_argument(command, position)
             
     while v:
@@ -927,8 +927,10 @@ all_signals = [
 
 def signal_to_numbers(txt):
     for name, number, message in all_signals:
-        txt = txt.replace('Normal(SIG' + name + ')', str(number))
-        txt = txt.replace('Normal(' + name + ')', str(number))
+        txt = txt.replace('Normal(SIG' + name         + ')', str(number))
+        txt = txt.replace('Normal(sig' + name.lower() + ')', str(number))
+        txt = txt.replace('Normal('    + name         + ')', str(number))
+        txt = txt.replace('Normal('    + name.lower() + ')', str(number))
     return txt
 
 def define_kill():
@@ -2066,7 +2068,7 @@ class Container:
                         for i in self.content
         ]
         return self
-    def make_comment(self, comment=None):
+    def make_comment(self, comment=None, foreground=None):
         self.message = comment
 
     def init_group_number(self, group_number):
@@ -2233,7 +2235,7 @@ class Command(Container):
         else:
             h = None
         if h:
-            s.append("Aide : <tt>" + h + "</tt><br>")
+            s.append("Aide : <tt>" + str(h) + "</tt><br>")
         if self.nr_argument < definition["min_arg"]:
             s.append('<span class="command_help_error">'
                      + 'Votre commande manque d\'argument !</span><br>')

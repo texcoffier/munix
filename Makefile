@@ -7,7 +7,7 @@ all:regtest colorize.js doc_colorize.html munix.html
 
 RapydScript:
 	git clone git://github.com/atsepkov/RapydScript.git
-	cd RapydScript ; git checkout e2c8b247a5b1a1024a8e7adae188b7bb78a77ede
+	cd RapydScript ; git checkout 0483fac4745bca9c531d29963f2daca5e3330e7c
 
 colorize.js:RapydScript licence.txt $(CONVERT)
 	@if [ "$$(which node)" = "" ] ; \

@@ -78,8 +78,7 @@ def create_links(output, scrollLeft):
     border = 0
     help_boxes = []
     for item in output.childNodes:
-        item = output.childNodes[item]
-        if item.id:
+        if item and item.id:
             if document.getElementById('P' + item.id[1:]):
                 help_boxes.append(item)
                 # + 4 for border width ?
