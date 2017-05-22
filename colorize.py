@@ -2194,7 +2194,8 @@ class Command(Container):
                         self.command = command
                         def color():
                             return commands[command]['color']
-                        content.content[0].color = color
+                        if command != '[':
+                            content.content[0].color = color
                 arg_number += 1
                 continue
             if argument_for_option:
