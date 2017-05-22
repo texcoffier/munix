@@ -573,7 +573,7 @@ def parse_test(command, position, allow_bool=True):
             v2.make_comment("Il devrait y avoir une parenthèse fermante",
                             "#F00")
         else:
-            v.make_comment(None, "#080")
+            v2.make_comment(None, "#080")
             position = merge_into(command, old_position, position,
                                   ArgumentGroup(),
                                   "Regroupe ces opérations")
