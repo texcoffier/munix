@@ -853,3 +853,6 @@
 '&|b'
 "Line(Unterminated('&'),Pipeline(Unterminated('|'),Command(Argument(Normal('b')))))"
 "Line(Unterminated('&')Pipeline(Unterminated('|')Command(Argument(Normal('b')))))"
+'time for I in * ; do $I ; done'
+"Line(Pipeline(Command(Argument(Normal('time')),Command(Separator(' '),ForLoop(For('for '),LoopVariable('I'),In(' in '),ForValues(Argument(Star('*'))),EndOfValues(' ; '),Body(Do('do '),Pipeline(Command(Argument(Variable('$I')))),DotComa(' ; '),Done('done')))))))"
+"Line(Pipeline(Command(Argument(Normal('time'))Command(ForLoop(LoopVariable('I')ForValues(Argument(Star('*')))Body(Pipeline(Command(Argument(Variable('$I'))))))))))"

@@ -1280,7 +1280,7 @@ def analyse_mode(txt):
                            + ' ' + rights + '.')
     if len(msg) > 0:
         return True, "<br>".join(msg)
-    return False, "Le mode n'est pas compéhensible"
+    return False, "Le mode n'est pas compréhensible"
 
 def analyse_chmod(command):
     (position, dummy_t, dummy_v) = get_argument(command, 0)
@@ -1328,8 +1328,6 @@ def define_chmod():
         )
     return d
 
-
-
 command_aliases = {
     'more': 'less'
 }
@@ -1348,7 +1346,6 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_grep(), define_sed(), define_find(), define_chmod(),
 
           define_ps(), define_kill(), define_exit(), define_export(),
-
           define_bash('[[')
 ]:
     if x['name'] in commands:
@@ -2157,20 +2154,23 @@ class Command(Container):
     def local_help(self, position):
         if self.message:
             return self.message + self.contextual_help(position)
-        nr = self.number_of(Argument)
+        command = self.first_of(Argument)
+        if command and command.content[0].content == "time":
+            return "La commande <em>builtin</em> <tt>time</tt> affiche le temps d'exécution de la commande qui est à sa droite"
         if len(self.content) and isinstance(self.content[-1], Command):
             # Case of the For and While loop
             return ''
+        nr = self.number_of(Argument)
         if nr == 0:
             return 'Une commande vide !'
         if nr == 1:
-            return ('Commande : «' + self.first_of(Argument).html()
+            return ('Commande : «' + command.html()
                     + '» sans argument' + self.contextual_help(position))
         if nr == 2:
             a = 'un argument.'
         else:
             a = str(nr-1) + ' arguments.'
-        return ('La commande «' + self.first_of(Argument).html()
+        return ('La commande «' + command.html()
                 + '» avec ' + a + self.contextual_help(position))
 
     def check_options(self):
@@ -3006,6 +3006,12 @@ class Parser:
                     if text == 'if':
                         parsed.content.pop()
                         parsed.append(self.parse_if())
+                        return parsed
+                    if text == 'time':
+                        # XXX nether sh nor bash
+                        #    'time for'    is working as in bash
+                        #    'time a | b'  is working as in sh
+                        parsed.append(self.parse_command())
                         return parsed
                     if text in ['case', '{']:
                         return Unexpected(

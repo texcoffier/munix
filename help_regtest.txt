@@ -1815,4 +1815,20 @@
 [2,-45,	'Il manque une commande à gauche du pipe'],
 [3,-45,	'Texte : «b»'
 	'Commande : «b» sans argument']],
+[	'time ls',
+[0,-1,	'Texte : «time»'
+	"La commande builtin time affiche le temps d'exécution de la commande qui est à sa droite"
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-134,	'Un espace ou plus pour séparer les arguments.'
+	'Commande : «ls» sans argument'
+	'ls : LiSte directory'
+	'Elle permet de lister le contenu de répertoires'
+	'Syntaxe : '
+	'ls dir1 dir2...'
+	'Options :'
+	"\xa0\xa0\xa0-l  : (l=long) affiche plein d'informations\xa0\xa0\xa0--all (-a)  : affiche aussi les fichiers dont le nom commence par '.'"
+	'Aide : man ls'
+	''],
+[6,-407,	'Texte : «ls»']],
 ]
