@@ -71,6 +71,8 @@ A:hover { background: #F88 }
 <script>
 function d(t)
 {
+  if ( ! confirm("remove 🗑 SCORE 🗑 delete ") )
+      return ;
   while ( t.tagName != 'TABLE' )
     t = t.parentNode ;
   t = t.getElementsByTagName("TD")[1] ;

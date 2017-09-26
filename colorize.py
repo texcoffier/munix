@@ -815,7 +815,7 @@ def define_grep():
                "Les lignes <b>ne passant pas</b> le crible."),
         Option('--color', '--color',
                "Colorie ce qui correspond à l'expression régulière.",
-               False, False),
+               False, False, True),
         Option('--no-filename', '-h',
                "N'affiche pas le nom du fichier où la ligne est trouvée.",
                False, False)
