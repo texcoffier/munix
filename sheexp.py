@@ -90,7 +90,7 @@ def create_links(output, scrollLeft):
         n.className = "link " + help_box.className
         n.id = 'L' + help_box.id[1:]
         n.style.left = place.offsetLeft + "px"
-        top = place.offsetHeight + border
+        top = place.offsetHeight + border + 2
         n.style.top = str(top) + "px"
         n.style.height = str(help_box.offsetTop - place.offsetHeight
                              - 2*border) + "px"
