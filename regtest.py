@@ -856,3 +856,15 @@
 'time for I in * ; do $I ; done'
 "Line(Pipeline(Command(Argument(Normal('time')),Command(Separator(' '),ForLoop(For('for '),LoopVariable('I'),In(' in '),ForValues(Argument(Star('*'))),EndOfValues(' ; '),Body(Do('do '),Pipeline(Command(Argument(Variable('$I')))),DotComa(' ; '),Done('done')))))))"
 "Line(Pipeline(Command(Argument(Normal('time'))Command(ForLoop(LoopVariable('I')ForValues(Argument(Star('*')))Body(Pipeline(Command(Argument(Variable('$I'))))))))))"
+'grep -e "$A"'
+'Line(Pipeline(Command(Argument(Normal(\'grep\')),Separator(\' \'),Argument(Normal(\'-e\')),Separator(\' \'),Argument(Guillemet(\'"\'),Variable(\'$A\'),Guillemet(\'"\')))))'
+"Line(Pipeline(Command(Argument(Normal('grep'))Argument(VariableProtected('$A')))))"
+'rm "-r" -i .'
+'Line(Pipeline(Command(Argument(Normal(\'rm\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-r\'),Guillemet(\'"\')),Separator(\' \'),Argument(Normal(\'-i\')),Separator(\' \'),Argument(Normal(\'.\')))))'
+"Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir'))Argument(Normal('.')))))"
+'rm "-r" "-i" .'
+'Line(Pipeline(Command(Argument(Normal(\'rm\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-r\'),Guillemet(\'"\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-i\'),Guillemet(\'"\')),Separator(\' \'),Argument(Normal(\'.\')))))'
+"Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir'))Argument(Normal('.')))))"
+'rm -r "-i" .'
+'Line(Pipeline(Command(Argument(Normal(\'rm\')),Separator(\' \'),Argument(Normal(\'-r\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-i\'),Guillemet(\'"\')),Separator(\' \'),Argument(Normal(\'.\')))))'
+"Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir'))Argument(Normal('.')))))"

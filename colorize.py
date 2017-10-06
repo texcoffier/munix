@@ -1838,6 +1838,8 @@ class Container:
                   and getattr(content[-1], 'concatenable_right', False)
                   and (getattr(c, 'concatenable_left', False)
                        or getattr(c, 'is_an_option_argument', False))
+                  and name(c) == 'Argument'
+                  and c.text_content() != ''
               ):
                 # option joining
                 left = content[-1].option_canon
