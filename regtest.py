@@ -868,3 +868,6 @@
 'rm -r "-i" .'
 'Line(Pipeline(Command(Argument(Normal(\'rm\')),Separator(\' \'),Argument(Normal(\'-r\')),Separator(\' \'),Argument(Guillemet(\'"\'),Normal(\'-i\'),Guillemet(\'"\')),Separator(\' \'),Argument(Normal(\'.\')))))'
 "Line(Pipeline(Command(Argument(Normal('rm'))Argument(Normal('-ir'))Argument(Normal('.')))))"
+'cp -R a b'
+"Line(Pipeline(Command(Argument(Normal('cp')),Separator(' '),Argument(Normal('-R')),Separator(' '),Argument(Normal('a')),Separator(' '),Argument(Normal('b')))))"
+"Line(Pipeline(Command(Argument(Normal('cp'))Argument(Normal('-r'))Argument(Normal('a'))Argument(Normal('b')))))"

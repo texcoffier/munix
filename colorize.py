@@ -103,6 +103,8 @@ class Options:
         self.long_opt = {}
         self.single_letter_option = True
         for option in options:
+            if option.option != '' and option.option in self.long_opt:
+                continue # Option synonym: see 'define_cp'
             self.long_opt[option.option] = option
             if len(option.option) > 2 and option.option[1] != '-':
                 self.single_letter_option = False # kill, find
@@ -111,7 +113,10 @@ class Options:
             if option.short != '':
                 if not self.single_letter_option:
                     it_is_no_possible
-                self.short_opt[option.short] = option
+                if option.option != '':
+                    self.short_opt[option.short] = self.long_opt[option.option]
+                else:
+                    self.short_opt[option.short] = option
 
     def get_option(self, value):
         if value.split("=")[0] in self.long_opt:
@@ -215,7 +220,7 @@ def define_exit():
     d['message'] = "Retourne la valeur indiquée ou celle de la dernière commande"
     d['syntax'] = "exit entier_optionnel"
     d['1'] = "Valeur entière qui va être retournée au père."
-    d['unknown'] = "Argument est complètement inutile."
+    d['unknown'] = "Argument complètement inutile."
     return d
 
 def define_export():
@@ -260,7 +265,8 @@ def define_cp():
     d['min_arg'] = 2
     d['options'] = Options(
         Option('--recursive', '-r',
-               "copie récursive de répertoire : tout le contenu")
+               "copie récursive de répertoire : tout le contenu"),
+        Option('--recursive', '-R', 'SYNONYM')
         )
     return d
 
@@ -2409,7 +2415,8 @@ class Argument(Container):
             if option.cleanup:
                 opts.pop()
                 continue
-            if option and option.argument:
+            opts[-1] = option.short[1:] # For synonyms
+            if option.argument:
                 self.option_argument_help = ('-' + option.short[1] + ' : '
                                              + option.message)
                 self.option_argument_position = i+2
