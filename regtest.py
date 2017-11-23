@@ -42,7 +42,7 @@
 "Line(Pipeline(Command(Argument(Normal('a'))Redirection(Fildes('')Direction('>')File(Variable('$C')))Redirection(Fildes('')Direction('>>')File(Normal('$')))Redirection(Fildes('')Direction('<')File(Normal(' ')VariableProtected('$A'))))))"
 '22>A B'
 "Line(Pipeline(Command(Redirection(Fildes('22'),Direction('>'),File(Normal('A'))),Separator(' '),Argument(Normal('B')))))"
-"Line(Pipeline(Command(Redirection(Fildes('22')Direction('>')File(Normal('A')))Argument(Normal('B')))))"
+"Line(Pipeline(Command(Argument(Normal('B'))Redirection(Fildes('22')Direction('>')File(Normal('A'))))))"
 'a >&23'
 "Line(Pipeline(Command(Argument(Normal('a')),Separator(' '),Redirection(Fildes(''),Direction('>'),Fildes('&23')))))"
 "Line(Pipeline(Command(Argument(Normal('a'))Redirection(Fildes('')Direction('>')Fildes('&23')))))"
@@ -405,7 +405,7 @@
 "Line(Pipeline(Command(ForLoop(LoopVariable('I')Body(Pipeline(Command(Argument(Normal('A')))))Unexpected('BC '))))Pipeline(Command(Argument(Normal('D')))))"
 'if a ; then b ; fi >x m'
 "Line(Pipeline(Command(IfThenElse(If('if '),Command(Argument(Normal('a'))),EndOfValues(' ; '),ThenBloc(Then('then '),Pipeline(Command(Argument(Normal('b')))),DotComa(' ; ')),Fi('fi'),Separator(' '),Redirection(Fildes(''),Direction('>'),File(Normal('x'))),Separator(' '),Unexpected('m')))))"
-"Line(Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b')))))Redirection(Fildes('')Direction('>')File(Normal('x')))Unexpected('m')))))"
+"Line(Pipeline(Command(IfThenElse(Command(Argument(Normal('a')))ThenBloc(Pipeline(Command(Argument(Normal('b')))))Unexpected('m')Redirection(Fildes('')Direction('>')File(Normal('x')))))))"
 'fi;done;else;do'
 "Line(Pipeline(Unexpected('fi')))"
 "Line(Pipeline(Unexpected('fi')))"
@@ -871,3 +871,6 @@
 'cp -R a b'
 "Line(Pipeline(Command(Argument(Normal('cp')),Separator(' '),Argument(Normal('-R')),Separator(' '),Argument(Normal('a')),Separator(' '),Argument(Normal('b')))))"
 "Line(Pipeline(Command(Argument(Normal('cp'))Argument(Normal('-r'))Argument(Normal('a'))Argument(Normal('b')))))"
+'read <A B'
+"Line(Pipeline(Command(Argument(Normal('read')),Separator(' '),Redirection(Fildes(''),Direction('<'),File(Normal('A'))),Separator(' '),Argument(Normal('B')))))"
+"Line(Pipeline(Command(Argument(Normal('read'))Argument(Normal('B'))Redirection(Fildes('')Direction('<')File(Normal('A'))))))"

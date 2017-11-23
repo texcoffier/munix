@@ -9,15 +9,16 @@ RapydScript:
 	git clone git://github.com/atsepkov/RapydScript.git
 	cd RapydScript ; git checkout 0483fac4745bca9c531d29963f2daca5e3330e7c
 
-colorize.js:RapydScript licence.txt $(CONVERT)
+xxx.py: $(CONVERT) Makefile
+	cat $(CONVERT) >$@
+
+colorize.js:RapydScript licence.txt xxx.py
 	@if [ "$$(which node)" = "" ] ; \
          then echo "Ne trouve pas NodeJS sous le nom 'node'" >&2 ; exit 1 ; fi
 	(cat licence.txt ; \
-         git log --pretty=format:'// GIT commit %H' -n 1 ; \
+	 git log --pretty=format:'// GIT commit %H' -n 1 ; \
 	 echo ; \
-         cat $(CONVERT) | tee xxx.py | \
-         RapydScript/bin/rapydscript --prettify --bare \
-        ) >$@
+	 RapydScript/bin/rapydscript --prettify --bare xxx.py) >$@
 	sed 's/ՐՏ/JS/g' <$@ | iconv -f utf-8 -t ISO8859-15 >colorize-latin1.js
 
 install:clean all
@@ -41,4 +42,4 @@ regtest:colorize.js
 
 clean:
 	@echo "CLEANING"
-	-rm colorize.js *~ *.pyc munix.html 2>/dev/null
+	-rm colorize.js xxx.py *~ *.pyc munix.html 2>/dev/null

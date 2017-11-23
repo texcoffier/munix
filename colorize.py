@@ -1819,6 +1819,7 @@ class Container:
     def cleanup(self, replace_option, sort_content=False):
         protected = False
         content = []
+        add_at_the_end = []
         for c in self.content:
             n = name(c)
             if c.hide:
@@ -1858,6 +1859,11 @@ class Container:
                 content[-1].parent = self
                 content[-1].parse_option()
                 continue
+            elif n == 'Redirection':
+                add_at_the_end.append(c)
+                continue
+            content.append(c)
+        for c in add_at_the_end:
             content.append(c)
         first_argument = True
         clean = []
