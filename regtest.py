@@ -874,3 +874,6 @@
 'read <A B'
 "Line(Pipeline(Command(Argument(Normal('read')),Separator(' '),Redirection(Fildes(''),Direction('<'),File(Normal('A'))),Separator(' '),Argument(Normal('B')))))"
 "Line(Pipeline(Command(Argument(Normal('read'))Argument(Normal('B'))Redirection(Fildes('')Direction('<')File(Normal('A'))))))"
+"sed ''"
+"Line(Pipeline(Command(Argument(Normal('sed')),Separator(' '),Argument(Quote('\\''),Quote('\\'')))))"
+"Line(Pipeline(Command(Argument(Normal('sed'))Argument())))"

@@ -3905,6 +3905,8 @@ def sedparser_top(root, extended):
     while root.content[i] and not isinstance(root.content[i], Normal):
         content.append(root.content[i])
         i += 1
+        if i == len(root.content):
+            return root # Empty argument
     if not root.content[i]:
         return root
     i, j, char = regexpparser_get(root, i, j, content)
