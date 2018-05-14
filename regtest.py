@@ -795,7 +795,7 @@
 "Line(Pipeline(Command(Argument(Normal('read'))Argument(Normal('A')))))"
 'kill -TERM 8'
 "Line(Pipeline(Command(Argument(Normal('kill')),Separator(' '),Argument(Normal('-TERM')),Separator(' '),Argument(Normal('8')))))"
-"Line(Pipeline(Command(Argument(Normal('kill'))Argument(Normal(''))Argument(Normal('8')))))"
+"Line(Pipeline(Command(Argument(Normal('kill'))Argument(Normal('-15'))Argument(Normal('8')))))"
 'sed s/^[ab]'
 "Line(Pipeline(Command(Argument(Normal('sed')),Separator(' '),Argument(Normal('s/^'),SquareBracket(SquareBracketStart('['),SquareBracketChar('a'),SquareBracketChar('b'),SquareBracketStop(']'))))))"
 "Line(Pipeline(Command(Argument(Normal('sed'))Argument(Normal('s/^')SquareBracket(SquareBracketChar('a')SquareBracketChar('b')SquareBracketStart('[')SquareBracketStop(']'))))))"

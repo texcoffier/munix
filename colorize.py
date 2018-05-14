@@ -493,7 +493,7 @@ def analyse_tar(command):
 def define_tar():
     d = define_command()
     d['name'] = 'tar'
-    d['description'] = "(<em><b>t</b>ape <b>a</b>archiving</em>) manipulation d'archive"
+    d['description'] = "(<em><b>t</b>ape <b>ar</b>chiving</em>) manipulation d'archive"
     d['message'] = "La syntaxe dépend des options indiquées"
     d['options'] = Options(
         Option('--extract', '-x', "1 fichier &#8594; hiérarchie"),
@@ -933,10 +933,11 @@ all_signals = [
 
 def signal_to_numbers(txt):
     for name, number, message in all_signals:
-        txt = txt.replace('Normal(SIG' + name         + ')', str(number))
-        txt = txt.replace('Normal(sig' + name.lower() + ')', str(number))
-        txt = txt.replace('Normal('    + name         + ')', str(number))
-        txt = txt.replace('Normal('    + name.lower() + ')', str(number))
+        number = "Normal('-" + str(number) + "')"
+        txt = txt.replace("Normal('-SIG" + name         + "')", number)
+        txt = txt.replace("Normal('-sig" + name.lower() + "')", number)
+        txt = txt.replace("Normal('-"    + name         + "')", number)
+        txt = txt.replace("Normal('-"    + name.lower() + "')", number)
     return txt
 
 def define_kill():
@@ -2396,8 +2397,8 @@ class Argument(Container):
         d = c.split("=")[0]
         if c[1] == "-" or not options.single_letter_option:
             self.option_argument_position = len(d)
-            if d in options.long_opt:
-                option = options.long_opt[d]
+            option = options.long_opt[d]
+            if option.short != '' and d in options.long_opt:
                 if option.argument:
                     self.option_argument_help = d + ' : ' + option.message
                     self.option_canon = option.short
