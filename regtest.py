@@ -877,3 +877,6 @@
 "sed ''"
 "Line(Pipeline(Command(Argument(Normal('sed')),Separator(' '),Argument(Quote('\\''),Quote('\\'')))))"
 "Line(Pipeline(Command(Argument(Normal('sed'))Argument())))"
+'cp --foo a b'
+"Line(Pipeline(Command(Argument(Normal('cp')),Separator(' '),Argument(Normal('--foo')),Separator(' '),Argument(Normal('a')),Separator(' '),Argument(Normal('b')))))"
+"Line(Pipeline(Command(Argument(Normal('cp'))Argument(Normal('--foo'))Argument(Normal('a'))Argument(Normal('b')))))"

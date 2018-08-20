@@ -2397,8 +2397,8 @@ class Argument(Container):
         d = c.split("=")[0]
         if c[1] == "-" or not options.single_letter_option:
             self.option_argument_position = len(d)
-            option = options.long_opt[d]
-            if option.short != '' and d in options.long_opt:
+            if d in options.long_opt and options.long_opt[d].short != '':
+                option = options.long_opt[d]
                 if option.argument:
                     self.option_argument_help = d + ' : ' + option.message
                     self.option_canon = option.short
