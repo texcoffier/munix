@@ -270,6 +270,17 @@ def define_cp():
         )
     return d
 
+def define_mv():
+    d = define_command()
+    d['name'] = 'mv'
+    d['description'] = "Déplace (<em><b>m</b>o<b>v</b>e</em>) des fichiers et répertoires d'un endroit à l'autre"
+    d['message'] = "Si la destination n'est pas un répertoire, cette commande renomme le fichier indiqué"
+    d['syntax'] = "mv <var>source</var> <var>destination</var>"
+    d['1'] = "Nom du premier fichier/répertoire à renommer ou déplacer ailleurs"
+    d['$'] = "Le nouveau nom ou si c'est un répertoire, la destination du déplacement"
+    d['min_arg'] = 2
+    return d
+
 def define_rm():
     d = define_command()
     d['name'] = 'rm'
@@ -1345,7 +1356,7 @@ for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
           define_man(), define_tail(), define_du(), define_date(),
           define_df(), define_sort(), define_wc(), define_uniq(),
           define_gzip(), define_gunzip(), define_zcat(), define_sleep(),
-          define_tar(), define_echo(),
+          define_tar(), define_echo(), define_mv(),
           
           define_done(), define_for(),
           define_if(), define_then(), define_else(), define_fi(),
