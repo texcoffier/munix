@@ -44,7 +44,8 @@ def sheexp(container):
     update.input.onkeypress = update
     update.input.onclick    = update
     update.input.onpaste    = update
-    update.input.focus()
+    if not window.disable_auto_focus:
+        update.input.focus()
     setInterval(update, 20)
 
 def update():
