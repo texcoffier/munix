@@ -442,7 +442,7 @@ def define_gzip():
         Option('--verbose', '-v', "Affiche ce qui est fait"),
         Option('--best', '-9', "Comprime un maximum", False, False),
         Option('--fast', '-1', "Comprime le plus rapidement", False, False),
-        Option('--list', '-l', "Affiche les statistiques", False, False)
+        Option('--list', '-l', "Affiche les statistiques concernant des fichiers comprimés", False, False)
     )
     return d
 
