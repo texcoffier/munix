@@ -1831,4 +1831,47 @@
 	'Aide : man ls'
 	''],
 [6,-407,	'Texte : «ls»']],
+[	'find . -size -5h -size + 6',
+[0,-1,	'Texte : «find»'
+	'La commande «find» avec 6 arguments.'
+	'find : Cherche des entités dans le système de fichier'
+	'Les paramètres définissent une expression'
+	'Syntaxe : '
+	'find DesLieux DesTests DesActions'
+	'Aide : man find'
+	'Une ligne comportant : une commande simple'
+	''],
+[5,-243,	'Un espace ou plus pour séparer les arguments.'],
+[6,-243,	'Emplacement ou chercher'
+	'Argument 1 : «.»'],
+[7,-243,	'Un espace ou plus pour séparer les arguments.'],
+[8,-243,	'Ce qui suit est une taille de fichier'
+	"                 éventuellement préfixée par '+' ou '-' pour indiquer"
+	"                que l'on cherche des fichiers plus petit ou plus grand"
+	'                que la taille indiquée.'
+	'                 éventuellement suffixée par c, b, k, M, G pour'
+	"                indiqué l'unité de la taille."
+	'                '
+	'                '
+	'Argument 2 : «-size»'],
+[13,-243,	'Un espace ou plus pour séparer les arguments.'],
+[14,-243,	'Taille du fichier &lt; 5h unités inconnues : «h»'
+	'Argument 3 : «-5h»'],
+[17,-243,	'Un espace ou plus pour séparer les arguments.'],
+[18,-243,	'Ce qui suit est une taille de fichier'
+	"                 éventuellement préfixée par '+' ou '-' pour indiquer"
+	"                que l'on cherche des fichiers plus petit ou plus grand"
+	'                que la taille indiquée.'
+	'                 éventuellement suffixée par c, b, k, M, G pour'
+	"                indiqué l'unité de la taille."
+	'                '
+	'                '
+	'Argument 4 : «-size»'],
+[23,-243,	'Un espace ou plus pour séparer les arguments.'],
+[24,-243,	'Il manque la taille attendue'
+	'Argument 5 : «+»'],
+[25,-243,	'Un espace ou plus pour séparer les arguments.'],
+[26,-243,	'Mot-clef imprévu, on attend :'
+	"            -name, -iname, -size, -type, -mtime, -print, -exec, -o, '(', ')'"
+	'Argument 6 : «6»']],
 ]

@@ -507,6 +507,7 @@ def define_tar():
     d['description'] = "(<em><b>t</b>ape <b>ar</b>chiving</em>) manipulation d'archive"
     d['message'] = "La syntaxe dépend des options indiquées"
     d['options'] = Options(
+        Option('--list', '-t', "Liste le contenu de l'archive", False, False),
         Option('--extract', '-x', "1 fichier &#8594; hiérarchie"),
         Option('--create', '-c', "Hiérarchie &#8594; 1 fichier"),
         Option('--file', '-f', "Pour choisir le nom de l'archive",
@@ -1160,18 +1161,27 @@ def analyse_find(command):
                     oper = "égale à"
                 else:
                     v.make_comment("Taille de fichier invalide", "#F00")
+                    state = "start"
                     continue
+            color = None
             if len(t) > 0:
                 units = {"c": "octets", "k": "kilo-octets", "M": "Méga-octets",
-                         "G": "Giga-octets", "b": "blocs de 512 octets"}
+                         "G": "Giga-octets", "b": "blocs de 512 octets", "w": "paires d'octets"}
                 if t[-1] in units:
                     unite = units[t[-1]]
                     t = t[:-1]
+                elif t[-1].isdigit():
+                    unite = units['b']
                 else:
-                    unite = units["b"]
+                    unite = "unités <b>inconnues</b> : «" + t[-1] + "»"
+                    color = "#F00"
+            else:
+                v.make_comment("Il manque la taille attendue", "#F00")
+                state = "start"
+                continue
                 
             v.make_comment("Taille du fichier " + oper + " "
-                           + t + " " + unite)
+                           + t + " " + unite, color)
             state = "start"
             continue
         if state == "-exec":
