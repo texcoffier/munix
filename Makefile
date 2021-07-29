@@ -30,7 +30,7 @@ doc_colorize.html:colorize.py create_doc.py
 	./create_doc.py >doc_colorize.html
 
 fyp.js:fyp.py
-	RapydScript/bin/rapydscript --prettify --bare <$? >fyp.js
+	RapydScript/bin/rapydscript --prettify --bare $? >$@
 
 install-fyp:fyp.js
 	scp -p fyp.js fyp.html highscores.py munix@demo710.univ-lyon1.fr:FYP
@@ -43,3 +43,6 @@ regtest:colorize.js
 clean:
 	@echo "CLEANING"
 	-rm colorize.js xxx.py *~ *.pyc munix.html 2>/dev/null
+
+key.js:key.py
+	RapydScript/bin/rapydscript --prettify --bare $? >$@
