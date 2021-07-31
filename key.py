@@ -513,13 +513,14 @@ class Stats:
         for method in self.tests.phases:
             if not method.name:
                 continue
+            if method.stats_ip[0] == 0:
+                message = 'Pas de stats'
+            else:
+                message = ((method.stats_ip[1]/method.stats_ip[0]/1000).toFixed(2)
+                        + ' ' + (method.stats_ip[2]/method.stats_ip[0]/1000).toFixed(2))
             ctx.fillStyle = method.color
-            ctx.fillText(
-                method.name
-                + ' ' + (method.stats_ip[1]/method.stats_ip[0]/1000).toFixed(2)
-                + ' ' + (method.stats_ip[2]/method.stats_ip[0]/1000).toFixed(2),
-                150, 80 + 45 * method.index
-            )
+            ctx.fillText(method.name + ' ' + message,
+                         150, 80 + 45 * method.index)
 
         # The disc borders for the selected test
 

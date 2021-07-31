@@ -15,19 +15,20 @@ FILES = {
     '/favicon.ico': ('key.png', 'image/png'),
 }
 
+if not os.path.exists('LOGS-KEYS'):
+    os.mkdir('LOGS-KEYS')
+
 def read(filename):
     """Returns the file content as bytes"""
     with open(filename, 'rb') as file:
         return file.read()
 
-filenames = {}
+FILENAMES = {}
 def index(filename):
     """Get a number for the filename."""
-    if filename not in filenames:
-        filenames[filename] = len(filenames)
-    return filenames[filename]
-    
-
+    if filename not in FILENAMES:
+        FILENAMES[filename] = len(FILENAMES)
+    return FILENAMES[filename]
 
 class Stats:
     """Progressive stats.
@@ -35,7 +36,10 @@ class Stats:
     """
     def __init__(self):
         self.stats = collections.defaultdict(list)
-        for filename in os.listdir('LOGS-KEYS'):
+        for filename in sorted(
+                os.listdir('LOGS-KEYS'),
+                key=lambda name: os.path.getmtime('LOGS-KEYS/' + name)
+                ):
             with open('LOGS-KEYS/' + filename, 'r') as file:
                 filekey = index(filename)
                 for line in file:
@@ -121,9 +125,6 @@ try:
     PORT = int(sys.argv[2])
 except IndexError:
     PORT = 17171
-
-if not os.path.exists('LOGS-KEYS'):
-    os.mkdir('LOGS-KEYS')
 
 SERVER = http.server.HTTPServer((HOST, PORT), MyRequestBroker)
 
