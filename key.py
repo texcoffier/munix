@@ -119,6 +119,10 @@ class Test:
         self.tests.done()
     def stats(self):
         """Returns [nr tests, nr good answers, average time for good answer]"""
+        if self.tests.debug and self.tests.stats:
+            infos = self.tests.stats.data[self.tests.nr_digits][-1]
+            return [self.tests.nr_tests - 1, infos[2][self.index],
+                    infos[0][self.index], infos[1][self.index]]
         summ = 0
         summ2 = 0
         goods = []
@@ -337,7 +341,7 @@ class Stats:
         Couleur : méthode de saisie.<br>
         Bords noirs : les tests que vous venez de faire.
         <p>
-        <canvas id="canvas" width="1000" height="1000" style="width:30em;height:30em"></canvas>
+        <canvas id="canvas" width="1000" height="1000" style="width:40em;height:40em"></canvas>
         '''
     def update_rank(self):
         """Update the rank of the result"""
@@ -353,16 +357,15 @@ class Stats:
             summ2 = 0
             summ_percent = 0
             for results in tests:
-                value = results[0][i]
-                if value:
+                if results[2][i] == self.tests.nr_tests - 1:
                     nbr += 1
-                    summ += value
+                    summ += results[0][i]
                     summ2 += results[1][i]
-                    if value < average:
+                    if results[0][i] < average:
                         rank += 1
                     summ_percent += 100
                 else:
-                    summ_percent += results[1][i]
+                    summ_percent += 100 * results[2][i] / (self.tests.nr_tests - 1)
 
             row = get_by_id(test.name)
 
@@ -469,9 +472,8 @@ class Stats:
         selected_test = tests[-1]
         for test in tests:
             for i, color in enumerate(COLORS):
-                average = test[0][i]
-                if average:
-                    x_canvas = X(average)
+                if test[2][i] == (self.tests.nr_tests - 1):
+                    x_canvas = X(test[0][i])
                     y_canvas = Y(test[1][i])
                     ctx.fillStyle = color + '8'
                     ctx.beginPath()
@@ -489,7 +491,7 @@ class Stats:
         for method in self.tests.phases:
             method.stats_ip = [0, 0, 0]
         for test in tests:
-            if test[2] != selected_test[2]:
+            if test[3] != selected_test[3]:
                 continue
             for method in self.tests.phases:
                 i = method.index
@@ -516,8 +518,9 @@ class Stats:
             if method.stats_ip[0] == 0:
                 message = 'Pas de stats'
             else:
-                message = ((method.stats_ip[1]/method.stats_ip[0]/1000).toFixed(2)
-                        + ' ' + (method.stats_ip[2]/method.stats_ip[0]/1000).toFixed(2))
+                message = (
+                    (method.stats_ip[1]/method.stats_ip[0]/1000).toFixed(2)
+                    + ' ' + (method.stats_ip[2]/method.stats_ip[0]/1000).toFixed(2))
             ctx.fillStyle = method.color
             ctx.fillText(method.name + ' ' + message,
                          150, 80 + 45 * method.index)
@@ -557,6 +560,7 @@ class Tests:
     nr_tests = 10 # Number of test to do for each phase
     nr_digits = 3 # Number of digits of the numbers
     xhr = None
+    stats = None
     def __init__(self):
         self.debug = 'debug' in string(window.location)
         self.i = -1
@@ -594,9 +598,12 @@ class Tests:
             self.xhr.send(self.json())
     def record_done(self):
         """The data have been recorded, get the statistics"""
-        display = Stats(self.xhr.responseText, self)
-        self.phases[self.i].page.innerHTML += display.html()
-        display.update_rank()
+        self.stats = Stats(self.xhr.responseText, self)
+        if self.debug:
+            self.phases[self.i].page.innerHTML = self.resume() + self.stats.html()
+        else:
+            self.phases[self.i].page.innerHTML += self.stats.html()
+        self.stats.update_rank()
 
     def resume(self):
         """A resume table in HTML"""

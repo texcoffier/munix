@@ -49,7 +49,9 @@ class Stats:
         """Update with a new stat"""
         stat_average = [0] * len(key.METHODS)
         stat_stddev = [0] * len(key.METHODS)
-        self.stats[line['nr_digits']].append([stat_average, stat_stddev, filekey])
+        stat_nr_goods = [0] * len(key.METHODS)
+        self.stats[line['nr_digits']].append(
+            [stat_average, stat_stddev, stat_nr_goods, filekey])
         for method, times in line['tests']:
             sum_time = 0
             sum_time2 = 0
@@ -60,11 +62,10 @@ class Stats:
                     sum_time2 += value * value
                     nr_time += 1
             i = key.METHODS.index(method)
-            if nr_time == len(times) - 1:
+            if nr_time:
                 stat_average[i] = int(sum_time / nr_time)
                 stat_stddev[i] = int((sum_time2 / nr_time - (sum_time / nr_time) ** 2) ** 0.5)
-            else:
-                stat_stddev[i] = int(100 * nr_time / (len(times) - 1))
+                stat_nr_goods[i] = nr_time
 
     def json(self):
         """..."""
