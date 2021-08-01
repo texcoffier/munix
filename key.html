@@ -6,8 +6,9 @@
         font-family: sans-serif;
         text-align: center;
         box-sizing: border-box;
-        max-width: 40em;
         margin: auto;
+        --width: 40em;
+        max-width: var(--width);
     }
 
     TABLE {
@@ -17,7 +18,8 @@
     }
 
     P {
-    max-height: 999999px;
+        max-height: 999999px;
+        margin: 0.5em;
     }
 
     TD,
@@ -63,7 +65,7 @@
 
     .keypad {
         display: inline-block;
-        font-size: 30% ;
+        font-size: 30%;
         width: 27em;
     }
 
@@ -71,11 +73,26 @@
         background: #EEE;
         margin: 0.2em;
     }
+
     .average {
         font-size: 60%
     }
+
     .emoji {
         font-family: apple color emoji, segoe ui emoji, noto color emoji, android emoji, emojisymbols, emojione mozilla, twemoji mozilla, segoe ui symbol;
+    }
+
+    .box {
+        /* border: 1px solid black; */
+        background: #F8F8F0;
+        margin: 1em;
+        padding: 0.5em;
+    }
+    .plot {
+        position: absolute;
+        top : 0px;
+        left: var(--width);
+        margin-left: 0px;
     }
 </style>
 

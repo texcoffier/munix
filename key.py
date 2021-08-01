@@ -335,13 +335,16 @@ class Stats:
     def html(self):
         """Generate the HTML"""
         setTimeout(self.draw.bind(self), 10)
-        return '''<p>
+        return '''<style>BODY { margin-left: 0px }</style>
+        <div class="box plot"><p>
         Chaque point représente ''' + (self.tests.nr_tests - 1) + '''
         saisies de nombres <b>sans erreur</b>.<br>
         Couleur : méthode de saisie.<br>
         Bords noirs : les tests que vous venez de faire.
         <p>
-        <canvas id="canvas" width="1000" height="1000" style="width:40em;height:40em"></canvas>
+        <canvas id="canvas" width="1000" height="1000"
+                style="width:var(--width);height:var(--width)"></canvas>
+        </div>
         '''
     def update_rank(self):
         """Update the rank of the result"""
@@ -395,6 +398,46 @@ class Stats:
                 + (summ2 / nbr / 1000).toFixed(2)
                 + ' s</span>')
 
+    def order(self):
+        """Compute best methods"""
+        tests = self.data[self.tests.nr_digits]
+        order = {}
+        nbr = 0
+        for results in tests:
+            average_method = []
+            all_tests_ok = True
+            for test in self.tests.phases:
+                if not test.name:
+                    continue
+                if results[2][test.index] != self.tests.nr_tests - 1:
+                    all_tests_ok = False
+                    break
+                append(average_method, [results[0][test.index], test.index])
+            if not all_tests_ok:
+                continue
+            average_method.sort()
+            average_method = join([method + ' ' for _, method in average_method[:3]])
+            if average_method in order:
+                order[average_method] += 1
+            else:
+                order[average_method] = 1
+            nbr += 1
+        order = [[order[methods], methods] for methods in order]
+        order.sort()
+        texts = ['<div class="box"><p>Les 3 méthodes les plus rapides (moyenne de ',
+            string(self.tests.nr_tests - 1),
+            ' saisies).<br>',
+            'On ne prend en compte que les ' + nbr + ' tests pour lesquels<br> ',
+            '<b>toutes</b> les méthodes ont atteint 100% de bonnes saisies.<p>'
+            ]
+        for nrt, methods in order[::-1][:3]:
+            methods = methods.trim().split(' ')
+            methods = join([
+                '<span style="color:' + COLORS[method] + '">' + METHODS[method] + '</span> '
+                for method in methods])
+            append(texts, (100 * nrt / nbr).toFixed(0) + '% des tests : ' + methods + '<br>')
+        append(texts, '</div>')
+        return join(texts)
 
     def draw(self, event=None): # pylint: disable=too-many-locals
         """Display the current picture"""
@@ -596,11 +639,12 @@ class Tests:
             self.xhr.send('')
         else:
             self.xhr.send(self.json())
+
     def record_done(self):
         """The data have been recorded, get the statistics"""
         self.stats = Stats(self.xhr.responseText, self)
         if self.debug:
-            self.phases[self.i].page.innerHTML = self.resume() + self.stats.html()
+            self.phases[self.i].page.innerHTML = self.resume() + self.stats.order() + self.stats.html()
         else:
             self.phases[self.i].page.innerHTML += self.stats.html()
         self.stats.update_rank()
@@ -608,9 +652,10 @@ class Tests:
     def resume(self):
         """A resume table in HTML"""
         stats = [
-            'Saisie de ', string(self.nr_tests), ' nombres comportant ',
+            '<div class="box">',
+            '<p>Saisie de ', string(self.nr_tests), ' nombres comportant ',
             string(self.nr_digits), ' chiffres.<br>',
-            "Vos résultats et en petit la moyenne de tous le monde",
+            "Vos résultats et en petit la moyenne de tout le monde",
             '''<table><tr>
             <td style="text-align:center">La première saisie<br>n'est pas comptée
             <th>Bonnes<br>saisies
@@ -637,7 +682,7 @@ class Tests:
                 append(stats, " s<td>")
                 append(stats, (infos[3]/1000).toFixed(2))
                 append(stats, " s</tr>")
-        append(stats, '</table>')
+        append(stats, '</table></div>')
         return join(stats)
 
     def json(self):
