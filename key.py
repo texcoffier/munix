@@ -184,7 +184,7 @@ class Welcome(Test):
         <p>
         Pour chacun des tests il faudra saisir
         """ + string(self.tests.nr_tests) + """ nombres de
-        """ + string(self.tests.nr_digits) + """ chiffres.pas<br>
+        """ + string(self.tests.nr_digits) + """ chiffres.<br>
         La première saisie ne compte pas dans les statistiques.<br>
         L'ensemble des tests dure environ 3 minutes.
         <p>

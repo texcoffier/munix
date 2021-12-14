@@ -1170,7 +1170,7 @@ def analyse_find(command):
                 if t[-1] in units:
                     unite = units[t[-1]]
                     t = t[:-1]
-                elif t[-1].isdigit():
+                elif t[-1] in "0123456789":
                     unite = units['b']
                 else:
                     unite = "unités <b>inconnues</b> : «" + t[-1] + "»"
