@@ -56,12 +56,19 @@
         margin: 0.1em
     }
 
-    #number {
-        background: #FF8;
+    .numbers {
+        margin: 0.5em;
+        margin-bottom: 2em;
+    }
+    .numbers SPAN {
         border: 0.1em solid #000;
         padding: 0.2em;
-        margin: 0.5em;
+        margin: 0.1em;
     }
+    SPAN.good { background: #EFE }
+    SPAN.bad { background: #FEE }
+    SPAN.current { background: #FF8 }
+    SPAN.future { background: #FFF }
 
     .keypad {
         display: inline-block;
@@ -93,6 +100,17 @@
         top : 0px;
         left: var(--width);
         margin-left: 0px;
+    }
+
+    .numbers SPAN.cursor {
+        border: 0px;
+        position: absolute;
+        transform: translate(-3em, 1em);
+        transition: transform 0.5s
+    }
+
+    .numbers SPAN.cursor.move {
+        transform: translate(0em, 1em)
     }
 </style>
 

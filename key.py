@@ -1,34 +1,46 @@
 #!/usr/bin/python3
 
+"""
+Launch :  ./keyserver.py
+Follow the displayed URL.
+Add #debug at the url end to display stats.
+"""
+
 # pylint: disable=no-member,len-as-condition,undefined-variable
 
-def random(nr_digits):
-    """Returns a number in 100...999 included"""
-    try: # Javascript
-        value = Date().getTime() + 1000000000 * Math.random() + random.more
-        max_value = int(10**nr_digits)
-        value = int(value) % max_value
-        if value < max_value / 10:
-            value = random(nr_digits)
-        return value
-    except: # Python # pylint: disable=bare-except
-        return __import__('random').randint(100, 1000)
-random.more = 0
+def rand_range(minimum, maximum):
+    """Returns a number in the range minimum...maximum-1"""
+    value = int(Date().getTime() + 1000000000 * Math.random() + rand_range.more)
+    rand_range.more += Date().getTime()
+    return value % (maximum - minimum) + minimum
+rand_range.more = 0
 
-def randoms(nbr, nr_digits):
-    """Return a list of 'nbr' randoms"""
-    values = []
-    while len(values) < nbr:
-        nombre = random(nr_digits)
+def random_int(nr_digits):
+    """Returns a number in 100...999 included"""
+    return rand_range(10 ** (nr_digits-1), 10 ** nr_digits)
+
+EVEN = "BCDFGHJKLMNPQRSTVWXZ"
+ODD = "AEIOUY"
+def random_txt(nr_letters):
+    """Returns a string"""
+    letters = ''
+    while nr_letters > 0:
+        letters += EVEN[rand_range(0, len(EVEN))]
+        if nr_letters > 1:
+            letters += ODD[rand_range(0, len(ODD))]
+        nr_letters -= 2
+    return letters
+
+def add_random(values, nr_digits):
+    """Add a random number without duplicate"""
+    while True:
+        if nr_digits > 0:
+            nombre = random_int(nr_digits)
+        else:
+            nombre = random_txt(-nr_digits)
         if nombre not in values:
             append(values, nombre)
-    return values
-
-def shuffle(values):
-    """Create a shuffled array, the original is not modified"""
-    values = [[random(3), i] for i in values]
-    values.sort()
-    return [i[1] for i in values]
+            return
 
 def string(obj):
     """Emulate str on JS"""
@@ -67,13 +79,14 @@ def get_by_id(the_id):
 
 class Test:
     """Common part for the tests"""
-    value = 0 # The current value to choose
+    values = [] # The values to choose
     start_time = 0. # The display start time
     page = None # The HTML element
     input = None # The HTML element
     style = None # The HTML element
     name = None
     icon = ''
+    digits = 1
 
     def __init__(self, phases):
         self.tests = phases
@@ -85,6 +98,10 @@ class Test:
         self.style = get_by_id('style')
         self.page = get_by_id('page')
         self.page.innerHTML = self.html()
+        setTimeout('''
+            if (document.getElementById("cursor"))
+                document.getElementById("cursor").className += " move"
+                ''', 100)
         window.onclick = self.onclick.bind(self)
         window.onkeypress = self.onkeypress.bind(self)
         window.ontouchmove = False
@@ -95,20 +112,32 @@ class Test:
         """Initialise the random number and generate the page"""
         if self.nr_done == -1:
             return '<h2>' + self.name + ' ' + self.icon + '</h2>' + self.before()
-        self.value = string(random(self.tests.nr_digits))
-        return (
-            self.top()
-            + '<div id="number">' + string(self.value) + '</div>\n'
-            + self.bottom()
-        )
+        if self.nr_done == 0:
+            self.values = []
+            for _ in range(self.tests.nr_tests):
+                add_random(self.values, self.tests.nr_digits * self.digits)
+        numbers = '<div id="numbers" class="numbers">'
+        for i, value in enumerate(self.values):
+            if i < self.nr_done:
+                if self.times[i] < 0:
+                    classe = 'bad'
+                else:
+                    classe = 'good'
+            elif i == self.nr_done:
+                numbers += '<span id="cursor" class="cursor">▲</span>'
+                classe = 'current'
+            else:
+                classe = 'future'
+            numbers += '<span class="' + classe + '">' + string(value) + '</span>\n'
+        numbers += '</div>'
+        return self.top() + numbers + self.bottom()
     def answer(self, value):
         """Analyse the user answer and record starts"""
         if self.nr_done >= 0:
             time = millisec() - self.start_time
-            if value != self.value:
+            if string(value).toLowerCase() != string(self.values[self.nr_done]).toLowerCase():
                 time = -time
             append(self.times, time)
-            random.more = time
         self.nr_done += 1
         if self.nr_done == self.tests.nr_tests:
             self.done()
@@ -120,9 +149,11 @@ class Test:
     def stats(self):
         """Returns [nr tests, nr good answers, average time for good answer]"""
         if self.tests.debug and self.tests.stats:
+            # Get values from server stats
             infos = self.tests.stats.data[self.tests.nr_digits][-1]
             return [self.tests.nr_tests - 1, infos[2][self.index],
                     infos[0][self.index], infos[1][self.index]]
+        # Stats for the current game
         summ = 0
         summ2 = 0
         goods = []
@@ -183,8 +214,8 @@ class Welcome(Test):
         ainsi que vos classements.
         <p>
         Pour chacun des tests il faudra saisir
-        """ + string(self.tests.nr_tests) + """ nombres de
-        """ + string(self.tests.nr_digits) + """ chiffres.<br>
+        """ + string(self.tests.nr_tests) + """ valeurs de
+        """ + string(self.tests.nr_digits) + """ caractères.<br>
         La première saisie ne compte pas dans les statistiques.<br>
         L'ensemble des tests dure environ 3 minutes.
         <p>
@@ -216,8 +247,7 @@ class End(Test):
 
 def create_icon(nr_buttons):
     """Create a list of digit"""
-    numbers = randoms(nr_buttons, 3)
-    numbers.sort()
+    numbers = range(nr_buttons)
     return '<div class="keypad">' + join(['<span>' + string(i) + '</span> '
                                           for i in numbers]) + '</div>'
 
@@ -225,20 +255,24 @@ class Buttons10(Test):
     """The user clicks on a button with the good value"""
     name = 'Buttons10'
     icon = create_icon(10)
+    buttons = []
     def before(self):
         return """Prenez la souris.
 <p>Vous allez devoir cliquer sur des boutons<br>
-Les boutons indiquent les nombres du plus petit au plus grand.
+Les valeurs des boutons sont triées de la plus petite à la plus grande.
 <p>Cliquez n'importe où pour démarrer le test."""
     def top(self):
-        return "Cliquez sur le bouton correspondant au nombre :\n"
+        return "Cliquez sur le bouton correspondant à la valeur :\n"
     def bottom(self):
-        values = randoms(int(self.name[-2:]), self.tests.nr_digits)
-        if self.value not in values:
-            values.pop()
-            append(values, self.value)
-        values.sort()
-        return join(['<button>' + string(i) + '</button> ' for i in values])
+        if self.nr_done == 0:
+            values = []
+            for value in self.values:
+                append(values, value)
+            while len(values) < int(self.name[-2:]):
+                add_random(values, self.tests.nr_digits * self.digits)
+            values.sort()
+            self.buttons = values
+        return join(['<button>' + string(i) + '</button> ' for i in self.buttons])
     def onclick(self, event):
         """Event management"""
         if self.nr_done == -1:
@@ -248,15 +282,30 @@ Les boutons indiquent les nombres du plus petit au plus grand.
             if target.tagName == 'BUTTON':
                 self.answer(target.textContent)
 
+class ButtonsText10(Buttons10):
+    """Letters in place of digits"""
+    name = 'ButtonsText10'
+    digits = -1
+
 class Buttons20(Buttons10):
     """The user clicks on a button with the good value"""
     name = 'Buttons20'
     icon = create_icon(20)
 
+class ButtonsText20(Buttons20):
+    """Letters in place of digits"""
+    name = 'ButtonsText20'
+    digits = -1
+
 class Buttons40(Buttons10):
     """The user clicks on a button with the good value"""
     name = 'Buttons40'
     icon = create_icon(40)
+
+class ButtonsText40(Buttons40):
+    """Letters in place of digits"""
+    name = 'ButtonsText40'
+    digits = -1
 
 class Keypad(Test):
     """The user clicks on a button with the good value"""
@@ -270,10 +319,10 @@ class Keypad(Test):
     def before(self):
         return """Prenez la souris.
 <p>Vous allez devoir cliquer sur les boutons d'un clavier numérique virtuel.<br>
-Il faudra terminer la saisie du nombre en cliquant sur «Entrée».
+Il faudra terminer la saisie de la valeur en cliquant sur «Entrée».
 <p>Cliquez n'importe où pour démarrer le test."""
     def top(self):
-        return "Saisir le nombre puis cliquez sur «Entrée» :\n"
+        return "Saisir la valeur jaune puis cliquez sur «Entrée» :\n"
     def bottom(self):
         return '''
 Votre saisie :<br><span id="input"></span><button class="b">←</button> <br>
@@ -303,11 +352,16 @@ class Keyboard(Test):
     name = 'Keyboard'
     icon = '<span class="emoji" style="font-size:200%">⌨</span>'
     def before(self):
+        if self.digits == -1:
+            more = "<br>PAS BESOIN D'ÉCRIRE EN MAJUSCULE"
+        else:
+            more = ""
         return """Lachez la souris.
-<p>Vous allez devoir saisir des nombres au clavier
+<p>Vous allez devoir saisir des valeurs au clavier.""" + more + """
 <p>Appuyez sur une touche pour démarrer le test."""
     def top(self):
-        return "Saisissez le nombre affiché au clavier<br>puis validez avec la touche entrée :\n"
+        return """Saisissez la valeur affichée en utilisant le clavier<br>
+        puis validez avec la touche entrée :\n"""
     def bottom(self):
         return '<input id="input">'
     def onkeypress(self, event):
@@ -320,6 +374,10 @@ class Keyboard(Test):
         if self.input:
             self.input.focus()
 
+class KeyboardText(Keyboard):
+    """Letters in place of digits"""
+    name = 'KeyboardText'
+    digits = -1
 
 #############################################################################
 #############################################################################
@@ -338,7 +396,7 @@ class Stats:
         return '''<style>BODY { margin-left: 0px }</style>
         <div class="box plot"><p>
         Chaque point représente ''' + (self.tests.nr_tests - 1) + '''
-        saisies de nombres <b>sans erreur</b>.<br>
+        saisies de valeurs <b>sans erreur</b>.<br>
         Couleur : méthode de saisie.<br>
         Bords noirs : les tests que vous venez de faire.
         <p>
@@ -354,27 +412,47 @@ class Stats:
                 continue
             rank = 1
             nbr = 0
+            my_nbr = 0
+            my_errors = 0
             i = test.index
-            average = tests[-1][0][i]
-            summ = 0
-            summ2 = 0
-            summ_percent = 0
+            average = tests[-1][0][i] # The last result is ours
+            sum_avg = 0
+            sum_stddev = 0
+            my_sum_avg = 0
+            my_sum_stddev = 0
+            sum_percent = 0
+            my_sum_percent = 0
             for results in tests:
                 if results[2][i] == self.tests.nr_tests - 1:
                     nbr += 1
-                    summ += results[0][i]
-                    summ2 += results[1][i]
+                    sum_avg += results[0][i]
+                    sum_stddev += results[1][i]
                     if results[0][i] < average:
                         rank += 1
-                    summ_percent += 100
+                    sum_percent += 100
+                    if results[3] == tests[-1][3]:
+                        my_sum_avg += results[0][i]
+                        my_sum_stddev += results[1][i]
+                        my_sum_percent += 100
+                        my_nbr += 1
                 else:
-                    summ_percent += 100 * results[2][i] / (self.tests.nr_tests - 1)
+                    sum_percent += 100 * results[2][i] / (self.tests.nr_tests - 1)
+                    if results[3] == tests[-1][3]:
+                        my_sum_percent += 100 * results[2][i] / (self.tests.nr_tests - 1)
+                        my_errors += 1
 
             row = get_by_id(test.name)
 
+            if my_nbr > 1:
+                more = ('<br><span class="average">Moi : '
+                + (my_sum_percent / (my_nbr + my_errors)).toFixed(1)
+                + '%</span>')
+            else:
+                more = ''
             row.cells[1].innerHTML += (
-                '<br><span class="average">'
-                + (summ_percent / len(tests)).toFixed(1)
+                more
+                + '<br><span class="average">Tous :'
+                + (sum_percent / len(tests)).toFixed(1)
                 + ' %</span>')
 
             percent = 100 * (rank / nbr)
@@ -388,15 +466,35 @@ class Stats:
             else:
                 row.cells[2].style.background = "#F88"
 
+            if my_nbr > 1:
+                more = ('<br><span class="average">Moi : '
+                        + (my_sum_avg / my_nbr / 1000).toFixed(2)
+                        + ' s</span>')
+            else:
+                more = ''
+
             row.cells[3].innerHTML += (
-                '<br><span class="average">'
-                + (summ / nbr / 1000).toFixed(2)
+                more
+                + '<br><span class="average">Tous :'
+                + (sum_avg / nbr / 1000).toFixed(2)
                 + ' s</span>')
 
+            if my_nbr > 1:
+                more = ('<br><span class="average">Moi : '
+                        + (my_sum_stddev / my_nbr / 1000).toFixed(2)
+                        + ' s</span>')
+            else:
+                more = ''
+
             row.cells[4].innerHTML += (
-                '<br><span class="average">'
-                + (summ2 / nbr / 1000).toFixed(2)
+                more
+                + '<br><span class="average">Tous : '
+                + (sum_stddev / nbr / 1000).toFixed(2)
                 + ' s</span>')
+
+            row.cells[5].innerHTML = (
+                ' <br><span class="average">Moi : ' + my_nbr + "</span><br>"
+                + '<span class="average">Tous : ' + nbr + '</span>')
 
     def order(self):
         """Compute best methods"""
@@ -425,11 +523,11 @@ class Stats:
         order = [[order[methods], methods] for methods in order]
         order.sort()
         texts = ['<div class="box"><p>Les 3 méthodes les plus rapides (moyenne de ',
-            string(self.tests.nr_tests - 1),
-            ' saisies).<br>',
-            'On ne prend en compte que les ' + nbr + ' tests pour lesquels<br> ',
-            '<b>toutes</b> les méthodes ont atteint 100% de bonnes saisies.<p>'
-            ]
+                 string(self.tests.nr_tests - 1),
+                 ' saisies).<br>',
+                 'On ne prend en compte que les ' + nbr + ' tests pour lesquels<br> ',
+                 '<b>toutes</b> les méthodes ont atteint 100% de bonnes saisies.<p>'
+                 ]
         for nrt, methods in order[::-1][:3]:
             methods = methods.trim().split(' ')
             methods = join([
@@ -439,7 +537,7 @@ class Stats:
         append(texts, '</div>')
         return join(texts)
 
-    def draw(self, event=None): # pylint: disable=too-many-locals
+    def draw(self, event=None): # pylint: disable=too-many-locals,too-many-branches,too-many-statements
         """Display the current picture"""
         radius = 10
 
@@ -463,6 +561,8 @@ class Stats:
                 average_max = Math.max(average, average_max)
             for stddev in test[1]:
                 stddev_max = Math.max(stddev, stddev_max)
+        average_max *= 1.05
+        stddev_max *= 1.05
         def X(sec): # pylint: disable=invalid-name
             return width * sec / average_max
         def Y(sec): # pylint: disable=invalid-name
@@ -589,11 +689,15 @@ class Stats:
 COLORS = []
 METHODS = []
 for _method, _color in [
-        ('Keypad', '#F00'),
-        ('Keyboard', '#0F0'),
-        ('Buttons10', '#F0F'),
-        ('Buttons20', '#0FF'),
-        ('Buttons40', '#88F'),
+        # ('Keypad', '#F00'),
+        # ('Keyboard', '#0F0'),
+        ('KeyboardText', '#0F0'),
+        # ('Buttons10', '#F0F'),
+        # ('Buttons20', '#0FF'),
+        # ('Buttons40', '#88F'),
+        ('ButtonsText10', '#F0F'),
+        ('ButtonsText20', '#0FF'),
+        ('ButtonsText40', '#88F'),
     ]:
     append(COLORS, _color)
     append(METHODS, _method)
@@ -617,7 +721,7 @@ class Tests:
             self.i = len(self.phases) - 2
             for test in self.phases:
                 if test.name:
-                    test.times = [1000 + 2 * random(3) for _ in range(self.nr_tests)]
+                    test.times = [1000 + 2 * random_int(3) for _ in range(self.nr_tests)]
                 if test.index == 1:
                     test.times[1] *= -1
         self.done()
@@ -644,7 +748,8 @@ class Tests:
         """The data have been recorded, get the statistics"""
         self.stats = Stats(self.xhr.responseText, self)
         if self.debug:
-            self.phases[self.i].page.innerHTML = self.resume() + self.stats.order() + self.stats.html()
+            self.phases[self.i].page.innerHTML = (
+                self.resume() + self.stats.order() + self.stats.html())
         else:
             self.phases[self.i].page.innerHTML += self.stats.html()
         self.stats.update_rank()
@@ -653,15 +758,16 @@ class Tests:
         """A resume table in HTML"""
         stats = [
             '<div class="box">',
-            '<p>Saisie de ', string(self.nr_tests), ' nombres comportant ',
-            string(self.nr_digits), ' chiffres.<br>',
-            "Vos résultats et en petit la moyenne de tout le monde",
+            '<p>Saisie de ', string(self.nr_tests), ' valeurs comportant ',
+            string(self.nr_digits), ' caractères.<br>',
+            "Vos résultats pour cette partie et les moyennes en petit.",
             '''<table><tr>
-            <td style="text-align:center">La première saisie<br>n'est pas comptée
+            <td style="text-align:center; width:10em">La première saisie<br>n'est pas comptée
             <th>Bonnes<br>saisies
             <th>Rang
             <th>Temps<br>moyen
             <th>Écart-<br>type
+            <th>Nbr de<br>parties
             </tr>'''
             ]
         for test in self.phases:
@@ -681,7 +787,7 @@ class Tests:
                 append(stats, (infos[2]/1000).toFixed(2))
                 append(stats, " s<td>")
                 append(stats, (infos[3]/1000).toFixed(2))
-                append(stats, " s</tr>")
+                append(stats, " s<td>?</tr>")
         append(stats, '</table></div>')
         return join(stats)
 
@@ -690,7 +796,6 @@ class Tests:
         return JSON.stringify({
             'nr_tests': self.nr_tests,
             'nr_digits': self.nr_digits,
-            'shuffle': self.shuffle,
             'tests': [
                 [test.name, test.times]
                 for test in self.phases

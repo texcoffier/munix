@@ -1,5 +1,29 @@
 #!/usr/bin/python3
 
+"""
+Log are stored one file per browser IP
+
+Each lineof the log file is a game, defined by a dictionnary:
+
+  * nr_tests:int
+  * nr_digits:int
+  * time:int seconds
+  * tests:List of List
+    * name:str
+    * List[int] the 'nr_tests' times
+
+When sending stats to the browser, they are averaged. It is a dictionnary
+
+* n: nr digits
+   * n: the game number
+     * 0: List[int] the average time for each method played
+     * 1: List[int] the stddev time for each method played
+     * 2: List[int] the number of good answer for each method played
+     * 3: int an anonymous ID
+
+"""
+
+
 import json
 import time
 import collections
