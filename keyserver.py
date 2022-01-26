@@ -34,7 +34,8 @@ import http.server
 import key
 
 FILES = {
-    '/': ('key.html', 'text/html'),
+    '/key.html': ('key.html', 'text/html'),
+    '/': ('intro.html', 'text/html'),
     '/key.js': ('key.js', 'application/javascript'),
     '/favicon.ico': ('key.png', 'image/png'),
 }
@@ -140,7 +141,12 @@ class MyRequestBroker(http.server.BaseHTTPRequestHandler):
         if self.path == '/stats.json':
             self.send_stats()
             return
-        print("BUG")
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/plain')
+        self.send_header('Cache-Control', 'no-cache')
+        self.send_header('Connection', 'close')
+        self.end_headers()
+        self.wfile.write(b'On essaye de me pirater !')
 
 try:
     HOST = sys.argv[1]

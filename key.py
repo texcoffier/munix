@@ -404,40 +404,39 @@ class Stats:
                 style="width:var(--width);height:var(--width)"></canvas>
         </div>
         '''
-    def update_rank(self):
+    def update_rank(self): # pylint: disable=too-many-locals,too-many-branches,too-many-statements
         """Update the rank of the result"""
         tests = self.data[self.tests.nr_digits]
+        my_id = tests[-1][3]
         for test in self.tests.phases:
             if not test.name:
                 continue
-            rank = 1
             nbr = 0
             my_nbr = 0
             my_errors = 0
             i = test.index
-            average = tests[-1][0][i] # The last result is ours
             sum_avg = 0
             sum_stddev = 0
             my_sum_avg = 0
             my_sum_stddev = 0
             sum_percent = 0
             my_sum_percent = 0
+            values = []
             for results in tests:
                 if results[2][i] == self.tests.nr_tests - 1:
                     nbr += 1
                     sum_avg += results[0][i]
                     sum_stddev += results[1][i]
-                    if results[0][i] < average:
-                        rank += 1
+                    append(values, results[0][i])
                     sum_percent += 100
-                    if results[3] == tests[-1][3]:
+                    if results[3] == my_id:
                         my_sum_avg += results[0][i]
                         my_sum_stddev += results[1][i]
                         my_sum_percent += 100
                         my_nbr += 1
                 else:
                     sum_percent += 100 * results[2][i] / (self.tests.nr_tests - 1)
-                    if results[3] == tests[-1][3]:
+                    if results[3] == my_id:
                         my_sum_percent += 100 * results[2][i] / (self.tests.nr_tests - 1)
                         my_errors += 1
 
@@ -445,18 +444,37 @@ class Stats:
 
             if my_nbr > 1:
                 more = ('<br><span class="average">Moi : '
-                + (my_sum_percent / (my_nbr + my_errors)).toFixed(1)
-                + '%</span>')
+                        + (my_sum_percent / (my_nbr + my_errors)).toFixed(1)
+                        + '%</span>')
             else:
                 more = ''
             row.cells[1].innerHTML += (
                 more
-                + '<br><span class="average">Tous :'
+                + '<br><span class="average">Tous : '
                 + (sum_percent / len(tests)).toFixed(1)
-                + ' %</span>')
+                + '%</span>')
 
-            percent = 100 * (rank / nbr)
-            row.cells[2].innerHTML = rank + '/' + nbr + '<br>' + percent.toFixed(1) + '%'
+            values.sort()
+            if tests[-1][2][i] != self.tests.nr_tests - 1:
+                rank = '?'
+                percent = 100
+            else:
+                rank = values.indexOf(tests[-1][0][i]) + 1
+                percent = 100 * rank / nbr
+
+            ranks = []
+            for results in tests:
+                if results[3] == my_id and results[2][i] == self.tests.nr_tests - 1:
+                    append(ranks, values.indexOf(results[0][i]) + 1)
+            if my_nbr > 1:
+                more = (
+                    '<br><span class="average">Moi : '
+                    + (sum(ranks) / len(ranks)).toFixed(0) + '/' + nbr
+                    + '</span><br><span class="average"> </span>')
+            else:
+                more = ''
+            row.cells[2].innerHTML = rank + '/' + nbr + more
+
             if percent <= 10:
                 row.cells[2].style.background = "#0F0"
             elif percent <= 25:
@@ -475,7 +493,7 @@ class Stats:
 
             row.cells[3].innerHTML += (
                 more
-                + '<br><span class="average">Tous :'
+                + '<br><span class="average">Tous : '
                 + (sum_avg / nbr / 1000).toFixed(2)
                 + ' s</span>')
 
@@ -500,7 +518,10 @@ class Stats:
         """Compute best methods"""
         tests = self.data[self.tests.nr_digits]
         order = {}
+        my_order = {}
         nbr = 0
+        my_nbr = 0
+        my_id = tests[-1][3]
         for results in tests:
             average_method = []
             all_tests_ok = True
@@ -519,6 +540,12 @@ class Stats:
                 order[average_method] += 1
             else:
                 order[average_method] = 1
+            if results[3] == my_id:
+                my_nbr += 1
+                if average_method in my_order:
+                    my_order[average_method] += 1
+                else:
+                    my_order[average_method] = 1
             nbr += 1
         order = [[order[methods], methods] for methods in order]
         order.sort()
@@ -535,7 +562,23 @@ class Stats:
                 for method in methods])
             append(texts, (100 * nrt / nbr).toFixed(0) + '% des tests : ' + methods + '<br>')
         append(texts, '</div>')
-        return join(texts)
+
+        if my_nbr:
+            my_order = [[my_order[methods], methods] for methods in my_order]
+            my_order.sort()
+            append(texts, '<div class="box"><p>Mes 3 méthodes les plus rapides (moyenne sur '
+                   + string(my_nbr) + ' parties parfaites).<br>')
+            for nrt, methods in my_order[::-1][:3]:
+                methods = methods.trim().split(' ')
+                methods = join([
+                    '<span style="color:' + COLORS[method] + '">' + METHODS[method] + '</span> '
+                    for method in methods])
+                append(texts, (100 * nrt / my_nbr).toFixed(0) + '% des tests : ' + methods + '<br>')
+            append(texts, '</div>')
+        else:
+            append(texts, '''<div class="box">Vous avez pas encore fait une partie parfaite,
+                on n'affiche donc pas le classement de vos méthodes les plus rapides.</div>''')
+        document.getElementById('order').innerHTML = join(texts)
 
     def draw(self, event=None): # pylint: disable=too-many-locals,too-many-branches,too-many-statements
         """Display the current picture"""
@@ -748,11 +791,11 @@ class Tests:
         """The data have been recorded, get the statistics"""
         self.stats = Stats(self.xhr.responseText, self)
         if self.debug:
-            self.phases[self.i].page.innerHTML = (
-                self.resume() + self.stats.order() + self.stats.html())
+            self.phases[self.i].page.innerHTML = self.resume() + self.stats.html()
         else:
             self.phases[self.i].page.innerHTML += self.stats.html()
         self.stats.update_rank()
+        self.stats.order()
 
     def resume(self):
         """A resume table in HTML"""
@@ -760,7 +803,7 @@ class Tests:
             '<div class="box">',
             '<p>Saisie de ', string(self.nr_tests), ' valeurs comportant ',
             string(self.nr_digits), ' caractères.<br>',
-            "Vos résultats pour cette partie et les moyennes en petit.",
+            "Mes résultats pour cette partie et les moyennes en petit.",
             '''<table><tr>
             <td style="text-align:center; width:10em">La première saisie<br>n'est pas comptée
             <th>Bonnes<br>saisies
@@ -788,7 +831,7 @@ class Tests:
                 append(stats, " s<td>")
                 append(stats, (infos[3]/1000).toFixed(2))
                 append(stats, " s<td>?</tr>")
-        append(stats, '</table></div>')
+        append(stats, '</table></div><div id="order"></div>')
         return join(stats)
 
     def json(self):
