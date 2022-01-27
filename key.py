@@ -563,7 +563,6 @@ class Stats:
             nbr += 1
         order = [[order[methods], methods] for methods in order]
         sort_in_place(order)
-        console.log(order)
         texts = ['<div class="box"><p>Les 3 méthodes les plus rapides (moyenne de ',
                  string(self.tests.nr_tests - 1),
                  ' saisies).<br>',
@@ -598,6 +597,8 @@ class Stats:
     def draw(self, event=None): # pylint: disable=too-many-locals,too-many-branches,too-many-statements
         """Display the current picture"""
         radius = 6
+        space_label_x = 80
+        space_label_y = 25
 
         canvas = get_by_id('canvas')
         canvas.onmousemove = self.draw.bind(self)
@@ -622,15 +623,15 @@ class Stats:
         average_max *= 1.05
         stddev_max *= 1.05
         def X(sec): # pylint: disable=invalid-name
-            return width * sec / average_max
+            return space_label_x + (width-space_label_x) * sec / average_max
         def Y(sec): # pylint: disable=invalid-name
-            return height - height * sec / stddev_max
+            return -space_label_y + (height-space_label_y) - (height-space_label_y) * sec / stddev_max
 
         # Search selected test
 
         if event:
-            cursor_x = X(average_max * (event.layerX - canvas.offsetLeft) / canvas.offsetWidth)
-            cursor_y = Y(stddev_max * (1 - (event.layerY - canvas.offsetTop) / canvas.offsetHeight))
+            cursor_x = height * ( (event.layerX - canvas.offsetLeft) / canvas.offsetWidth)
+            cursor_y = width * ( (event.layerY - canvas.offsetTop) / canvas.offsetHeight)
             ctx.fillStyle = "#000"
             ctx.beginPath()
             ctx.arc(cursor_x, cursor_y, 3, 0, 2 * Math.PI)
@@ -645,19 +646,17 @@ class Stats:
         ctx.font = '18px sans-serif'
         for sec in range(0, int(average_max/1000) + 1):
             x_canvas = X(1000 * sec)
-            if sec:
-                ctx.fillText(sec, x_canvas, height - 30)
+            ctx.fillText(sec, x_canvas, height - 30)
             ctx.beginPath()
             ctx.moveTo(x_canvas, 0)
-            ctx.lineTo(x_canvas, height)
+            ctx.lineTo(x_canvas, Y(0))
             ctx.stroke()
         step = 200
         for sec in range(0, int(stddev_max/200) + 1):
             y_canvas = Y(200 * sec)
-            if sec:
-                ctx.fillText((step * sec / 1000).toFixed(1), 40, y_canvas)
+            ctx.fillText((step * sec / 1000).toFixed(1), 40, y_canvas)
             ctx.beginPath()
-            ctx.moveTo(0, y_canvas)
+            ctx.moveTo(X(0), y_canvas)
             ctx.lineTo(width, y_canvas)
             ctx.stroke()
 
