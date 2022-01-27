@@ -8,6 +8,20 @@ Add #debug at the url end to display stats.
 
 # pylint: disable=no-member,len-as-condition,undefined-variable
 
+def cmp(a, b):
+    for i, j in zip(a, b):
+        if i < j:
+            return -1
+        elif i > j:
+            return 1
+    return 0
+
+def sort_in_place(table):
+    if table[0].splice:
+        table.sort(cmp) # XXX JS sort
+    else:
+        table.sort()
+
 def rand_range(minimum, maximum):
     """Returns a number in the range minimum...maximum-1"""
     value = int(Date().getTime() + 1000000000 * Math.random() + rand_range.more)
@@ -534,7 +548,7 @@ class Stats:
                 append(average_method, [results[0][test.index], test.index])
             if not all_tests_ok:
                 continue
-            average_method.sort()
+            sort_in_place(average_method)
             average_method = join([method + ' ' for _, method in average_method[:3]])
             if average_method in order:
                 order[average_method] += 1
@@ -548,11 +562,12 @@ class Stats:
                     my_order[average_method] = 1
             nbr += 1
         order = [[order[methods], methods] for methods in order]
-        order.sort()
+        sort_in_place(order)
+        console.log(order)
         texts = ['<div class="box"><p>Les 3 méthodes les plus rapides (moyenne de ',
                  string(self.tests.nr_tests - 1),
                  ' saisies).<br>',
-                 'On ne prend en compte que les ' + nbr + ' tests pour lesquels<br> ',
+                 'On ne prend en compte que les ' + nbr + ' parties pour lesquelles<br> ',
                  '<b>toutes</b> les méthodes ont atteint 100% de bonnes saisies.<p>'
                  ]
         for nrt, methods in order[::-1][:3]:
@@ -565,7 +580,7 @@ class Stats:
 
         if my_nbr:
             my_order = [[my_order[methods], methods] for methods in my_order]
-            my_order.sort()
+            sort_in_place(my_order)
             append(texts, '<div class="box"><p>Mes 3 méthodes les plus rapides (moyenne sur '
                    + string(my_nbr) + ' parties parfaites).<br>')
             for nrt, methods in my_order[::-1][:3]:
@@ -582,7 +597,7 @@ class Stats:
 
     def draw(self, event=None): # pylint: disable=too-many-locals,too-many-branches,too-many-statements
         """Display the current picture"""
-        radius = 10
+        radius = 6
 
         canvas = get_by_id('canvas')
         canvas.onmousemove = self.draw.bind(self)
@@ -600,10 +615,10 @@ class Stats:
         average_max = 0
         stddev_max = 0
         for test in tests:
-            for average in test[0]:
-                average_max = Math.max(average, average_max)
-            for stddev in test[1]:
-                stddev_max = Math.max(stddev, stddev_max)
+            for i, nr_good in enumerate(test[2]):
+                if nr_good == self.tests.nr_tests - 1:
+                    average_max = Math.max(test[0][i], average_max)
+                    stddev_max = Math.max(test[1][i], stddev_max)
         average_max *= 1.05
         stddev_max *= 1.05
         def X(sec): # pylint: disable=invalid-name
@@ -631,26 +646,27 @@ class Stats:
         for sec in range(0, int(average_max/1000) + 1):
             x_canvas = X(1000 * sec)
             if sec:
-                ctx.fillText(sec + ' secs', x_canvas, height - 40)
+                ctx.fillText(sec, x_canvas, height - 30)
             ctx.beginPath()
             ctx.moveTo(x_canvas, 0)
             ctx.lineTo(x_canvas, height)
             ctx.stroke()
-        for sec in range(0, int(stddev_max/100) + 1):
-            y_canvas = Y(100 * sec)
+        step = 200
+        for sec in range(0, int(stddev_max/200) + 1):
+            y_canvas = Y(200 * sec)
             if sec:
-                ctx.fillText(sec/10 + ' secs', 40, y_canvas)
+                ctx.fillText((step * sec / 1000).toFixed(1), 40, y_canvas)
             ctx.beginPath()
             ctx.moveTo(0, y_canvas)
             ctx.lineTo(width, y_canvas)
             ctx.stroke()
 
-        ctx.font = '32px sans-serif'
-        ctx.fillText('Temps moyen des ' + (self.tests.nr_tests - 1) + ' saisies',
-                     3 * width / 6, height - 12)
+        ctx.font = '24px sans-serif'
+        ctx.fillText('Temps moyen des ' + (self.tests.nr_tests - 1) + ' saisies en secondes',
+                     100, height - 8)
         ctx.rotate(-Math.PI / 2)
-        ctx.fillText('Écart-type des ' + (self.tests.nr_tests - 1) + ' saisies',
-                     -height/2, 30)
+        ctx.fillText('Écart-type des ' + (self.tests.nr_tests - 1) + ' saisies en secondes',
+                     -height + 100, 30)
         ctx.rotate(Math.PI / 2)
 
         # Draw discs
