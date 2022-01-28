@@ -9,18 +9,30 @@ Add #debug at the url end to display stats.
 # pylint: disable=no-member,len-as-condition,undefined-variable
 
 def cmp(a, b):
+    """List sort"""
     for i, j in zip(a, b):
         if i < j:
             return -1
-        elif i > j:
+        if i > j:
             return 1
     return 0
 
+def cmp_int(a, b):
+    """Integer sort"""
+    if a < b:
+        return -1
+    if a > b:
+        return 1
+    return 0
+
 def sort_in_place(table):
+    """Fix Javascript broken sort"""
     if table[0].splice:
-        table.sort(cmp) # XXX JS sort
-    else:
+        table.sort(cmp)
+    elif table[0].substr:
         table.sort()
+    else:
+        table.sort(cmp_int)
 
 def rand_range(minimum, maximum):
     """Returns a number in the range minimum...maximum-1"""
@@ -468,7 +480,7 @@ class Stats:
                 + (sum_percent / len(tests)).toFixed(1)
                 + '%</span>')
 
-            values.sort()
+            sort_in_place(values)
             if tests[-1][2][i] != self.tests.nr_tests - 1:
                 rank = '?'
                 percent = 100
