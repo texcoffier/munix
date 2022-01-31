@@ -251,7 +251,7 @@ class Welcome(Test):
         Et maintenant, cliquez sur : <button>Je veux commencer !</button>
         <p>
         <table>""" + join(['<tr><td>' + test.name + '<td>' + test.icon + '</tr>'
-                           for test in self.tests.phases[1:-1]]) + '</table>'
+                           for test in self.tests.methods]) + '</table>'
     def onclick(self, event):
         if event.target.tagName != 'BUTTON':
             return
@@ -434,9 +434,7 @@ class Stats:
         """Update the rank of the result"""
         tests = self.data[self.tests.nr_digits]
         my_id = tests[-1][3]
-        for test in self.tests.phases:
-            if not test.name:
-                continue
+        for test in self.tests.methods:
             nbr = 0
             my_nbr = 0
             my_errors = 0
@@ -521,9 +519,7 @@ class Stats:
         for results in tests:
             average_method = []
             all_tests_ok = True
-            for test in self.tests.phases:
-                if not test.name:
-                    continue
+            for test in self.tests.methods:
                 if results[2][test.index] != self.tests.nr_tests - 1:
                     all_tests_ok = False
                     break
@@ -653,11 +649,23 @@ class Stats:
         # Draw discs
 
         selected_test = tests[-1]
+        sum_nb = [0 for color in COLORS]
+        sum_x = [0 for color in COLORS]
+        sum_y = [0 for color in COLORS]
+        sum_x2 = [0 for color in COLORS]
+        sum_xy = [0 for color in COLORS]
         for test in tests:
             for i, color in enumerate(COLORS):
                 if test[2][i] == (self.tests.nr_tests - 1):
                     x_canvas = X(test[0][i])
                     y_canvas = Y(test[1][i])
+                    sum_x[i] += x_canvas
+                    sum_y[i] += y_canvas
+                    sum_x2[i] += x_canvas * x_canvas
+                    sum_xy[i] += x_canvas * y_canvas
+                    sum_nb[i] += 1
+                    if self.tests.methods[i].hide:
+                        continue
                     ctx.fillStyle = color + '8'
                     ctx.beginPath()
                     ctx.arc(x_canvas, y_canvas, radius, 0, 2 * Math.PI)
@@ -665,28 +673,43 @@ class Stats:
 
                     if (x_canvas - cursor_x)**2 + (y_canvas - cursor_y)**2 <= radius * radius:
                         selected_test = test
+        for i, color in enumerate(COLORS):
+            if self.tests.methods[i].hide:
+                continue
+            pente = (sum_x[i] * sum_y[i] - sum_nb[i] * sum_xy[i]) / (sum_x[i]**2 - sum_nb[i]*sum_x2[i])
+            self.tests.methods[i].pente = pente
+            ctx.strokeStyle = color
+            ctx.lineWidth = 1
+            ctx.setLineDash([])
+            ctx.beginPath()
+            center_x = sum_x[i] / sum_nb[i]
+            center_y = sum_y[i] / sum_nb[i]
+            ctx.moveTo(center_x - 1000/pente, center_y - 1000)
+            ctx.lineTo(center_x + 1000/pente, center_y + 1000)
+            ctx.stroke()
 
         # The disc borders for the selected user
 
         ctx.strokeStyle = "#000"
         ctx.lineWidth = 1
         ctx.setLineDash([5, 5])
-        for method in self.tests.phases:
+        for method in self.tests.methods:
             method.stats_ip = [0, 0, 0]
         for test in tests:
             if test[3] != selected_test[3]:
                 continue
-            for method in self.tests.phases:
+            for method in self.tests.methods:
                 i = method.index
                 if test[2][i] != self.tests.nr_tests - 1:
                     continue
                 average = test[0][i]
                 if average:
-                    ctx.beginPath()
-                    x_canvas = X(average)
-                    y_canvas = Y(test[1][i])
-                    ctx.arc(x_canvas, y_canvas, radius, 0, 2 * Math.PI)
-                    ctx.stroke()
+                    if not method.hide:
+                        ctx.beginPath()
+                        x_canvas = X(average)
+                        y_canvas = Y(test[1][i])
+                        ctx.arc(x_canvas, y_canvas, radius, 0, 2 * Math.PI)
+                        ctx.stroke()
                     method.stats_ip[0] += 1
                     method.stats_ip[1] += average
                     method.stats_ip[2] += test[1][i]
@@ -697,25 +720,39 @@ class Stats:
         ctx.font = '20px sans-serif'
         ctx.fillText("Moyenne et écart-type des parties entourées :", 150, 30)
 
-        for method in self.tests.phases:
-            if not method.name:
-                continue
+        for test in self.tests.methods:
+            test.hide = False
+        for method in self.tests.methods:
             if method.stats_ip[0] == 0:
                 message = 'aucune partie sans erreur'
             else:
+                if self.tests.debug:
+                    more = ' pente=' + -method.pente.toFixed(2)
+                else:
+                    more = ''
                 message = (
                     (method.stats_ip[1]/method.stats_ip[0]/1000).toFixed(2)
-                    + '±' + (method.stats_ip[2]/method.stats_ip[0]/1000).toFixed(2))
+                    + '±' + (method.stats_ip[2]/method.stats_ip[0]/1000).toFixed(2)
+                    + more
+                    )
             ctx.fillStyle = method.color
+            if 58 + 26 * (method.index-1) < cursor_y < 58 + 26 * method.index:
+                ctx.font = 'bold 20px sans-serif'
+                for method2 in self.tests.methods:
+                    method2.hide = method.index != method2.index
+            else:
+                ctx.font = '20px sans-serif'
             ctx.fillText(method.stats_ip[0] + ' ' + method.name + ' ' + message,
                          150, 55 + 26 * method.index)
 
         # The disc borders for the selected test
 
         ctx.lineWidth = 2
-        for test in self.tests.phases:
-            average = selected_test[0][test.index]
-            stddev = selected_test[1][test.index]
+        for method in self.tests.methods:
+            if method.hide:
+                continue
+            average = selected_test[0][method.index]
+            stddev = selected_test[1][method.index]
             if not average:
                 continue
             ctx.beginPath()
@@ -754,8 +791,10 @@ class Tests:
         self.debug = 'debug' in string(window.location)
         self.i = -1
         self.phases = [Welcome(self)]
+        self.methods = []
         for i, method in enumerate(METHODS):
             append(self.phases, eval('new ' + method + '(self)')) # pylint: disable=eval-used
+            append(self.methods, self.phases[-1])
             self.phases[-1].color = COLORS[i]
             self.phases[-1].index = i
         append(self.phases, End(self))
@@ -812,27 +851,26 @@ class Tests:
             <th>Écart-<br>type
             </tr>'''
             ]
-        for test in self.phases:
-            if test.name:
-                infos = test.stats()
-                append(stats, '<tr id="')
-                append(stats, test.name)
-                append(stats, '"><th rowspan="3" style="line-height:0.5em;color:' + test.color + '">')
-                append(stats, test.name + ' ' + test.icon)
-                percent = int(100 * infos[1] / infos[0])
-                append(stats, '<td style="font-size:70%">Cette partie→')
-                if percent == 100:
-                    append(stats, "<td>")
-                else:
-                    append(stats, '<td style="background: #F88">')
-                append(stats, percent)
-                append(stats, '%<td>?<td>')
-                append(stats, (infos[2]/1000).toFixed(2))
-                append(stats, " s<td>")
-                append(stats, (infos[3]/1000).toFixed(2))
-                append(stats, " s</tr>")
-                append(stats, '<tr class="more"><td><td><td><td><td></tr>')
-                append(stats, '<tr class="more"><td><td><td><td><td></tr>')
+        for test in self.methods:
+            infos = test.stats()
+            append(stats, '<tr id="')
+            append(stats, test.name)
+            append(stats, '"><th rowspan="3" style="line-height:0.5em;color:' + test.color + '">')
+            append(stats, test.name + ' ' + test.icon)
+            percent = int(100 * infos[1] / infos[0])
+            append(stats, '<td style="font-size:70%">Cette partie→')
+            if percent == 100:
+                append(stats, "<td>")
+            else:
+                append(stats, '<td style="background: #F88">')
+            append(stats, percent)
+            append(stats, '%<td>?<td>')
+            append(stats, (infos[2]/1000).toFixed(2))
+            append(stats, " s<td>")
+            append(stats, (infos[3]/1000).toFixed(2))
+            append(stats, " s</tr>")
+            append(stats, '<tr class="more"><td><td><td><td><td></tr>')
+            append(stats, '<tr class="more"><td><td><td><td><td></tr>')
         append(stats, '</table></div><div id="order"></div>')
         return join(stats)
 
@@ -843,7 +881,6 @@ class Tests:
             'nr_digits': self.nr_digits,
             'tests': [
                 [test.name, test.times]
-                for test in self.phases
-                if test.name
+                for test in self.methods
             ]
         })
