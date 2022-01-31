@@ -466,19 +466,16 @@ class Stats:
                         my_sum_percent += 100 * results[2][i] / (self.tests.nr_tests - 1)
                         my_errors += 1
 
-            row = get_by_id(test.name)
+            row_single = get_by_id(test.name)
+            row_me = row_single.nextSibling
+            row_all = row_me.nextSibling
+
+            row_me.cells[0].innerHTML = 'Moi : ' + my_nbr + '/' + (my_nbr + my_errors)
+            row_all.cells[0].innerHTML = 'Toutes : ' + nbr + '/' + string(len(tests))
 
             if my_nbr > 1:
-                more = ('<br><span class="average">Moi : '
-                        + (my_sum_percent / (my_nbr + my_errors)).toFixed(1)
-                        + '%</span>')
-            else:
-                more = ''
-            row.cells[1].innerHTML += (
-                more
-                + '<br><span class="average">Tous : '
-                + (sum_percent / len(tests)).toFixed(1)
-                + '%</span>')
+                row_me.cells[1].innerHTML = (my_sum_percent / (my_nbr + my_errors)).toFixed(0) + '%'
+            row_all.cells[1].innerHTML = (sum_percent / len(tests)).toFixed(0) + '%'
 
             sort_in_place(values)
             if tests[-1][2][i] != self.tests.nr_tests - 1:
@@ -493,52 +490,25 @@ class Stats:
                 if results[3] == my_id and results[2][i] == self.tests.nr_tests - 1:
                     append(ranks, values.indexOf(results[0][i]) + 1)
             if my_nbr > 1:
-                more = (
-                    '<br><span class="average">Moi : '
-                    + (sum(ranks) / len(ranks)).toFixed(0) + '/' + nbr
-                    + '</span><br><span class="average"> </span>')
-            else:
-                more = ''
-            row.cells[2].innerHTML = rank + '/' + nbr + more
+                row_me.cells[2].innerHTML = (sum(ranks) / len(ranks)).toFixed(0) + '/' + nbr
+            row_single.cells[3].innerHTML = rank + '/' + nbr
 
             if percent <= 10:
-                row.cells[2].style.background = "#0F0"
+                row_single.cells[3].style.background = "#0F0"
             elif percent <= 25:
-                row.cells[2].style.background = "#8F8"
+                row_single.cells[3].style.background = "#8F8"
             elif percent <= 75:
                 pass
             else:
-                row.cells[2].style.background = "#F88"
+                row_single.cells[3].style.background = "#F88"
 
             if my_nbr > 1:
-                more = ('<br><span class="average">Moi : '
-                        + (my_sum_avg / my_nbr / 1000).toFixed(2)
-                        + ' s</span>')
-            else:
-                more = ''
-
-            row.cells[3].innerHTML += (
-                more
-                + '<br><span class="average">Tous : '
-                + (sum_avg / nbr / 1000).toFixed(2)
-                + ' s</span>')
+                row_me.cells[3].innerHTML = (my_sum_avg / my_nbr / 1000).toFixed(2) + ' s'
+            row_all.cells[3].innerHTML = (sum_avg / nbr / 1000).toFixed(2) + ' s'
 
             if my_nbr > 1:
-                more = ('<br><span class="average">Moi : '
-                        + (my_sum_stddev / my_nbr / 1000).toFixed(2)
-                        + ' s</span>')
-            else:
-                more = ''
-
-            row.cells[4].innerHTML += (
-                more
-                + '<br><span class="average">Tous : '
-                + (sum_stddev / nbr / 1000).toFixed(2)
-                + ' s</span>')
-
-            row.cells[5].innerHTML = (
-                ' <br><span class="average">Moi : ' + my_nbr + "</span><br>"
-                + '<span class="average">Tous : ' + nbr + '</span>')
+                row_me.cells[4].innerHTML = (my_sum_stddev / my_nbr / 1000).toFixed(2) + ' s'
+            row_all.cells[4].innerHTML = (sum_stddev / nbr / 1000).toFixed(2) + ' s'
 
     def order(self):
         """Compute best methods"""
@@ -708,6 +678,8 @@ class Stats:
                 continue
             for method in self.tests.phases:
                 i = method.index
+                if test[2][i] != self.tests.nr_tests - 1:
+                    continue
                 average = test[0][i]
                 if average:
                     ctx.beginPath()
@@ -722,21 +694,21 @@ class Stats:
 
         # Display stats for the ip
         ctx.fillStyle = '#000'
-        ctx.font = '32px sans-serif'
-        ctx.fillText("Moyenne et écart-type des tests entourés :", 150, 30)
+        ctx.font = '20px sans-serif'
+        ctx.fillText("Moyenne et écart-type des parties entourées :", 150, 30)
 
         for method in self.tests.phases:
             if not method.name:
                 continue
             if method.stats_ip[0] == 0:
-                message = 'Pas de stats'
+                message = 'aucune partie sans erreur'
             else:
                 message = (
                     (method.stats_ip[1]/method.stats_ip[0]/1000).toFixed(2)
-                    + ' ' + (method.stats_ip[2]/method.stats_ip[0]/1000).toFixed(2))
+                    + '±' + (method.stats_ip[2]/method.stats_ip[0]/1000).toFixed(2))
             ctx.fillStyle = method.color
-            ctx.fillText(method.name + ' ' + message,
-                         150, 80 + 45 * method.index)
+            ctx.fillText(method.stats_ip[0] + ' ' + method.name + ' ' + message,
+                         150, 55 + 26 * method.index)
 
         # The disc borders for the selected test
 
@@ -833,11 +805,11 @@ class Tests:
             "Mes résultats pour cette partie et les moyennes en petit.",
             '''<table><tr>
             <td style="text-align:center; width:10em">La première saisie<br>n'est pas comptée
+            <th>Parties<br>parfaites
             <th>Bonnes<br>saisies
             <th>Rang
             <th>Temps<br>moyen
             <th>Écart-<br>type
-            <th>Nbr de<br>parties
             </tr>'''
             ]
         for test in self.phases:
@@ -845,9 +817,10 @@ class Tests:
                 infos = test.stats()
                 append(stats, '<tr id="')
                 append(stats, test.name)
-                append(stats, '"><th style="color:' + test.color + '">')
+                append(stats, '"><th rowspan="3" style="line-height:0.5em;color:' + test.color + '">')
                 append(stats, test.name + ' ' + test.icon)
                 percent = int(100 * infos[1] / infos[0])
+                append(stats, '<td style="font-size:70%">Cette partie→')
                 if percent == 100:
                     append(stats, "<td>")
                 else:
@@ -857,7 +830,9 @@ class Tests:
                 append(stats, (infos[2]/1000).toFixed(2))
                 append(stats, " s<td>")
                 append(stats, (infos[3]/1000).toFixed(2))
-                append(stats, " s<td>?</tr>")
+                append(stats, " s</tr>")
+                append(stats, '<tr class="more"><td><td><td><td><td></tr>')
+                append(stats, '<tr class="more"><td><td><td><td><td></tr>')
         append(stats, '</table></div><div id="order"></div>')
         return join(stats)
 
