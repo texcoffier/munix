@@ -17,6 +17,11 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #    Contact: Thierry.EXCOFFIER@univ-lyon1.fr
+# pylint: disable=bad-whitespace,line-too-long,missing-class-docstring,missing-function-docstring,invalid-name,len-as-condition,bare-except,too-few-public-methods,too-many-return-statements,consider-merging-isinstance,too-many-boolean-expressions,too-many-lines
+
+"""
+Shell Explainer: server and browser side
+"""
 
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alpha = upper + upper.lower() + '_'
@@ -88,8 +93,8 @@ def choices(keywords):
                         ])
 
 class Option:
-    def __init__(self, option, short, message, argument=False, display=True,
-                 cleanup=False):
+    def __init__(self, option, short, message, # pylint: disable=too-many-arguments
+                 argument=False, display=True, cleanup=False):
         self.option   = option   # long option as --verbose
         self.short    = short    # short option as -v
         self.message  = message  # HTML Explanation about the option
@@ -112,7 +117,7 @@ class Options:
         for option in options:
             if option.short != '':
                 if not self.single_letter_option:
-                    it_is_no_possible
+                    raise ValueError('it_is_no_possible')
                 if option.option != '':
                     self.short_opt[option.short] = self.long_opt[option.option]
                 else:
@@ -123,7 +128,7 @@ class Options:
             return value, self.long_opt[value.split("=")[0]]
         if value in self.short_opt:
             return value, self.short_opt[value]
-        return
+        return None
 
     def html(self):
         s = []
@@ -137,7 +142,7 @@ class Options:
             s.append(option.message)
             s.append("<br>")
         return ''.join(s)
-    
+
 list_stopper = '&<>;|()\n'
 redirection_stopper = '#<>;|()\n'
 argument_stopper = ' \t' + list_stopper
@@ -532,7 +537,7 @@ def get_argument(command, position):
         position += 1
         if isinstance(v, Argument):
             return (position, v.text_content(), v)
-    return (position, None, None)        
+    return (position, None, None)
 
 def merge_into(command, begin, end, node, comment):
     node.content = []
@@ -557,7 +562,7 @@ test_operators = {
     '-ge': ["&ge;", True],
     '-lt': ["&lt;", True],
     '-le': ["&le;", True],
-   }
+    }
 
 def need_operator(command, v):
     s = []
@@ -567,7 +572,7 @@ def need_operator(command, v):
     v.make_comment('Ici on attend un opérateur : ' + ' '.join(s), "#F00")
     command.fail = True
 
-def parse_test(command, position, allow_bool=True):
+def parse_test(command, position, allow_bool=True): # pylint: disable=too-many-branches,too-many-statements
     (position, t, v) = get_argument(command, position)
     old_position = position - 1
     if v is None:
@@ -597,53 +602,51 @@ def parse_test(command, position, allow_bool=True):
                                   "Regroupe ces opérations")
     elif t in ('-e', '-d', '-f'):
         v.make_comment(
-           {
-               '-e': "Vrai si le chemin suivant pointe sur une entité qui existe",
-               '-f': "Vrai si le chemin suivant pointe sur un fichier texte.",
-               '-d': "Vrai si le chemin suivant pointe sur un répertoire."
-           }[t], "#080")
+            {
+                '-e': "Vrai si le chemin suivant pointe sur une entité qui existe",
+                '-f': "Vrai si le chemin suivant pointe sur un fichier texte.",
+                '-d': "Vrai si le chemin suivant pointe sur un répertoire."
+            }[t], "#080")
         (position, t2, v2) = get_argument(command, position)
         if v2 is None:
             v.make_comment(None, "#F00")
             command.content[position-1].message = "Indiquez le chemin"
             command.fail = True
             return position
-        else:
-            m = {
-               '-f': "un fichier texte",
-               '-e': "une entité qui existe",
-               '-d': "un répertoire"
-            }[t]
-            v2.make_comment("Le chemin testé")
-            position = merge_into(command, old_position, position,
-                                  ArgumentGroup(),
-                                  "Vrai si «" + v2.html()
-                                  + '» est ' + m)
+        m = {
+            '-f': "un fichier texte",
+            '-e': "une entité qui existe",
+            '-d': "un répertoire"
+        }[t]
+        v2.make_comment("Le chemin testé")
+        position = merge_into(command, old_position, position,
+                              ArgumentGroup(),
+                              "Vrai si «" + v2.html()
+                              + '» est ' + m)
     else:
         (position, t2, v2) = get_argument(command, position)
         if v2 is None:
             command.fail = True
             return position
         if t2 in test_operators:
-            (position, t3, v3) = get_argument(command, position)
+            (position, _t3, v3) = get_argument(command, position)
             if v3 is None:
                 v2.make_comment("Il manque la valeur de droite", "#F00")
                 if isinstance(command.content[position-1], Unterminated):
                     command.content[position-1].message = "Argument de droite"
                 command.fail = True
                 return position
+            if test_operators[t2][1]:
+                v2.make_comment("Comparaison d'entiers", "#080")
             else:
-                if test_operators[t2][1]:
-                    v2.make_comment("Comparaison d'entiers", "#080")
-                else:
-                    v2.make_comment("Comparaison de chaînes de caractères",
-                                    "#080")
-                position = merge_into(command, old_position, position,
-                                      ArgumentGroup(),
-                                      "Test si "
-                                      + "«" + v.html() + "»"
-                                      + " " + test_operators[t2][0] + " "
-                                      + "«" + v3.html() + "»")
+                v2.make_comment("Comparaison de chaînes de caractères",
+                                "#080")
+            position = merge_into(command, old_position, position,
+                                  ArgumentGroup(),
+                                  "Test si "
+                                  + "«" + v.html() + "»"
+                                  + " " + test_operators[t2][0] + " "
+                                  + "«" + v3.html() + "»")
         else:
             need_operator(command, v2)
             return position
@@ -656,7 +659,7 @@ def parse_test(command, position, allow_bool=True):
     for operator, humain, allow_bool2 in [
             ['-a', 'ET', False],
             ['-o', 'OU', 'allow-and']
-            ]:
+        ]:
         if v is None:
             return position
         while t == operator:
@@ -666,7 +669,7 @@ def parse_test(command, position, allow_bool=True):
             save_position = position
             position = parse_test(command, position, allow_bool=allow_bool2)
             if (save_position+1 == position
-                and isinstance(command.content[position-1], Unterminated)):
+                    and isinstance(command.content[position-1], Unterminated)):
                 command.content[position-1].message = "Indiquez une expression"
                 command.fail = True
             (position, t, v) = get_argument(command, position)
@@ -683,7 +686,7 @@ def parse_test(command, position, allow_bool=True):
         command.fail = True
         v.make_comment("Ici on devrait trouver '-o' ou '-a'", "#F00")
     return position
-            
+
 
 def analyse_test(command):
     command.fail = False
@@ -699,13 +702,13 @@ def analyse_test(command):
             last = command.content[position-1]
             space = (isinstance(last, Separator)
                      or isinstance(last, Unterminated))
-            if space and command.nr_argument >= 1 and command.fail == False:
-                last.message = "Vous pouvez terminer le test avec un ']'"
-            elif space and command.nr_argument == 0 and command.fail != True:
-                last.message = "Indiquez la condition à tester"
-            elif space and command.nr_argument == 1:
-                last.message = "Continuez la condition"
-            # else: last.message = name(last) + str(command.nr_argument)
+            if space:
+                if command.nr_argument >= 1 and not command.fail:
+                    last.message = "Vous pouvez terminer le test avec un ']'"
+                elif command.nr_argument == 0 and command.fail != True: # pylint: disable=singleton-comparison
+                    last.message = "Indiquez la condition à tester"
+                elif command.nr_argument == 1:
+                    last.message = "Continuez la condition"
         else:
             v1.make_comment(None, "#080")
             if t != ']':
@@ -713,7 +716,7 @@ def analyse_test(command):
             else:
                 v.make_comment(None, "#080")
             (position, t, v) = get_argument(command, position)
-            
+
     while v:
         v.make_comment("Arguments en trop", "#F00")
         (position, t, v) = get_argument(command, position)
@@ -740,7 +743,7 @@ def define_test_bracket():
     d['cleanup'] = remove_brackets
     return d
 
-def analyse_grep(command):
+def analyse_grep(command): # pylint: disable=too-many-branches,too-many-statements
     (position, dummy_t, dummy_v) = get_argument(command, 0)
     state = "start"
     is_a_filter = True
@@ -754,7 +757,7 @@ def analyse_grep(command):
                 v.make_comment("Les options doivent être en début de commande",
                                "#F00")
                 continue
-            if t == '-v' or t == '-h':
+            if t in ('-v', '-h'):
                 continue
             t = t.replace('-v', '-')
             if t == '-e':
@@ -771,7 +774,7 @@ def analyse_grep(command):
             v.make_comment("Option non prévue par ce logiciel", "#F00")
             continue
 
-        if state == "start" or state == "regexp":
+        if state in ("start", "regexp"):
             if v.contains_a_pattern():
                 v.make_comment("""Attention le shell va remplacer
                 le <em>pattern</em> et donc la commande <tt>grep</tt>
@@ -793,7 +796,7 @@ def analyse_grep(command):
             else:
                 state = "filename"
             continue
-        if state == "filename" or state == "only-filename":
+        if state in ("filename", "only-filename"):
             v.make_comment("Chemin du fichier ou l'on cherche les lignes",
                            "#000")
             state = "only-filename"
@@ -840,7 +843,7 @@ def define_grep():
         )
     return d
 
-def analyse_sed(command):
+def analyse_sed(command): # pylint: disable=too-many-branches,too-many-statements
     (position, dummy_t, dummy_v) = get_argument(command, 0)
     state = "start"
     is_a_filter = True
@@ -867,7 +870,7 @@ def analyse_sed(command):
             v.make_comment("Option non prévue par ce logiciel", "#F00")
             continue
 
-        if state == "start" or state == "expression":
+        if state in ("start", "expression"):
             if v.contains_a_pattern():
                 v.make_comment("""Attention le shell va remplacer
                 le <em>pattern</em> et donc la commande <tt>sed</tt>
@@ -886,15 +889,22 @@ def analyse_sed(command):
             else:
                 state = "filename"
             continue
-        if state == "filename" or state == "only-filename":
+        if state in ("filename", "only-filename"):
             v.make_comment("Chemin du fichier à traiter", "#000")
             state = "only-filename"
             is_a_filter = False
             continue
         v.make_comment("Il y a un bug, prévenez l'enseignant", "#F00")
     if is_a_filter:
-        command.make_comment("""Comme il n'y a pas de nom de fichier,
+        if in_place:
+            command.make_comment("""<span class="command_help_error">
+            L'option «-i» de modification sur place impose que vous indiquiez
+            des noms de fichiers à modifier.</span>""")
+        else:
+            command.make_comment("""Comme il n'y a pas de nom de fichier,
         <tt>sed</tt> traite les lignes lues sur son entrée standard.""")
+    elif in_place:
+        command.make_comment("""Rien n'est affiché, le contenu des fichiers est modifié.""")
     return command
 
 def define_sed():
@@ -944,12 +954,12 @@ all_signals = [
 ]
 
 def signal_to_numbers(txt):
-    for name, number, message in all_signals:
+    for signal_name, number, _message in all_signals:
         number = "Normal('-" + str(number) + "')"
-        txt = txt.replace("Normal('-SIG" + name         + "')", number)
-        txt = txt.replace("Normal('-sig" + name.lower() + "')", number)
-        txt = txt.replace("Normal('-"    + name         + "')", number)
-        txt = txt.replace("Normal('-"    + name.lower() + "')", number)
+        txt = txt.replace("Normal('-SIG" + signal_name         + "')", number)
+        txt = txt.replace("Normal('-sig" + signal_name.lower() + "')", number)
+        txt = txt.replace("Normal('-"    + signal_name         + "')", number)
+        txt = txt.replace("Normal('-"    + signal_name.lower() + "')", number)
     return txt
 
 def define_kill():
@@ -960,44 +970,51 @@ def define_kill():
     d['syntax'] = "kill -SIGNAL PID1 PID2..."
     d['cleanup'] = signal_to_numbers
     options = []
-    for name, number, message in all_signals:
-        options.append(Option('-' + name, '', message, False, False))
-        options.append(Option('-SIG' + name, '', message, False, False))
+    for signal_name, number, message in all_signals:
+        options.append(Option('-' + signal_name, '', message, False, False))
+        options.append(Option('-SIG' + signal_name, '', message, False, False))
         options.append(Option('-' + str(number), '', message, False, False))
     d['options'] = Options(*options)
     return d
 
 
-def define_manque_point_virgule(name):
+def define_manque_point_virgule(command_name):
     d = define_command()
     d['description'] = '<span class="command_help_error">N\'auriez-vous pas oublié un point-virgule avant ?</span>'
-    d['name'] = name
+    d['name'] = command_name
     return d
 
-def define_done (): return define_manque_point_virgule('done')
-def define_for  (): return define_manque_point_virgule('for')
-def define_while(): return define_manque_point_virgule('while')
-def define_if   (): return define_manque_point_virgule('if')
-def define_then (): return define_manque_point_virgule('then')
-def define_else (): return define_manque_point_virgule('else')
-def define_fi   (): return define_manque_point_virgule('fi')
+def define_done ():
+    return define_manque_point_virgule('done')
+def define_for  ():
+    return define_manque_point_virgule('for')
+def define_while():
+    return define_manque_point_virgule('while')
+def define_if   ():
+    return define_manque_point_virgule('if')
+def define_then ():
+    return define_manque_point_virgule('then')
+def define_else ():
+    return define_manque_point_virgule('else')
+def define_fi   ():
+    return define_manque_point_virgule('fi')
 
-def define_bash(name):
+def define_bash(command_name):
     d = define_command()
     d['description'] = "<span class=\"command_help_error\">C'est une commande 'bash'. Elle ne fonctionne pas en shell.</span>"
-    d['name'] = name
+    d['name'] = command_name
     d["color"] = ["#F00", "#FCC"]
     d["builtin"] = None
     return d
 
-def analyse_find(command):
+def analyse_find(command): # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     (position, dummy_t, dummy_v) = get_argument(command, 0)
     state = "places"
     nb_places = 0
     unprotected_pattern = False
     stack = ['']
     def add(txt):
-        for i in range(len(stack)):
+        for i in range(len(stack)): # pylint: disable=consider-using-enumerate
             stack[i] += ' ' + txt
     def reset():
         stack[-1] = ''
@@ -1011,7 +1028,7 @@ def analyse_find(command):
             break
         if state == "places":
             if (len(t) > 0 and t[0] != '-' and t[0] != '('
-                or t == '' and v.html() != ''):
+                    or t == '' and v.html() != ''):
                 v.make_comment("Emplacement ou chercher")
                 nb_places += 1
                 continue
@@ -1179,7 +1196,7 @@ def analyse_find(command):
                 v.make_comment("Il manque la taille attendue", "#F00")
                 state = "start"
                 continue
-                
+
             v.make_comment("Taille du fichier " + oper + " "
                            + t + " " + unite, color)
             state = "start"
@@ -1196,7 +1213,7 @@ def analyse_find(command):
                 v.make_comment("""<tt>{}</tt> est le chemin du fichier trouvé
                 si on termine <tt>exec</tt> par <tt>;</tt>
                 ou de plusieurs fichiers si on le termine par <tt>+</tt>"""
-                )
+                              )
                 continue
             fin = ("La commande <tt>"
                    + exec_cmd[:-1] + """</tt> est exécuté
@@ -1217,8 +1234,8 @@ def analyse_find(command):
         if state == '-type':
             add(v.html())
             file_types = {'f': "fichier texte normal",
-            "d": "répertoire",
-            "l": "lien symbolique"}
+                          "d": "répertoire",
+                          "l": "lien symbolique"}
             if t not in file_types:
                 v.make_comment("Je ne comprend pas ce type de fichier", "#F00")
             else:
@@ -1259,7 +1276,7 @@ the_perimeter = {"u": "l'<b>utilisateur</b>",
                  "o": "tous les <b>autres</b>", "a": "<b>tout le monde</b>"}
 the_action = {"+": "<b>ajoute</b> le droit", "-": "<b>enlève</b> le droit",
               "=": "les droits sont seulement"}
-def analyse_mode(txt):
+def analyse_mode(txt): # pylint: disable=too-many-branches
     if is_a_number(txt) and len(txt) >= 3:
         if '8' in txt or '9' in txt:
             return False, "Un nombre octal ne peut contenir 8 ou 9"
@@ -1288,7 +1305,7 @@ def analyse_mode(txt):
             for d in tt[1]:
                 if d not in the_rights:
                     return False, "Mauvais droit d'acces : " + d
-                rights.push(the_rights[d])
+                rights.append(the_rights[d])
             rights = ' et '.join(rights)
 
             if len(rights) == 0 and s != '=':
@@ -1298,7 +1315,7 @@ def analyse_mode(txt):
             for d in tt[0]:
                 if d not in the_perimeter:
                     return False, "Mauvais groupe d'accès : " + d
-                who.push(the_perimeter[d])
+                who.append(the_perimeter[d])
             who = ' et '.join(who)
 
             if len(rights) == 0:
@@ -1359,28 +1376,30 @@ def define_chmod():
 command_aliases = {
     'more': 'less'
 }
-
 commands = {}
-for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
-          define_mkdir(), define_rm(), define_ln(), define_less(),
-          define_man(), define_tail(), define_du(), define_date(),
-          define_df(), define_sort(), define_wc(), define_uniq(),
-          define_gzip(), define_gunzip(), define_zcat(), define_sleep(),
-          define_tar(), define_echo(), define_mv(),
-          
-          define_done(), define_for(),
-          define_if(), define_then(), define_else(), define_fi(),
-          define_read(), define_test(), define_test_bracket(),
-          define_grep(), define_sed(), define_find(), define_chmod(),
 
-          define_ps(), define_kill(), define_exit(), define_export(),
-          define_bash('[[')
-]:
-    if x['name'] in commands:
-        print("duplicate_name: " + x['name'])
-        exit(1)
-        
-    commands[x['name']] = x
+def initialize_commands():
+    for x in [define_cd(), define_pwd(), define_ls(), define_cat(), define_cp(),
+              define_mkdir(), define_rm(), define_ln(), define_less(),
+              define_man(), define_tail(), define_du(), define_date(),
+              define_df(), define_sort(), define_wc(), define_uniq(),
+              define_gzip(), define_gunzip(), define_zcat(), define_sleep(),
+              define_tar(), define_echo(), define_mv(),
+
+              define_done(), define_for(),
+              define_if(), define_then(), define_else(), define_fi(),
+              define_read(), define_test(), define_test_bracket(),
+              define_grep(), define_sed(), define_find(), define_chmod(),
+
+              define_ps(), define_kill(), define_exit(), define_export(),
+              define_bash('[[')
+             ]:
+        if x['name'] in commands:
+            raise ValueError("duplicate_name: " + x['name'])
+
+        commands[x['name']] = x
+
+initialize_commands()
 
 def format_help(definition):
     return "help " + definition["name"]
@@ -1390,12 +1409,12 @@ def format_man(definition):
             definition["section"] + '/' + definition["name"]
             + '">man ' + definition["name"] + "</a>")
 
-def valid_variable_name(name):
-    if len(name) == 0:
+def valid_variable_name(text):
+    if len(text) == 0:
         return False
-    if name[0] not in alpha:
+    if text[0] not in alpha:
         return False
-    for i in name:
+    for i in text:
         if i not in names:
             return False
     return True
@@ -1404,11 +1423,12 @@ def valid_variable_name(name):
 ##############################################################################
 ##############################################################################
 
-class Chars:
+class Chars: # pylint: disable=too-many-public-methods
     hide = False
     foreground = "#000"
     background = "#FFF"
     begin_regexp = False
+    parent = start = end = ident = None
     def __init__(self, chars, message=""):
         self.content = chars
         self.message = message
@@ -1418,7 +1438,7 @@ class Chars:
         return name(self) + '(' + string(self.content) + ')'
     def nice(self, depth):
         return 'C' + pad(depth) + self.str() + '\n'
-    def cleanup(self, replace_option):
+    def cleanup(self, _replace_option):
         return name(self) + "(" + string(self.content) + ")"
     def html(self, position=-1):
         s = '<qdiv '
@@ -1443,18 +1463,17 @@ class Chars:
                 + '" style="background:' + unused_color(self)
                 + ';border:1px solid black'
                 + '"><div>' + message + '</div></div>\n')
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return name(self) + ':' + protect(self.content)
     def active(self, position):
         if self.start < position <= self.end:
             return "active "
-        else:
-            return ""
-    def is_a_pattern(self):
+        return ""
+    def is_a_pattern(self): # pylint: disable=no-self-use
         return False
     def last_position(self, position):
         return len(self.content) == position - self.start
-    def empty(self):
+    def empty(self): # pylint: disable=no-self-use
         return True # To easely stop container recursion
     def merge_separator(self):
         pass # To easely stop container recursion
@@ -1472,10 +1491,10 @@ class Chars:
         return self # To easely stop container recursion
     def make_comment(self, comment=None, foreground=None):
         pass # To easely stop container recursion
-    def init_group_number(self, group_number):
+    def init_group_number(self, group_number): # pylint: disable=no-self-use
         return group_number # To easely stop container recursion
     def is_duplicate(self):
-        if not hasattr(self, "parent"):
+        if not self.parent:
             return False
         n = 0
         for c in self.parent.content:
@@ -1500,46 +1519,45 @@ class Pattern(Chars):
     def is_a_pattern(self):
         return True
 class Star(Pattern):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ("L'étoile représente une suite quelconque de caractères"
                 + " pouvant être vide.")
 class QuestionMark(Pattern):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Le point d'intérogation représente un caractère quelconque."
 class Home(Chars):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.content == '~':
             return "Le tilde représente votre répertoire de connexion"
-        else:
-            return ("C'est le répertoire de connexion de l'utilisateur «"
-                    + self.content[1:] + '»')
+        return ("C'est le répertoire de connexion de l'utilisateur «"
+                + self.content[1:] + '»')
     def color(self):
         return ["#F0F", "#FAF"]
-            
+
 class Separator(Chars):
     hide = True
     def nice(self, depth):
         return  'S' + pad(depth) + name(self) + '('+string(self.content)+')\n'
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return 'Un espace ou plus pour séparer les arguments.'
-    
+
 class Comment(Chars):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ("Un commentaire jusqu'à la fin de la ligne."
                 + " Il n'est pas passé à la commande."
                 + " Ce n'est pas un argument."
                 + " Le shell ne regarde pas dedans.")
 class Pipe(Separator):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ('Le «|» redirige la sortie standard de la commande de gauche'
                 + " sur l'entrée standard de la commande de droite."
-            )
+               )
 class DotComa(Separator):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Le «;» permet de séparer les commandes."
 
 class NewLine(Separator):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Le retour à la ligne permet de séparer les commandes."
 
 special_variables = {
@@ -1554,9 +1572,9 @@ special_variables = {
 class Variable(Chars):
     def color(self):
         return ["#00F", "#CCF"]
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.content[1:] in special_variables:
-             message = special_variables[self.content[1:]]
+            message = special_variables[self.content[1:]]
         elif len(self.content[1:]) == 1 and self.content[1:] in digit:
             message = ("la valeur de l'argument numéro " + self.content[1:]
                        + " du script shell")
@@ -1569,24 +1587,23 @@ class Variable(Chars):
 class VariableProtected(Variable):
     pass
 class VariableName(Variable):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Nom de la variable"
     def color(self):
-        if (hasattr(self, 'parent') # XXX create_doc
-            and isinstance(self.parent, Affectation)
-            and (self.parent.unsane_for() or self.parent.unsane())
-            ):
+        if (self.parent # XXX create_doc
+                and isinstance(self.parent, Affectation)
+                and (self.parent.unsane_for() or self.parent.unsane())
+           ):
             return ["#F00", "#F88"]
-        else:
-            return Variable.color(self)
+        return Variable.color(self)
 
 class LoopVariable(VariableName):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Nom de la variable qui va changer de valeur dans la boucle"
 class Unterminated(Chars):
     def color(self):
         return ["#F00", "#FAA"]
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if '"' in self.content:
             return ("Pour terminer le texte protégé, il faut mettre"
                     + " un deuxième guillemet")
@@ -1610,14 +1627,13 @@ class Unterminated(Chars):
         if "|" in self.content:
             if self.parent.content[0] is self:
                 return "Il manque une commande à gauche du pipe"
-            else:
-                return "Tapez la commande qui va traiter la sortie standard de la commande de gauche"
+            return "Tapez la commande qui va traiter la sortie standard de la commande de gauche"
         if self.content[0] == '~':
             return "Le nom de login après le tilde doit être suivi par un «/»"
         return "Il manque une suite pour ce symbole : «" + self.content + "»"
 
 class Unexpected(Unterminated):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Il est interdit d'avoir «" + self.content + "» à cet endroit"
 
 class Invisible(Chars):
@@ -1629,18 +1645,18 @@ class Invisible(Chars):
             txt += ".<br><b>Même le tiret dans ce contexte</b>"
         return "Le caractère «" + self.content + "» disparaît. " + txt
 class Backslash(Invisible):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return self.itext("Il annule la signification du caractère suivant pour le shell.")
 class Quote(Invisible):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return self.itext("La signification de tous les caractères entre les deux cotes est annulée.")
 class Guillemet(Invisible):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return self.itext("La signification de tous les caractères entre les 2 guillemets est annulée sauf l'anti-slash et le dollar.")
 class Fildes(Chars):
     def color(self):
         return ["#088", "#AFF"]
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.content[0] == '&':
             c = self.content[1:]
         else:
@@ -1660,7 +1676,7 @@ class Fildes(Chars):
             s = "???"
         return 'Le fildes «' + self.content + "» représentant " + s
 class Direction(Fildes):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         c = self.content.strip()
         if c == self.content:
             more = ''
@@ -1681,77 +1697,75 @@ class Direction(Fildes):
         else:
             s = 'bug'
         return s + more
-    def cleanup(self, replace_option):
+    def cleanup(self, _replace_option):
         return name(self) + '(' + string(self.content.strip()) + ')'
 class SquareBracketStart(Pattern):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Début de la liste des caractères possibles."
 class SquareBracketStop(Pattern):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Fin de la liste des caractères possibles."
 class SquareBracketChar(Pattern):
     def unsane(self):
-        if not hasattr(self, 'parent'):
+        if not self.parent:
             return False
         p = self.parent.content
         return (len(p) == 3
                 and self is p[1]
                 and isinstance(p[2], SquareBracketStop)
-        )
+               )
     def color(self):
         if self.unsane() or self.is_duplicate():
             return ["#F00", "#F88"]
-        else:
-            return Pattern.color(self)
+        return Pattern.color(self)
 
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.unsane():
             return il_est_plus_court
-        elif self.is_duplicate():
+        if self.is_duplicate():
             return msg_duplicate
-        else:
-            return "Le caractère «" + self.content + "» est autorisé"
+        return "Le caractère «" + self.content + "» est autorisé"
 class SquareBracketInterval(Pattern):
     def color(self):
         return ["#808", "#D8D"]
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ("Tous les caractères dans l'intervalle «" + self.content
                 + "» sont autorisés")
 class SquareBracketNegate(Pattern):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ("Ce caractère indique que les caractères listés"
                 + " sont ceux dont on ne veux pas.")
 class GroupStart(Variable):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Début du groupement"
-    def cleanup(self, replace_option):
+    def cleanup(self, _replace_option):
         return name(self) + ' '
 class GroupStop(GroupStart):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Fin du groupement"
 class Equal(Chars):
     def color(self):
         return ["#880", "#FFA"]
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Affectation"
 class And(Chars):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ("La commande de droite ne s'exécute que si la "
                 + "dernière exécution à gauche s'est terminée sans erreur")
-    def cleanup(self, replace_option):
+    def cleanup(self, _replace_option):
         return '&&'
 
 class Or(Chars):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ("La commande de droite ne s'exécute que si la "
                 + "dernière exécution à gauche s'est terminée avec une erreur")
-    def cleanup(self, replace_option):
+    def cleanup(self, _replace_option):
         return '||'
 
 class Background(Separator):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return 'Lancement en arrière plan'
-    def cleanup(self, replace_option):
+    def cleanup(self, _replace_option):
         return '&'
 
 class For(Equal):
@@ -1759,7 +1773,7 @@ class For(Equal):
         if self.last_position(position):
             return "Le nom de la variable d'indice"
         return "Début de boucle"
-    def cleanup(self, replace_option):
+    def cleanup(self, _replace_option):
         return '' # Not necessary because implied by the container
 
 class If(For):
@@ -1787,7 +1801,7 @@ class While(For):
         return "Début de boucle"
 
 class In(For):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Indiquer les valeurs que la variable va prendre"
 
 class EndOfValues(Separator):
@@ -1795,25 +1809,23 @@ class EndOfValues(Separator):
         if self.last_position(position):
             if isinstance(self.parent, IfThenElse):
                 return "Mettre le mot-clef «then»"
-            else:
-                return "Mettre le mot-clef «do»"
+            return "Mettre le mot-clef «do»"
         if isinstance(self.parent, ForLoop):
             return "Termine la liste des valeurs prises par la variable"
-        else:
-            return "Termine la commande précédente"
+        return "Termine la commande précédente"
 
 class EndOfCommand(Separator):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Termine la commande"
 
 class Do(For):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Les instructions qui seront dans la boucle"
 
 class Done(For):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Fin de la définition du corps de la boucle"
-  
+
 ##############################################################################
 ##############################################################################
 ##############################################################################
@@ -1826,19 +1838,21 @@ class ReplacementProtected:
 class Argument:
     pass # To turn around a RapydScript bug
 
-class Container:
+class Container: # pylint: disable=too-many-public-methods
     hide = False
+    parent = start = end = ident = message = command = None
+    group_number = None
     def __init__(self):
         self.content = []
-    def color(self):
+    def color(self): # pylint: disable=no-self-use
         return ["#000", "#F00"]
     def append(self, item):
         self.content.append(item)
     def str(self):
         return name(self) + '(' + ','.join([x.str()
                                             for x in self.content
-                                        ]) + ')'
-    def cleanup(self, replace_option, sort_content=False):
+                                           ]) + ')'
+    def cleanup(self, replace_option, sort_content=False): # pylint: disable=too-many-branches
         protected = False
         content = []
         add_at_the_end = []
@@ -1869,7 +1883,7 @@ class Container:
                        or getattr(c, 'is_an_option_argument', False))
                   and name(c) == 'Argument'
                   and c.text_content() != ''
-              ):
+                 ):
                 # option joining
                 left = content[-1].option_canon
                 if c.is_an_option:
@@ -1892,7 +1906,7 @@ class Container:
         for c in content:
             txt = c.cleanup(replace_option)
             if (getattr(c, 'is_an_option', False)
-                and txt == "Argument(Normal('-'))"):
+                    and txt == "Argument(Normal('-'))"):
                 # Once cleaned, there is no option remaining.
                 # So the argument must be removed
                 continue
@@ -1914,13 +1928,12 @@ class Container:
                 + name(self) + '\n'
                 + ''.join([x.nice(depth+4)
                            for x in self.content
-                       ])
-            )
+                          ])
+               )
     def active(self, position):
         if self.start < position <= self.end:
             return "active "
-        else:
-            return ""
+        return ""
     def html(self, position=-1):
         s = '<qdiv '
         if position != -1:
@@ -1928,7 +1941,7 @@ class Container:
         return (s + 'class="Parsed ' + self.active(position) + name(self)
                 + '">' + ''.join([x.html(position)
                                   for x in self.content
-                              ])
+                                 ])
                 + '</qdiv>')
     def init_position(self, i=0, ident=0):
         self.start = i
@@ -1959,60 +1972,63 @@ class Container:
         return (s + 'class="help help_' + name(self)
                 + '" style="background:' + unused_color(self) + '"><div>'
                 + h + '</div></div>')
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return name(self) + ':<br>'
     def number_of(self, classe):
         return len([x
-                  for x in self.content
+                    for x in self.content
                     if isinstance(x, classe)
-                  ])
+                   ])
     def first_of(self, classe):
         for x in self.content:
             if isinstance(x, classe):
                 return x
+        return None
     def last_of(self, classe):
         for x in self.content[::-1]:
             if isinstance(x, classe):
                 return x
+        return None
     def all_of(self, classe):
         return [x
                 for x in self.content
                 if isinstance(x, classe)
-        ]
+               ]
     def is_a_pattern(self):
         for c in self.content:
             if c.is_a_pattern():
                 return True
+        return False
     def empty(self):
         return len(self.content) == 0
     def merge_separator(self):
         for content in self.content:
             content.merge_separator()
         i = 0
-        new_content = []
+        content = []
         while i < len(self.content):
             current = self.content[i]
             if (isinstance(self.content[i], Separator)
-                or isinstance(self.content[i], GroupStart)
-                or isinstance(self.content[i], GroupStop)
-                or isinstance(self.content[i], In)
-                ):
+                    or isinstance(self.content[i], GroupStart)
+                    or isinstance(self.content[i], GroupStop)
+                    or isinstance(self.content[i], In)
+               ):
                 v = self.content[i].content
                 if i != 0 and name(self.content[i-1]) == 'Separator':
                     v = self.content[i-1].content + v
-                    new_content.pop() # Remove the separator before
+                    content.pop() # Remove the separator before
                 if (i != len(self.content)-1
-                    and name(self.content[i+1]) == 'Separator'
-                    ):
+                        and name(self.content[i+1]) == 'Separator'
+                   ):
                     v += self.content[i+1].content
                     self.content[i+1] = Unterminated("FAKE")
                     i += 1 # Jump over beware of '|'  ' '  '|'
                 current.content = v
-                new_content.append(current)
+                content.append(current)
             else:
-                new_content.append(current)
+                content.append(current)
             i += 1
-        self.content = new_content
+        self.content = content
     def raise_comment(self):
         if self.empty():
             return
@@ -2023,35 +2039,35 @@ class Container:
             self.append(self.content[-1].content.pop())
     def replace_unexpected(self):
         if (isinstance(self, Pipeline)
-            and len(self.content) > 0 and isinstance(self.content[0], Done)
-        ):
+                and len(self.content) > 0 and isinstance(self.content[0], Done)
+           ):
             self.content[0] = Unexpected(self.content[0].content)
         for i, content in enumerate(self.content):
             content.replace_unexpected()
             if (isinstance(content, Background)
-                and i != len(self.content)-1
-                and isinstance(self.content[i+1], DotComa)
-                ):
+                    and i != len(self.content)-1
+                    and isinstance(self.content[i+1], DotComa)
+               ):
                 self.content[i+1] = Unexpected(self.content[i+1].content,
                                                "Non autorisé après un «&»"
-                                               )            
+                                               )
     def raise_separator(self, last=True):
-        new_content = []
-        for i, content in enumerate(self.content):
+        content = []
+        for i, child_content in enumerate(self.content):
             last_i = last and (i == len(self.content)-1)
-            content.raise_separator(last_i)
-            new_content.append(content)
-            if content.empty():
+            child_content.raise_separator(last_i)
+            content.append(child_content)
+            if child_content.empty():
                 continue
-            if (not content.empty()
-                and (name(content.content[-1]) == 'Separator'
-                     or
-                     name(content.content[-1]) == 'Background'
-                     )
-                and not last_i
-                ):
-                new_content.append(content.content.pop())
-        self.content = new_content
+            if (not child_content.empty()
+                    and (name(child_content.content[-1]) == 'Separator'
+                         or
+                         name(child_content.content[-1]) == 'Background'
+                        )
+                    and not last_i
+               ):
+                content.append(child_content.content.pop())
+        self.content = content
     def remove_empty(self):
         for content in self.content:
             content.remove_empty()
@@ -2066,9 +2082,9 @@ class Container:
     def replace_empty(self):
         for i, content in enumerate(self.content):
             if (isinstance(content, Command)
-                and len(content.content) == 1
-                and isinstance(content.content[0], Separator)
-            ):
+                    and len(content.content) == 1
+                    and isinstance(content.content[0], Separator)
+               ):
                 content = content.content[0]
                 self.content[i] = content
 
@@ -2085,13 +2101,13 @@ class Container:
                     or isinstance(x, Pipe)
                     or isinstance(x, And)
                     or isinstance(x, Comment)
-            )
+                   )
         for i in range(len(self.content)):
             if (separator(self.content[i])
-                and (i == len(self.content)-1 or i == 0
-                     or separator(self.content[i+1])
-                     or name(self.content[i-1]) == 'Separator'
-                 )):
+                    and (i == len(self.content)-1 or i == 0
+                         or separator(self.content[i+1])
+                         or name(self.content[i-1]) == 'Separator'
+                        )):
                 if not isinstance(self.content[i], Comment):
                     self.content[i] = Unterminated(self.content[i].content)
     def text(self):
@@ -2099,9 +2115,9 @@ class Container:
     def analyse(self):
         self.content = [i.analyse()
                         for i in self.content
-        ]
+                       ]
         return self
-    def make_comment(self, comment=None, foreground=None):
+    def make_comment(self, comment=None, _foreground=None):
         self.message = comment
 
     def init_group_number(self, group_number):
@@ -2122,19 +2138,23 @@ class Container:
         for c in self.content:
             if c.contains(the_class):
                 return True
+        return False
 
     def content_index(self):
-        if not hasattr(self, "parent"):
-            return # XXX create_doc
+        if not self.parent:
+            return None # XXX create_doc
         for i, c in enumerate(self.parent.content):
             if self is c:
                 return i
-        There_is_a_bug
+        raise ValueError('There_is_a_bug')
+
+    def get_groups(self): # pylint: disable=no-self-use
+        raise ValueError('bug')
 
 class Line(Container):
     def color(self):
         return ["#000", "#EEE"]
-    def local_help(self, dummy_position):
+    def local_help(self, _position): # pylint: disable=too-many-branches
         nr_pipeline = 0
         nr_command = 0
         nr_background = 0
@@ -2174,7 +2194,7 @@ class Line(Container):
                 m.append(str(nr_command) + " commandes simples")
         return 'Une ligne comportant : ' + ', '.join(m)
 class Pipeline(Line):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         nr = self.number_of(Command)
         if nr == 0:
             return 'Un pipeline vide !'
@@ -2182,7 +2202,7 @@ class Pipeline(Line):
             return ''
         return 'Un pipeline enchainant ' + str(nr) + ' commandes.'
 class Command(Container):
-    message = None
+    message = nr_argument = None
     def color(self):
         #if getattr(self, "command", None):
         #    return commands[self.command]["color"]
@@ -2228,9 +2248,10 @@ class Command(Container):
                     command = command[1][1:-2]
                     if command in commands:
                         self.command = command
-                        def color():
-                            return commands[command]['color']
                         if command != '[':
+                            # 'command' is a constant, so closure is fine
+                            def color():
+                                return commands[command]['color'] # pylint: disable=cell-var-from-loop
                             content.content[0].color = color
                 arg_number += 1
                 continue
@@ -2246,7 +2267,7 @@ class Command(Container):
             content.argument_position = arg_number
             arg_number += 1
         self.nr_argument = arg_number - 1 # Real one, not option argument
-    def contextual_help(self, dummy_position):
+    def contextual_help(self, _position):
         if not self.command:
             return ''
         definition = commands[self.command]
@@ -2265,12 +2286,10 @@ class Command(Container):
         if definition["options"]:
             s.append("Options :<br>")
             s.append(definition["options"].html())
-        if definition["builtin"] == True:
+        if definition["builtin"]:
             h = format_help(definition)
-        elif definition["builtin"] == False:
-            h = format_man(definition)
         else:
-            h = None
+            h = format_man(definition)
         if h:
             s.append("Aide : <tt>" + str(h) + "</tt><br>")
         if self.nr_argument < definition["min_arg"]:
@@ -2279,31 +2298,33 @@ class Command(Container):
         s.append('</div>')
         return '\n'.join(s)
 
-    def cleanup(self, replace_option):
+    def cleanup(self, replace_option, sort_content=False):
         s = Container.cleanup(self, replace_option)
         if not self.command:
             return s
         return commands[self.command]["cleanup"](s)
 
     def analyse(self):
-        self = Container.analyse(self)
-        if self.command:
-            definition = commands[self.command]
+        analysed = Container.analyse(self)
+        if analysed.command:
+            definition = commands[analysed.command]
             if definition:
-                return definition['analyse'](self)
-        return self
+                return definition['analyse'](analysed)
+        return analysed
 
-class Argument(Container):
-    message = None
+class Argument(Container): # pylint: disable=function-redefined
+    message = is_an_option_argument = argument_position = None
+    option_argument_help = option_argument_position = option_argument_after = None
+    concatenable_left = concatenable_right = option_canon = is_an_option = None
     def color(self):
         return ["#000", "#FFA"]
     def append(self, item):
         if (len(self.content) != 0
-            and name(self.content[-1]) == name(item)
-            and not isinstance(item, Variable)
-            and not isinstance(item, SquareBracket)
-            and not isinstance(item, Invisible)
-            ):
+                and name(self.content[-1]) == name(item)
+                and not isinstance(item, Variable)
+                and not isinstance(item, SquareBracket)
+                and not isinstance(item, Invisible)
+           ):
             self.content[-1].content += item.content
         else:
             self.content.append(item)
@@ -2328,8 +2349,7 @@ class Argument(Container):
         if isinstance(self.parent, ForValues):
             if more == '':
                 return '«' + self.html() + "» est une des valeurs possibles"
-            else:
-                return '«' + self.html() + "» :" + more
+            return '«' + self.html() + "» :" + more
         more += self.contextual_help(position)
         return 'Argument ' + str(pos) + ' : «' + self.html() + "»" + more
     def text_content(self):
@@ -2347,19 +2367,17 @@ class Argument(Container):
             if option:
                 return ('<div class="command_help">' + option[0] + " : "
                         + option[1].message + '</div>')
-            else:
-                if position <= self.option_argument_position:
-                    return ''
-                else:
-                    option = self.option_definition(
-                        self.start + self.option_argument_position)
-                    if option and option[1].argument:
-                        return (
-                            '<div class="command_help">' + option[1].argument
-                            + " : "
-                            + self.option_canon[self.option_argument_position:]
-                            + '</div>')
-                    return ''
+            if position <= self.option_argument_position:
+                return ''
+            option = self.option_definition(
+                self.start + self.option_argument_position)
+            if option and option[1].argument:
+                return (
+                    '<div class="command_help">' + option[1].argument
+                    + " : "
+                    + self.option_canon[self.option_argument_position:]
+                    + '</div>')
+            return ''
         if self.is_an_option_argument:
             return ('<div class="command_help">Argument de '
                     + self.is_an_option_argument + '</div>')
@@ -2383,19 +2401,19 @@ class Argument(Container):
     def option_definition(self, position=None):
         command = self.parent.command
         if not command:
-            return
+            return None
         definition = commands[command]
         if not definition['options']:
-            return
+            return None
         options = definition['options']
         value = self.text_content()
         if (len(value) > 2
-            and options.single_letter_option
-            and value[0] == '-' and value[1] != "-" and position is not None):
+                and options.single_letter_option
+                and value[0] == '-' and value[1] != "-" and position is not None):
             # Single letter option: take the good one
             value = "-" + value[position - self.start - 1]
         return options.get_option(value)
-    def parse_option(self):
+    def parse_option(self): # pylint: disable=too-many-branches,too-many-statements
         self.is_an_option = False
         self.option_argument_help = ''
         self.option_argument_after = False
@@ -2456,7 +2474,7 @@ class Argument(Container):
         opts.sort()
         self.option_canon = ('-' + ''.join(opts)
                              + c[self.option_argument_position:])
-    def cleanup(self, replace_option):
+    def cleanup(self, replace_option, _sort_content=False):
         if not self.is_an_option or not replace_option:
             return Container.cleanup(self, replace_option)
         return "Argument(Normal('" + self.option_canon + "'))"
@@ -2469,20 +2487,20 @@ class Argument(Container):
                 i.message = comment
             if foreground:
                 i.foreground = foreground
-        
+
 class Redirection(Container):
     def color(self):
         return ["#000", "#AFF"]
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         m = ''
         if self.content[1].content[0] == '>':
             m = " de la sortie "
         elif self.content[1].content[0] == '<':
             m = " de l'entrée "
         if (self.content[0].content == ""
-            or self.content[0].content == "0"
-            or self.content[0].content == "1"
-        ):
+                or self.content[0].content == "0"
+                or self.content[0].content == "1"
+           ):
             m += "standard"
         elif self.content[0].content[0] == "2":
             m += "d'erreur"
@@ -2492,14 +2510,14 @@ class Redirection(Container):
 class SquareBracket(Container):
     def color(self):
         return ["#000", "#FAF"]
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Les crochets indiquent que l'on veut un seul caractère de la liste"
-    def cleanup(self, replace_option=None):
+    def cleanup(self, replace_option=None, _sort_content=False):
         # The char order is not important
         return Container.cleanup(self, replace_option, True)
 
 class Group(Command):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Lance un nouveau processus"
 class Replacement(Container):
     def unsane(self):
@@ -2517,7 +2535,7 @@ class Replacement(Container):
         return ["#000", "#CCF"]
     def is_a_pattern(self):
         return False
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.unsane():
             more = '<br><span class="command_help_error">Il est très rare d\'avoir besoin de faire «$(echo *)», il est plus simple d\'écrire «*» directement.</span>'
         else:
@@ -2527,14 +2545,14 @@ class Replacement(Container):
                 + "écrit par le processus sur sa sortie standard."
                 + more
                 )
-class ReplacementProtected(Container):
+class ReplacementProtected(Container): # pylint: disable=function-redefined
     pass
 class File(Redirection):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return 'Le fichier dont le nom est : «' + self.html() + "»"
 
 class InputStop(Redirection):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         t = self.text()
         if len(t) > 2 and t[0] == "'" and t[-1] == "'":
             more = "Le texte est copié sans substitution des variables"
@@ -2543,11 +2561,11 @@ class InputStop(Redirection):
         return "Les lignes suivant cette commande sont lues jusqu'à trouver le texte «" + self.html() + "» seul sur une ligne. " + more
 
 class Backgrounded(Line):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return 'Lancé en arrière plan'
 
 class Conditionnal(Line):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Suite conditionnelle de commandes ou pipelines"
 
 class Affectation(Container):
@@ -2561,8 +2579,8 @@ class Affectation(Container):
             t += content.text()
         return mystrip(t, '"') == '$' + self.content[0].text()
     def unsane_for(self):
-        if not hasattr(self, "parent"):
-            return # XXX create_doc
+        if not self.parent:
+            return None # XXX create_doc
         i = self.parent.parent.content_index()
         try:
             f = self.parent.parent.parent.content[i+2].content[0].content[0]
@@ -2570,16 +2588,17 @@ class Affectation(Container):
                 return f.loop_variable() == self.affectation_variable()
         except:
             pass
+        return None
     def color(self):
         if self.unsane() or self.unsane_for():
             return ["#F00", "#F88"]
-        else:
-            return ["#000", "#FFA"]
+        return ["#000", "#FFA"]
     def affectation_variable(self):
         v = self.first_of(VariableName)
         if v:
             return v.content
-    def local_help(self, dummy_position):
+        return None
+    def local_help(self, _position):
         v = ''
         for content in self.content[2:]:
             v += content.html()
@@ -2595,44 +2614,44 @@ class Affectation(Container):
                 + self.content[0].html() + '».' + more)
 
 class ForLoop(Command):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Boucle en parcourant les valeurs indiquées"
     def loop_variable(self):
         v = self.first_of(LoopVariable)
         if v:
             return v.content
-        
+        return None
+
 class WhileLoop(Command):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Boucle tant que la commande s'exécute sans erreur"
 
 class IfThenElse(Command):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "IF"
 
 class ThenBloc(Command):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Exécuté si la commande s'exécute sans erreur"
 
 class ElseBloc(Command):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Exécuté si la commande retourne une erreur"
 
 class ForValues(Command):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Les valeurs que va prendre la variable"
 
 class Body(Line):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if isinstance(self.content[-1], Done):
             return "Les commandes qui sont répétées"
-        else:
-            return "Terminer le bloc de commande avec le mot-clef «done»"
+        return "Terminer le bloc de commande avec le mot-clef «done»"
 
-class ArgumentGroup(Argument):
+class ArgumentGroup(Argument): # pylint: disable=function-redefined
     is_an_option = False
     command = False
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return self.message + '\n'
 
 
@@ -2640,7 +2659,8 @@ class ArgumentGroup(Argument):
 ##############################################################################
 ##############################################################################
 
-class Parser:
+class Parser: # pylint: disable=too-many-public-methods
+    i = None
     def __init__(self, text):
         if not isinstance(text, str):
             try:
@@ -2672,7 +2692,7 @@ class Parser:
             parsed.append(Unterminated(operator))
         else:
             if (len(parsed.content) >= 1
-                and isinstance(parsed.content[-1], Conditionnal)):
+                    and isinstance(parsed.content[-1], Conditionnal)):
                 b = parsed.content[-1]
             else:
                 b = Conditionnal()
@@ -2684,8 +2704,8 @@ class Parser:
             else:
                 op = Or(op)
             b.append(op)
-        
-    def parse(self, init=True):
+
+    def parse(self, init=True): # pylint: disable=too-many-branches,too-many-statements
         if init:
             self.i = 0
         parsed = Line()
@@ -2722,7 +2742,7 @@ class Parser:
             if self.get() == '|':
                 self.next()
                 if self.get() != '|':
-                    bug
+                    raise ValueError('bug')
                 self.add_to_conditionnal(parsed, '||')
                 if self.empty():
                     break
@@ -2732,9 +2752,9 @@ class Parser:
                     self.add_to_conditionnal(parsed, '&&')
                 else:
                     if (parsed.empty()
-                        or parsed.content[-1].empty()
-                        or parsed.content[-1].content[-1].empty()
-                        ):
+                            or parsed.content[-1].empty()
+                            or parsed.content[-1].content[-1].empty()
+                       ):
                         parsed.append(Unterminated("&"))
                     else:
                         b = Backgrounded()
@@ -2757,7 +2777,7 @@ class Parser:
             parsed.analyse()
             parsed.init_position()
         return parsed
-    def parse_pipeline(self, init):
+    def parse_pipeline(self, _init):
         parsed = Pipeline()
         while not self.empty():
             if self.get() == '(':
@@ -2798,12 +2818,13 @@ class Parser:
         return parsed
     def read_comment(self, parsed):
         if (self.get() != '#'
-            or (len(parsed.content) != 0
-                and not isinstance(parsed.content[-1], Separator))
-            ):
+                or (len(parsed.content) != 0
+                    and not isinstance(parsed.content[-1], Separator))
+           ):
             return True
         parsed.append(Comment(self.text[self.i:]))
         self.i = self.len
+        return None
 
     def error_if_empty(self, error=''):
         if error != '':
@@ -2817,9 +2838,9 @@ class Parser:
         if error == '':
             parsed.append(self.parse_command())
             if (len(parsed.content[-1].content)
-                and self.empty()
-                and name(parsed.content[-1]) == 'Command'
-                and name(parsed.content[-1].content[-1]) == 'Separator'):
+                    and self.empty()
+                    and name(parsed.content[-1]) == 'Command'
+                    and name(parsed.content[-1].content[-1]) == 'Separator'):
                 parsed.content[-1].content[-1] = Unterminated(
                     parsed.content[-1].content[-1].content,
                     "Terminez par un point-virgule")
@@ -2839,7 +2860,7 @@ class Parser:
                     parsed.content[-1].content,
                     "Mettre le mot-clef «" + keyword + "»")
                 error = "Il manque le mot clef «" + keyword + "»"
-            
+
         error = self.error_if_empty(error)
         if error == '':
             v = self.parse_argument()
@@ -2866,7 +2887,7 @@ class Parser:
                                'Il manque le mot-clef «' + keyword + '»'))
                 error = 'Il manque le mot-clef «' + keyword + '»'
         return self.error_if_empty(error)
-        
+
     def parse_if(self):
         parsed = IfThenElse()
         parsed.append(If('if' + self.skip(" \t\n")))
@@ -2901,9 +2922,9 @@ class Parser:
         if error == '':
             c = self.parse_argument()
             if (len(c.content) == 1
-                and name(c.content[0]) == 'Normal'
-                and valid_variable_name(c.content[0].content)
-                ):
+                    and name(c.content[0]) == 'Normal'
+                    and valid_variable_name(c.content[0].content)
+               ):
                 parsed.append(LoopVariable(c.content[0].content))
             else:
                 parsed.append(Unterminated(c.text(),
@@ -2923,8 +2944,8 @@ class Parser:
                 if not self.empty():
                     self.read_separator(v)
             if (len(v.content)
-                and self.empty()
-                and name(v.content[-1]) == 'Separator'):
+                    and self.empty()
+                    and name(v.content[-1]) == 'Separator'):
                 v.content[-1] = Unterminated(
                     v.content[-1].content,
                     "Ajoutez un point-virgule pour finir la liste")
@@ -2964,13 +2985,11 @@ class Parser:
         ):
             if return_keyword:
                 return parsed.content.pop().text()
-            else:
-                parsed.content[-1] = parsed.content[-1].content[0]
+            parsed.content[-1] = parsed.content[-1].content[0]
         else:
             if len(parsed.content) > 3:
                 return " est incomplet, il faut le compléter par " + choices(keywords)
-            else:
-                return " est vide, il faut indiquer des commandes"
+            return " est vide, il faut indiquer des commandes"
         return ''
 
     def parse_after_end_of_bloc(self, parsed, error, keyword):
@@ -3006,9 +3025,8 @@ class Parser:
                 error = "Le «do»...«done»" + err
         return self.parse_after_end_of_bloc(parsed, error, 'done')
 
-    def parse_command(self):
+    def parse_command(self): # pylint: disable=too-many-branches
         parsed = Command()
-        i = self.i
         while not self.empty():
             while (not self.empty()
                    and (not self.read_separator(parsed)
@@ -3029,8 +3047,8 @@ class Parser:
                 before_command = parsed.number_of(Argument)==0
                 parsed.append(self.parse_argument(parse_equal = before_command))
                 if (parsed.number_of(Argument) == 1
-                    and not isinstance(parsed.content[0], Affectation)
-                    ):
+                        and not isinstance(parsed.content[0], Affectation)
+                   ):
                     text = parsed.content[-1].text()
                     if text == 'for':
                         parsed.content.pop()
@@ -3066,7 +3084,8 @@ class Parser:
         if c not in ' \t':
             return True
         parsed.append(Separator(self.skip(" \t")))
-    def read_redirection(self, parsed):
+        return None
+    def read_redirection(self, parsed): # pylint: disable=too-many-branches
         i = self.i
         fildes = self.skip(digit)
         # BASH
@@ -3089,7 +3108,7 @@ class Parser:
             self.next()
         if self.empty() or self.get() in redirection_stopper:
             parsed.append(Unterminated(fildes + c))
-            return
+            return None
         redirection = Redirection()
         redirection.append(Fildes(fildes))
         redirection.append(Direction(c))
@@ -3116,6 +3135,7 @@ class Parser:
                 f.content = self.parse_argument().content
                 redirection.append(f)
         parsed.append(redirection)
+        return None
 
     def read_backslash(self, parsed, allowed=None):
         if self.get() != '\\':
@@ -3131,7 +3151,8 @@ class Parser:
                 parsed.append(Backslash("\\"))
                 parsed.append(Normal(self.get()))
             self.next()
-    def read_dollar(self, parsed):
+        return None
+    def read_dollar(self, parsed): # pylint: disable=too-many-branches
         if self.get() != '$':
             return True
         self.next()
@@ -3164,13 +3185,14 @@ class Parser:
                 parsed.append(r)
             else:
                 parsed.append(Normal('$')) # Assume its signification disapear
+        return None
     def read_replacement(self, parsed):
         if self.get() != '`':
             return True
         self.next()
         if self.empty():
             parsed.append(Unterminated("`"))
-            return
+            return None
         r = Replacement()
         r.append(GroupStart("`" + self.skip(" \t")))
         self.in_back_cote = True
@@ -3183,6 +3205,7 @@ class Parser:
             self.next()
             r.append(GroupStop("`" + self.skip(" \t")))
         parsed.append(r)
+        return None
 
     def read_quote(self, parsed):
         if self.get() != "'":
@@ -3202,6 +3225,7 @@ class Parser:
                 parsed.append(Normal(c))
             if not isinstance(parsed.content[-1], Quote):
                 parsed.content[i] = Unterminated("'")
+        return None
     def read_guillemet(self, parsed):
         if self.get() != '"':
             return True
@@ -3213,17 +3237,18 @@ class Parser:
             parsed.append(Guillemet('"'))
             while not self.empty():
                 if (self.read_backslash(parsed, '\\$"')
-                    and self.read_dollar(parsed)
-                    and self.read_replacement(parsed)):
+                        and self.read_dollar(parsed)
+                        and self.read_replacement(parsed)):
                     c = self.get()
                     self.next()
                     if c == '"':
                         parsed.append(Guillemet(c))
-                        return
+                        return None
                     parsed.append(Normal(c))
             if not isinstance(parsed.content[-1], Guillemet):
                 parsed.content[i] = Unterminated('"')
-    def read_pattern(self, parsed):
+        return None
+    def read_pattern(self, parsed): # pylint: disable=too-many-statements,too-many-branches
         if self.get() == '*':
             parsed.append(Star("*"))
         elif self.get() == '?':
@@ -3232,7 +3257,7 @@ class Parser:
             self.next()
             if self.empty():
                 parsed.append(Normal('['))
-                return
+                return None
             i = self.i
             sb = SquareBracket()
             sb.append(SquareBracketStart('['))
@@ -3262,7 +3287,7 @@ class Parser:
                 if c in ' \t|;&':
                     parsed.append(Normal('['))
                     self.i = i
-                    return
+                    return None
                 self.next()
                 if self.empty():
                     sb.append(Normal(c))
@@ -3282,12 +3307,14 @@ class Parser:
             if self.empty():
                 parsed.append(Normal('['))
                 self.i = i
-                return
+                return None
             sb.append(SquareBracketStop(']'))
             parsed.append(sb)
         else:
             return True
         self.next()
+        return None
+
     def read_equal(self, parsed):
         if len(parsed.content) != 1 or self.get() != '=':
             return True
@@ -3302,6 +3329,7 @@ class Parser:
         for content in self.parse_argument(False, False).content:
             a.append(content)
         parsed.append(a)
+        return None
     def read_home(self, parsed):
         if len(parsed.content) != 0  or  self.get() != '~':
             return True
@@ -3311,6 +3339,7 @@ class Parser:
             parsed.append(Home("~" + n))
         else:
             parsed.append(Unterminated("~" + n))
+        return None
     def parse_argument(self, parse_equal=True, parse_pattern=True):
         parsed = Argument()
         while not self.empty():
@@ -3320,13 +3349,13 @@ class Parser:
             if c == '`' and self.in_back_cote:
                 break
             if (self.read_backslash(parsed)
-                and self.read_dollar(parsed)
-                and self.read_quote(parsed)
-                and self.read_guillemet(parsed)
-                and (not parse_pattern or self.read_pattern(parsed))
-                and self.read_replacement(parsed)
-                and self.read_home(parsed)
-                ):
+                    and self.read_dollar(parsed)
+                    and self.read_quote(parsed)
+                    and self.read_guillemet(parsed)
+                    and (not parse_pattern or self.read_pattern(parsed))
+                    and self.read_replacement(parsed)
+                    and self.read_home(parsed)
+               ):
                 if not parse_equal or self.read_equal(parsed):
                     parsed.append(Normal(c))
                     self.next()
@@ -3343,6 +3372,8 @@ class RegExpTree(Argument):
     is_an_option_argument = False
     argument_position = ""
     begin_regexp = False
+    extended = parse_done = None
+    groups = None
     def local_help(self, position):
         r = Argument.local_help(self, position)
         if r != '':
@@ -3359,8 +3390,8 @@ class RegExpTree(Argument):
         return ["#080", "#8F8"]
     def init_position(self, i=0, ident=0):
         if (isinstance(self, RegExpMultiply)
-            and isinstance(self.content[1], RegExpBloc)
-            and not self.parse_done):
+                and isinstance(self.content[1], RegExpBloc)
+                and not self.parse_done):
             self.content[1].content[0] = Unterminated(
                 '{',
                 """Indiquez le nombre de répétition ou bien un intervalle
@@ -3378,7 +3409,7 @@ class RegExpTree(Argument):
             top = top.parent
         return top.groups
 
-    def or_list(self, content):
+    def or_list(self, content): # pylint: disable=no-self-use
         t = []
         s = ''
         for i in content:
@@ -3403,7 +3434,7 @@ class RegExpTree(Argument):
 
 class RegExpMultiply(RegExpTree):
     parse_done = False
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ("Répète «" + self.content[0].html() + '» '
                 + self.content[1].how_many())
 
@@ -3426,39 +3457,38 @@ class RegExpBloc(RegExpTree):
                 + ''.join([element.html()
                            for element in self.content[middle+1:-1]])
                 + " fois")
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ""
 
 class RegExpGroup(RegExpTree):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ("Groupement numéro " + str(self.group_number)
                 + self.or_list(self.content[1:-1]))
 
 class RegExpBackslashSpecial(RegExpTree):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.content[-1].content == 'b':
             return "Ceci représente l'emplacement aux extrémités de mot. Cet emplacement ne contient aucun caractère car il est entre 2 lettres."
         groups = self.get_groups()
         n = int(self.content[-1].content) - 1
         if n < len(groups):
-            more = "qui correspond à : «" + groups[n].html() + "»"
+            more = "qui correspond à : «" + groups[n].html() + "»" # pylint: disable=unsubscriptable-object
         else:
             more = "mais ce groupe n'existe pas"
         return ("Remplacé par ce qui a été trouvé par le groupe "
                 + str(n+1) + '<br>\n' + more)
 
 class RegExpList(RegExpTree):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.first_of(RegExpNegate):
             return "Remplace un unique caractère qui n'est <b>pas</b> dans la liste"
-        else:
-            return "Remplace un unique caractère de la liste"
-    def cleanup(self, replace_option=None):
+        return "Remplace un unique caractère de la liste"
+    def cleanup(self, replace_option=None, _sort_content=False):
         # The char order is not important
         return Container.cleanup(self, replace_option, True)
 
 class RegExpRange(RegExpTree):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ("Un caractère dont le code ASCII est entre celui de «"
                 + self.content[0].content + '» et celui de «'
                 + self.content[-1].content + '»')
@@ -3468,72 +3498,69 @@ class RegExpChar(Normal):
         return ["#080", "#8F8"]
 
 class RegExpDot(RegExpChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Un caractère quelconque."
 
 class RegExpStar(RegExpChar):
     def how_many(self):
         if self.content == '*':
             return "de 0 fois (rien) à l'infini"
-        elif self.content == "+":
+        if self.content == "+":
             return "de une fois à l'infini"
-        elif self.content == "?":
+        if self.content == "?":
             return "zéro ou une fois"
-        else:
-            return "Il y a un bug dans le programme !"
-    def local_help(self, dummy_position):
+        return "Il y a un bug dans le programme !"
+    def local_help(self, _position):
         return "Répète l'entité précédente"
 
 class RegExpReset(RegExpChar):
     begin_regexp = True
 class RegExpOr(RegExpReset):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "«OU» entre la partie gauche et la droite"
 class RegExpParenthesis(RegExpReset):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.content == '(':
             return "Début du groupe"
-        else:
-            return "Fin du groupe"
+        return "Fin du groupe"
 class RegExpBegin(RegExpReset):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Le début de ligne"
 class RegExpEnd(RegExpChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "La fin de ligne"
 
 class RegExpGarbage(RegExpChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Ces caractères n'ont aucun sens après la fin de ligne"
     def color(self):
         return ["#F00", "#F88"]
 
 class RegExpBadRange(RegExpGarbage):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Les seul caractères autorisés sont les chiffres et la virgule"
 
-class RegExpBadEscape(RegExpGarbage):
-    def local_help(self, dummy_position):
+class RegExpBadEscape(RegExpGarbage): # pylint: disable=function-redefined
+    def local_help(self, _position):
         return "Ce n'est pas la peine d'échapper ce caractère qui est normal dans ce contexte, cela peut au contraire lui donner un sens."
 
 class RegExpBracket(RegExpChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.content == '[':
             return "Début de liste de caractères"
-        else:
-            return "Fin de liste de caractères"
+        return "Fin de liste de caractères"
 
 class RegExpNegate(RegExpBracket):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Un caractère qui n'est pas dans la liste suivante"
 
 class RegExpListNormal(RegExpChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.is_duplicate():
             return msg_duplicate
         return "Le caractère «" + self.content + "»"
     def color(self):
-        if hasattr(self, "parent"):
+        if self.parent:
             if isinstance(self.parent, RegExpRange):
                 return ["#040", "#8F8"]
             if self.is_duplicate():
@@ -3542,17 +3569,16 @@ class RegExpListNormal(RegExpChar):
 
 class RegExpBackslash(Invisible):
     escape = True
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.escape:
             return "Il disparaît en annulant la signification du caractère suivant pour l'expression régulière."
-        else:
-            return "Il donne une signication au caractère suivant"
+        return "Il donne une signication au caractère suivant"
     def color(self):
         return ["#8F8", "#8F8"]
 
 
 class RegExpNoHelp(RegExpReset):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return ""
 
 
@@ -3570,15 +3596,15 @@ def new_content(element, delete_from, delete_to, insert_elements):
     element.content = content
     return element
 
-def split_char(root, element, i, j, char, extended):
+def split_char(root, element, i, j, char, extended): # pylint: disable=too-many-arguments
     new_content(root, i, i+1,
                 [Normal(element.content[:j]),
                  char,
                  Normal(element.content[j+1:])])
     return regexpparser(root, extended)
 
-def regexpparser_multiply(root, i, j, index_last_element, element, char,
-                          extended):
+def regexpparser_multiply(root, i, j, index_last_element, # pylint: disable=too-many-arguments
+                          element, char, extended):
     node = RegExpMultiply()
     if char == '{':
         number = RegExpBloc()
@@ -3595,7 +3621,7 @@ def regexpparser_multiply(root, i, j, index_last_element, element, char,
     else:
         last_element = root.content[index_last_element]
         if (isinstance(last_element, Normal)
-            and len(last_element.content) > 1):
+                and len(last_element.content) > 1):
             new_content(root, index_last_element,
                         index_last_element+1,
                         [Normal(last_element.content[:-1]),
@@ -3677,22 +3703,22 @@ def regexpparser_list(root, i, j, extended):
     return regexpparser(root, extended)
 
 # Fonction en O(n*n) pour simplifier le code
-def regexpparser(root, extended):
+def regexpparser(root, extended): # pylint: disable=too-many-branches,too-many-statements
     index_last_element = None
     group_start = None
     for i, element in enumerate(root.content):
         if (not isinstance(element, Chars)
-            and not isinstance(element, RegExpTree)):
-            return # Abort parsing
+                and not isinstance(element, RegExpTree)):
+            return None # Abort parsing
         if element.begin_regexp:
             if isinstance(element, RegExpParenthesis):
                 group_start = i
             index_last_element = None
             continue
         if (index_last_element is not None
-            and isinstance(root.content[index_last_element], RegExpMultiply)
-            and not root.content[index_last_element].parse_done
-        ):
+                and isinstance(root.content[index_last_element], RegExpMultiply)
+                and not root.content[index_last_element].parse_done
+           ):
             factor = root.content[index_last_element].content[1]
             if not isinstance(factor, RegExpBloc):
                 node = RegExpBloc()
@@ -3715,8 +3741,8 @@ def regexpparser(root, extended):
             return regexpparser(root, extended)
         if not isinstance(element, Normal):
             if (isinstance(element, RegExpTree)
-                or isinstance(element, RegExpBackslash)
-            ):
+                    or isinstance(element, RegExpBackslash)
+               ):
                 index_last_element = i
             continue
         if isinstance(element, RegExpEnd) or isinstance(element, RegExpDot):
@@ -3727,9 +3753,9 @@ def regexpparser(root, extended):
             continue
 
         if (index_last_element
-            and isinstance(root.content[index_last_element], RegExpEnd)
-            and name(element) == 'Normal'
-        ):
+                and isinstance(root.content[index_last_element], RegExpEnd)
+                and name(element) == 'Normal'
+           ):
             if not extended:
                 content = [RegExpGarbage(element.content)]
                 new_content(root, i, i+1, content)
@@ -3748,9 +3774,9 @@ def regexpparser(root, extended):
         # Normal string
         for j, char in enumerate(element.content):
             if (j == 0
-                and index_last_element is not None
-                and isinstance(root.content[index_last_element],
-                               RegExpBackslash)):
+                    and index_last_element is not None
+                    and isinstance(root.content[index_last_element],
+                                   RegExpBackslash)):
                 if char == 'b'  or  char in '123456789' and extended:
                     node = RegExpBackslashSpecial()
                     node.content = root.content[index_last_element:i]
@@ -3760,40 +3786,40 @@ def regexpparser(root, extended):
                         element.content = element.content[1:]
                     else:
                         i += 1
-                    new_content(root, index_last_element, i, [node]) 
+                    new_content(root, index_last_element, i, [node])
                     return regexpparser(root, extended)
                 if (char not in '*.^$\\[.'
-                    and (not extended or char not in '()|+')):
+                        and (not extended or char not in '()|+')):
                     root.content[index_last_element].escape = 0
                     return split_char(root, element, i, j,
                                       RegExpBadEscape(char), extended)
                 continue
             if ((char == '*'
-                or char in '?+{' and extended
-                 )
-                and (j != 0 or index_last_element is not None)
-                ):
+                 or char in '?+{' and extended
+                )
+                    and (j != 0 or index_last_element is not None)
+               ):
                 return regexpparser_multiply(root, i, j, index_last_element,
                                              element, char, extended)
-            elif char == '^' and index_last_element is None and j == 0:
+            if char == '^' and index_last_element is None and j == 0:
                 return split_char(root, element, i, j,
                                   RegExpBegin(char), extended)
-            elif char == '$':
+            if char == '$':
                 return split_char(root, element, i, j,
                                   RegExpEnd(char), extended)
-            elif char == '.':
+            if char == '.':
                 return split_char(root, element, i, j,
                                   RegExpDot(char), extended)
-            elif char == '\\':
+            if char == '\\':
                 return split_char(root, element, i, j,
                                   RegExpBackslash(char), extended)
-            elif char == '(' and extended:
+            if char == '(' and extended:
                 return split_char(root, element, i, j,
                                   RegExpParenthesis(char), extended)
-            elif char == '|' and extended:
+            if char == '|' and extended:
                 return split_char(root, element, i, j,
                                   RegExpOr(char), extended)
-            elif char == ')' and extended:
+            if char == ')' and extended:
                 if group_start is None:
                     return split_char(root, element, i, j,
                                       Unterminated(')', "Il manque l'ouvrante"),
@@ -3806,7 +3832,7 @@ def regexpparser(root, extended):
                 new_content(root, group_start, i+1,
                             [node, Normal(element.content[j+1:])])
                 return regexpparser(root, extended)
-            elif char == '[':
+            if char == '[':
                 return regexpparser_list(root, i, j, extended)
         index_last_element = i
     if group_start is not None:
@@ -3831,7 +3857,7 @@ def regexpparser_top(root, extended):
     return t
 
 class SedReplacementText(Container):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.parent.first_of(SedSeparator3):
             m = "."
         else:
@@ -3842,7 +3868,8 @@ class SedReplacementText(Container):
         return ["#088", "#8FF"]
 
 class SedReplacement(SedReplacementText):
-    def local_help(self, dummy_position):
+    multiple = None
+    def local_help(self, _position):
         a = self.first_of(SedAction)
         if not a:
             return "Indiquez la lettre 's' pour faire une substitution."
@@ -3865,47 +3892,48 @@ class SedReplacement(SedReplacementText):
     def color(self):
         if self.first_of(SedSeparator3):
             return ["#088", "#8FF"]
-        else:
-            return ["#088", "#F88"]
+        return ["#088", "#F88"]
 
 class SedChar(Chars):
     def color(self):
         return ["#088", "#8FF"]
 
 class SedSeparator1(SedChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Indique le début de l'expression régulière."
 
 class SedSeparator2(SedChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Indique le début de la chaîne qui va remplacer ce qui rentre dans l'expression régulière."
 
 class SedSeparator3(SedChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Indique le début des options de remplacement."
 
 class SedOption(SedChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.content == 'g':
             return "Le remplacement est fait pour toutes les occurrences trouvées dans la ligne et pas seulement la première."
+        return None
 
 class SedAmpersand(SedChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return "Représente ce qui a été trouvé par l'expression régulière"
 
 class SedAction(SedChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         if self.content == 's':
             t = "Remplacement d'une expression régulière par un texte."
         return ("Le traitement que doit faire la commande :<br>"
                 + "'" + self.content + "' : " + t)
 
 class SedBackslash(SedChar):
-    def local_help(self, dummy_position):
+    def local_help(self, _position):
         return """Annule la signification du caractère suivant pour 'sed'"""
 
 class SedBackslashSpecial(SedChar):
-    def local_help(self, dummy_position):
+    regexptree = None
+    def local_help(self, _position):
         groups = self.regexptree.groups
         n = int(self.content[-1]) - 1
         if n < len(groups):
@@ -3917,10 +3945,9 @@ class SedBackslashSpecial(SedChar):
     def color(self):
         if len(self.content) == 0 or int(self.content[-1]) - 1 < len(self.regexptree.groups):
             return ["#088", "#8FF"]
-        else:
-            return ["#F00", "#F88"]
+        return ["#F00", "#F88"]
 
-def sedparser_top(root, extended):
+def sedparser_top(root, extended): # pylint: disable=too-many-branches,too-many-statements
     i = 0
     j = 0
     content = []
@@ -4033,4 +4060,3 @@ def sedparser_top(root, extended):
     root.content = content
     root.multiple = multiple
     return root
-
