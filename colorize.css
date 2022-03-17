@@ -85,3 +85,16 @@
     color: #FFF ;
 }
 
+.explain_path {
+    border: 1px solid black;
+    font-family: comic sans ms;
+    font-size: 80%
+}
+
+.explain_path DIV {
+    padding-left: 1em
+}
+
+.explain_path .path:before {
+    content: ' → ';
+}

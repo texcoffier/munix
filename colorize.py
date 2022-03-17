@@ -177,7 +177,8 @@ def define_command():
         "options": None,
         "cleanup": nothing, # sleep 1m => sleep 60
         "analyse": nothing,  # see 'define_test'
-        "color": ["#000", "#CFC"]
+        "color": ["#000", "#CFC"],
+        "use_files": False
         }
 
 def define_builtin():
@@ -193,6 +194,7 @@ def define_cd():
     d['syntax'] = "cd <var>chemin_absolu_ou_relatif</var>"
     d['1'] = "Chemin vers ce qui deviendra le nouveau répertoire courant"
     d['unknown'] = "Cet argument est inutile et provoquera une erreur"
+    d['use_files'] = True
     return d
 
 def define_pwd():
@@ -249,6 +251,7 @@ def define_ls():
         Option('-t', '-t', "trie les fichiers par date",
                False, False, False)
     )
+    d['use_files'] = True
     return d
 
 def define_cat():
@@ -257,6 +260,7 @@ def define_cat():
     d['description'] = "Con<b>cat</b>ène des fichiers"
     d['message'] = "Elle affiche les contenu des fichiers"
     d['syntax'] = "cat <var>file1</var> <var>file2</var>..."
+    d['use_files'] = True
     return d
 
 def define_cp():
@@ -273,6 +277,7 @@ def define_cp():
                "copie récursive de répertoire : tout le contenu"),
         Option('--recursive', '-R', 'SYNONYM')
         )
+    d['use_files'] = True
     return d
 
 def define_mv():
@@ -284,6 +289,7 @@ def define_mv():
     d['1'] = "Nom du premier fichier/répertoire à renommer ou déplacer ailleurs"
     d['$'] = "Le nouveau nom ou si c'est un répertoire, la destination du déplacement"
     d['min_arg'] = 2
+    d['use_files'] = True
     return d
 
 def define_rm():
@@ -301,6 +307,7 @@ def define_rm():
                "demande l'autorisation avant de détruire"),
         Option('--force', '-f', 'détruit sans jamais poser de question')
         )
+    d['use_files'] = True
     return d
 
 def define_mkdir():
@@ -311,6 +318,7 @@ def define_mkdir():
     d['syntax'] = "mkdir <var>chemin_du_répertoire_à_créer</var>"
     d['1'] = "chemin vers le répertoire qui va être créé"
     d['min_arg'] = 1
+    d['use_files'] = True
     return d
 
 def define_ln():
@@ -324,6 +332,7 @@ def define_ln():
     d['options'] = Options(
         Option('--symbolic', '-s', "création d'un lien symbolique")
         )
+    d['use_files'] = True
     return d
 
 def define_less():
@@ -332,6 +341,7 @@ def define_less():
     d['description'] = "affichage de fichier page par page"
     d['message'] = "Si aucun nom de fichier n'est donné c'est un filtre"
     d['syntax'] = "less <var>fichier1</var> <var>fichier2</var>"
+    d['use_files'] = True
     return d
 
 def define_man():
@@ -372,6 +382,7 @@ def define_tail():
                "Nombre d'octets à afficher", False)
     )
     d['analyse'] = analyse_tail
+    d['use_files'] = True
     return d
 
 def define_du():
@@ -384,6 +395,7 @@ def define_du():
         Option('--human-readable', '-h', "Affiche en Ko, Mo, Go, To..."),
         Option('--summarize', '-s', "Affiche seulement le total")
     )
+    d['use_files'] = True
     return d
 
 def define_date():
@@ -405,6 +417,7 @@ def define_df():
     d['options'] = Options(
         Option('--human-readable', '-h', "Tailles lisibles pour un humain")
     )
+    d['use_files'] = True
     return d
 
 def define_sort():
@@ -414,6 +427,7 @@ def define_sort():
     d['options'] = Options(
         Option('--numeric-sort', '-n', "Pour trier des nombres")
     )
+    d['use_files'] = True
     return d
 
 def define_wc():
@@ -427,6 +441,7 @@ def define_wc():
         Option('--bytes', '-c', "Affiche seulement le nombre d'octets", False),
         Option('--chars', '-m', "Affiche seulement le nombre de caractères", False)
     )
+    d['use_files'] = True
     return d
 
 def define_uniq():
@@ -435,6 +450,7 @@ def define_uniq():
     d['description'] = "affiche les fichiers en éliminant les lignes identiques"
     d['message'] = "Il faut qu'elles soient cote à cote."
     d['*'] = "Affiche ce fichier"
+    d['use_files'] = True
     return d
 
 def define_gzip():
@@ -449,6 +465,7 @@ def define_gzip():
         Option('--fast', '-1', "Comprime le plus rapidement", False, False),
         Option('--list', '-l', "Affiche les statistiques concernant des fichiers comprimés", False, False)
     )
+    d['use_files'] = True
     return d
 
 def define_gunzip():
@@ -460,6 +477,7 @@ def define_gunzip():
         Option('--recursive', '-r', "Décomprime les fichiers d'une hiérarchie"),
         Option('--verbose', '-v', "Affiche ce qui est fait")
     )
+    d['use_files'] = True
     return d
 
 def define_zcat():
@@ -468,6 +486,7 @@ def define_zcat():
     d['description'] = "affiche les fichiers en les décomprimant"
     d['message'] = "Elle n'écrit ni ne modifie rien sur le disque"
     d['*'] = "Affiche ce fichier"
+    d['use_files'] = True
     return d
 
 def replace_minutes(txt):
@@ -520,6 +539,7 @@ def define_tar():
         Option('--verbose', '-v', "Mode verbeux", False, False, True)
         )
     d['analyse'] = analyse_tar
+    d['use_files'] = True
     return d
 
 def define_echo():
@@ -528,6 +548,7 @@ def define_echo():
     d['description'] = "affiche ses arguments"
     d['message'] = "Elle affiche un espace entre chaque argument"
     d['syntax'] = "echo arg1 arg2 arg3..."
+    d['use_files'] = True
     return d
 
 def get_argument(command, position):
@@ -618,7 +639,7 @@ def parse_test(command, position, allow_bool=True): # pylint: disable=too-many-b
             '-e': "une entité qui existe",
             '-d': "un répertoire"
         }[t]
-        v2.make_comment("Le chemin testé")
+        v2.make_comment("Le chemin testé" + v2.explain_path())
         position = merge_into(command, old_position, position,
                               ArgumentGroup(),
                               "Vrai si «" + v2.html()
@@ -797,7 +818,7 @@ def analyse_grep(command): # pylint: disable=too-many-branches,too-many-statemen
                 state = "filename"
             continue
         if state in ("filename", "only-filename"):
-            v.make_comment("Chemin du fichier ou l'on cherche les lignes",
+            v.make_comment("Chemin du fichier ou l'on cherche les lignes" + v.explain_path(),
                            "#000")
             state = "only-filename"
             is_a_filter = False
@@ -890,7 +911,7 @@ def analyse_sed(command): # pylint: disable=too-many-branches,too-many-statement
                 state = "filename"
             continue
         if state in ("filename", "only-filename"):
-            v.make_comment("Chemin du fichier à traiter", "#000")
+            v.make_comment("Chemin du fichier à traiter" + v.explain_path(), "#000")
             state = "only-filename"
             is_a_filter = False
             continue
@@ -1029,7 +1050,7 @@ def analyse_find(command): # pylint: disable=too-many-locals,too-many-branches,t
         if state == "places":
             if (len(t) > 0 and t[0] != '-' and t[0] != '('
                     or t == '' and v.html() != ''):
-                v.make_comment("Emplacement ou chercher")
+                v.make_comment("Emplacement ou chercher" + v.explain_path())
                 nb_places += 1
                 continue
             state = "start"
@@ -1357,7 +1378,7 @@ def analyse_chmod(command):
                            + message + '</span>')
             continue
         if state == "file":
-            v.make_comment("Change le mode de cette entité :<br>" + message)
+            v.make_comment("Change le mode de cette entité :" + v.explain_path() + message)
     return command
 
 def define_chmod():
@@ -2351,7 +2372,105 @@ class Argument(Container): # pylint: disable=function-redefined
                 return '«' + self.html() + "» est une des valeurs possibles"
             return '«' + self.html() + "» :" + more
         more += self.contextual_help(position)
+        if self.parent.command in commands and commands[self.parent.command]['use_files']:
+            more += self.explain_path()
         return 'Argument ' + str(pos) + ' : «' + self.html() + "»" + more
+    def explain_path(self): # pylint: disable=too-many-branches,too-many-statements
+        def rewrite(txt):
+            empty = False
+            if close:
+                txt += '» on rentre dedans'
+            if path[-1] == '.':
+                txt = txt.replace('«.» on rentre dedans',
+                                  "«.» : on reste dans le même répertoire")
+                path.pop()
+            elif path[-1] == '':
+                txt = txt.replace('«» on rentre dedans', '')
+                path.pop()
+                empty = True
+            elif path[-1] == '..':
+                txt = txt.replace('«..» on rentre dedans',
+                                  "«..» : on sort du répertoire")
+                if len(path) == 1:
+                    # ['..']
+                    print("bug?", path)
+                    pass
+                elif path[-2] == '..':
+                    # Unknown path
+                    pass
+                elif len(path) == 2:
+                    if path[0] == '.':
+                        # ['.', '..']
+                        path[0] = '..'
+                        path.pop()
+                    elif path[0] == '':
+                        # ['', '..']
+                        path.pop()
+                    else:
+                        # ['~', '..']
+                        pass
+                else:
+                    path.pop()
+                    path.pop()
+            if close and not empty:
+                txt += ' <b class="path">' + ('/'.join(path) or '/') + '</b>'
+            return txt
+
+        path = [None]
+        text = ''
+        first = True
+        end = ''
+        close = False
+        for child in self.content:
+            if name(child) in ('Guillemet', 'Quote', 'Backslash'):
+                continue
+            if name(child) == 'Normal':
+                if child.content == '':
+                    continue
+                for char in protect(child.content):
+                    if char == '/':
+                        text = rewrite(text)
+                        if first:
+                            text += '<div class="explain_path">Chemin absolu : on part de la racine<div>«'
+                            end += '</div></div>' + end
+                            path = ['']
+                        else:
+                            text += '<div>«'
+                            end = '</div>' + end
+                        close = True
+                        path.append('')
+                    else:
+                        if first:
+                            text += '<div class="explain_path">Chemin relatif : on part du répertoire courant<div>«'
+                            end = '</div></div>' + end
+                            close = True
+                            path = ['.', '']
+                        text += char
+                        path[-1] += char
+                    first = False
+            elif name(child) == 'Home':
+                if child.content == '~':
+                    text += '<div class="explain_path">Chemin absolu : on part de votre répertoire de connexion'
+                else:
+                    text += '<div class="explain_path">Chemin absolu : on part du répertoire de connexion de «' + protect(child.content[1:]) + '»'
+                path = [child.html()]
+                end = '</div>' + end
+            else:
+                if first:
+                    if name(child) == 'Variable':
+                        text += '<div class="explain_path">Chemin relatif ou absolu suivant la valeur de ' + child.html() + '<div>«'    
+                        path = ['']
+                    else:
+                        # Start by a pattern
+                        text += '<div class="explain_path">Chemin relatif : On part du répertoire courant<div>«'
+                        path = ['.', '']
+                    end = '</div></div>' + end
+                    close = True
+                text += child.html()
+                path[-1] += child.html()
+            first = False
+        text = rewrite(text)
+        return text + end
     def text_content(self):
         c = self.cleanup(False).split("Normal('")
         if len(c) == 1:

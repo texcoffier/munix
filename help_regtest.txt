@@ -10,8 +10,8 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [5,-222,	'Un espace ou plus pour séparer les arguments.'],
-[6,-223,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
-	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"]],
+[6,-222,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
+	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule.Chemin relatif : On part du répertoire courant«*» on rentre dedans ./*"]],
 [	'[',
 [0,-1,	'Tapez un espace puis la condition'
 	'Commande : «[» sans argument'
@@ -164,7 +164,7 @@
 	'Vrai si «a» est un répertoire'
 	''],
 [5,-213,	'Un espace ou plus pour séparer les arguments'],
-[6,-212,	'Le chemin testé']],
+[6,-212,	'Le chemin testéChemin relatif : on part du répertoire courant«a» on rentre dedans ./a']],
 [	'[ -d a ',
 [0,-1,	"Manque le ']' final"
 	'La commande «[» avec un argument.'
@@ -178,7 +178,7 @@
 	'Vrai si «a» est un répertoire'
 	''],
 [5,-213,	'Un espace ou plus pour séparer les arguments'],
-[6,-212,	'Le chemin testé'],
+[6,-212,	'Le chemin testéChemin relatif : on part du répertoire courant«a» on rentre dedans ./a'],
 [7,-181,	"Vous pouvez terminer le test avec un ']'"]],
 [	'[ -d a b',
 [0,-1,	"Manque le ']' final"
@@ -193,7 +193,7 @@
 	'Vrai si «a» est un répertoire'
 	''],
 [5,-213,	'Un espace ou plus pour séparer les arguments'],
-[6,-212,	'Le chemin testé'],
+[6,-212,	'Le chemin testéChemin relatif : on part du répertoire courant«a» on rentre dedans ./a'],
 [7,-181,	'Un espace ou plus pour séparer les arguments.'],
 [8,-181,	"Ici on devrait trouver '-o' ou '-a'"
 	'Argument 2 : «b»']],
@@ -210,7 +210,7 @@
 	'Vrai si «a» est un répertoire'
 	''],
 [5,-213,	'Un espace ou plus pour séparer les arguments'],
-[6,-212,	'Le chemin testé'],
+[6,-212,	'Le chemin testéChemin relatif : on part du répertoire courant«a» on rentre dedans ./a'],
 [7,-181,	'Un espace ou plus pour séparer les arguments.'],
 [8,-181,	'Texte : «]»'
 	'Argument 2 : «]»']],
@@ -228,7 +228,7 @@
 	'OU booléen'
 	''],
 [5,-225,	'Un espace ou plus pour séparer les arguments'],
-[6,-224,	'Le chemin testé'],
+[6,-224,	'Le chemin testéChemin relatif : on part du répertoire courant«a» on rentre dedans ./a'],
 [7,-193,	'Un espace ou plus pour séparer les arguments.'],
 [8,-193,	"'OU' booléen entre ce qui est à gauche et à droite"],
 [10,-193,	'Un espace ou plus pour séparer les arguments.'],
@@ -237,7 +237,7 @@
 	'ET booléen'
 	''],
 [13,-244,	'Un espace ou plus pour séparer les arguments.'],
-[14,-244,	'Le chemin testé'],
+[14,-244,	'Le chemin testéChemin relatif : on part du répertoire courant«k» on rentre dedans ./k'],
 [15,-205,	'Un espace ou plus pour séparer les arguments.'],
 [16,-205,	"'ET' booléen entre ce qui est à gauche et à droite"],
 [18,-205,	'Un espace ou plus pour séparer les arguments.'],
@@ -304,7 +304,7 @@
 	'OU booléen'
 	''],
 [9,-262,	'Un espace ou plus pour séparer les arguments'],
-[10,-261,	'Le chemin testé'],
+[10,-261,	'Le chemin testéChemin relatif : on part du répertoire courant«a» on rentre dedans ./a'],
 [11,-230,	'Un espace ou plus pour séparer les arguments.'],
 [12,-230,	"'OU' booléen entre ce qui est à gauche et à droite"],
 [14,-230,	'Un espace ou plus pour séparer les arguments.'],
@@ -312,7 +312,7 @@
 	'Vrai si «k» est une entité qui existe'
 	''],
 [17,-269,	'Un espace ou plus pour séparer les arguments.'],
-[18,-269,	'Le chemin testé'],
+[18,-269,	'Le chemin testéChemin relatif : on part du répertoire courant«k» on rentre dedans ./k'],
 [19,-230,	'Un espace ou plus pour séparer les arguments.'],
 [20,-218,	"Le caractère «'» disparaît. La signification de tous les caractères entre les deux cotes est annulée."],
 [21,-218,	'Texte : «)»'],
@@ -531,7 +531,7 @@
 [6,-649,	'Texte : «a»'
 	'Argument 1 : «a» : une expression régulière'],
 [7,-649,	'Un espace ou plus pour séparer les arguments.'],
-[8,-649,	"Chemin du fichier ou l'on cherche les lignes"
+[8,-649,	"Chemin du fichier ou l'on cherche les lignesChemin relatif : on part du répertoire courant«b» on rentre dedans ./b"
 	'Argument 2 : «b»']],
 [	'grep a -e',
 [0,-1,	'Texte : «grep»'
@@ -571,7 +571,7 @@
 [9,-649,	'Texte : «-e»'
 	'Argument 2 : «-e» : une expression régulière'],
 [11,-649,	'Un espace ou plus pour séparer les arguments.'],
-[12,-649,	"Chemin du fichier ou l'on cherche les lignes"
+[12,-649,	"Chemin du fichier ou l'on cherche les lignesChemin relatif : on part du répertoire courant«f» on rentre dedans ./f"
 	'Argument 3 : «f»']],
 [	'grep a b c',
 [0,-1,	'Texte : «grep»'
@@ -589,10 +589,10 @@
 [6,-649,	'Texte : «a»'
 	'Argument 1 : «a» : une expression régulière'],
 [7,-649,	'Un espace ou plus pour séparer les arguments.'],
-[8,-649,	"Chemin du fichier ou l'on cherche les lignes"
+[8,-649,	"Chemin du fichier ou l'on cherche les lignesChemin relatif : on part du répertoire courant«b» on rentre dedans ./b"
 	'Argument 2 : «b»'],
 [9,-649,	'Un espace ou plus pour séparer les arguments.'],
-[10,-649,	"Chemin du fichier ou l'on cherche les lignes"
+[10,-649,	"Chemin du fichier ou l'on cherche les lignesChemin relatif : on part du répertoire courant«c» on rentre dedans ./c"
 	'Argument 3 : «c»']],
 [	'grep -e a -e b',
 [0,-1,	'Texte : «grep»'
@@ -1499,8 +1499,8 @@
 [5,-222,	'Un espace ou plus pour séparer les arguments.'],
 [6,-222,	'Début du groupement'
 	"Lance un nouveau processus pour évaluer le contenu. Ces caractères sont remplacés par ce qui a été écrit par le processus sur sa sortie standard.Il est très rare d'avoir besoin de faire «$(echo *)», il est plus simple d'écrire «*» directement."
-	'Argument 1 : «$(echo *)»'],
-[8,-491,	'Texte : «echo»'
+	'Argument 1 : «$(echo *)»Chemin relatif : On part du répertoire courant«$(echo *)» on rentre dedans ./$(echo *)'],
+[8,-577,	'Texte : «echo»'
 	'La commande «echo» avec un argument.'
 	'echo : affiche ses arguments'
 	' (builtin)'
@@ -1509,10 +1509,10 @@
 	'echo arg1 arg2 arg3...'
 	'Aide : help echo'
 	'Une ligne comportant : une commande simple'],
-[12,-711,	'Un espace ou plus pour séparer les arguments.'],
-[13,-712,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
-	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"],
-[14,-491,	'Fin du groupement'],
+[12,-797,	'Un espace ou plus pour séparer les arguments.'],
+[13,-797,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
+	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule.Chemin relatif : On part du répertoire courant«*» on rentre dedans ./*"],
+[14,-577,	'Fin du groupement'],
 [15,-45,	'Le «;» permet de séparer les commandes.'],
 [18,-45,	'Nom de la variable'
 	'Enregistre «$(echo *)» dans la variable : «A».'
@@ -1530,8 +1530,8 @@
 	'Aide : help echo'
 	'Une ligne comportant : une commande simple'],
 [26,-478,	'Un espace ou plus pour séparer les arguments.'],
-[27,-479,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
-	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"],
+[27,-478,	"L'étoile représente une suite quelconque de caractères pouvant être vide."
+	"Argument 1 : «*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule.Chemin relatif : On part du répertoire courant«*» on rentre dedans ./*"],
 [28,-258,	'Fin du groupement']],
 [	'grep "^[a-z]$"',
 [0,-1,	'Texte : «grep»'
@@ -1610,7 +1610,7 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [5,-245,	'Un espace ou plus pour séparer les arguments.'],
-[6,-245,	'Emplacement ou chercher'
+[6,-245,	'Emplacement ou chercherChemin relatif : on part du répertoire courant«.» : on reste dans le même répertoire .'
 	'Argument 1 : «.»'],
 [7,-245,	'Un espace ou plus pour séparer les arguments.'],
 [8,-245,	'Ce qui suit est un pattern indiquant'
@@ -1627,7 +1627,7 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [5,-244,	'Un espace ou plus pour séparer les arguments.'],
-[6,-245,	'Emplacement ou chercher'
+[6,-245,	'Emplacement ou chercherChemin relatif : on part du répertoire courant«a*» on rentre dedans ./a*'
 	"Argument 1 : «a*» c'est un pattern qui est remplacé par tous les noms de fichiers existants qui rentrent dans le moule"],
 [7,-364,	"L'étoile représente une suite quelconque de caractères pouvant être vide."],
 [8,-245,	'Un espace ou plus pour séparer les arguments'],
@@ -1725,7 +1725,7 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [5,-435,	'Un espace ou plus pour séparer les arguments.'],
-[6,-435,	'Emplacement ou chercher'
+[6,-435,	'Emplacement ou chercherChemin relatif : on part du répertoire courant«.» : on reste dans le même répertoire .'
 	'Argument 1 : «.»'],
 [7,-435,	'Un espace ou plus pour séparer les arguments.'],
 [8,-435,	'Ce qui suit est un pattern indiquant'
@@ -1806,7 +1806,7 @@
 [10,-250,	'Un espace ou plus pour séparer les arguments'],
 [11,-250,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar'],
 [12,-250,	'«$A» est remplacé par le shell par le contenu de la variable «A». Le nom de la variable disparaît'],
-[14,-249,	'Le chemin testé'],
+[14,-249,	'Le chemin testéChemin relatif ou absolu suivant la valeur de $A«$A.c» on rentre dedans $A.c'],
 [16,-249,	'Le caractère «"» disparaît. La signification de tous les caractères entre les 2 guillemets est annulée sauf l\'anti-slash et le dollar.']],
 [	'&|b',
 [0,-1,	'Il manque la commande à mettre en arrière plan.'
@@ -1842,7 +1842,7 @@
 	'Une ligne comportant : une commande simple'
 	''],
 [5,-243,	'Un espace ou plus pour séparer les arguments.'],
-[6,-243,	'Emplacement ou chercher'
+[6,-243,	'Emplacement ou chercherChemin relatif : on part du répertoire courant«.» : on reste dans le même répertoire .'
 	'Argument 1 : «.»'],
 [7,-243,	'Un espace ou plus pour séparer les arguments.'],
 [8,-243,	'Ce qui suit est une taille de fichier'
