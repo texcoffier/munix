@@ -717,7 +717,6 @@ class Stats:
 
         # Display stats for the ip
         ctx.fillStyle = '#000'
-        ctx.font = '20px sans-serif'
         ctx.fillText("Moyenne et écart-type des parties entourées :", 150, 30)
 
         for test in self.tests.methods:
