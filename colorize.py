@@ -1874,20 +1874,20 @@ class Container: # pylint: disable=too-many-public-methods
                                             for x in self.content
                                            ]) + ')'
     def cleanup(self, replace_option, sort_content=False): # pylint: disable=too-many-branches
-        protected = False
+        is_protected = False
         content = []
         add_at_the_end = []
         for c in self.content:
             n = name(c)
             if c.hide:
                 if n == 'Guillemet':
-                    protected = not protected
+                    is_protected = not is_protected
                 continue
             if n == 'Variable':
-                if protected or name(self) == 'Affectation':
+                if is_protected or name(self) == 'Affectation':
                     c = VariableProtected(c.content)
             elif n == 'Replacement':
-                if protected or name(self) == 'Affectation':
+                if is_protected or name(self) == 'Affectation':
                     r = ReplacementProtected()
                     r.content = c.content
                     c = r
@@ -2312,7 +2312,7 @@ class Command(Container):
         else:
             h = format_man(definition)
         if h:
-            s.append("Aide : <tt>" + str(h) + "</tt><br>")
+            s.append("Aide : <tt>" + h + "</tt><br>")
         if self.nr_argument < definition["min_arg"]:
             s.append('<span class="command_help_error">'
                      + 'Votre commande manque d\'argument !</span><br>')
