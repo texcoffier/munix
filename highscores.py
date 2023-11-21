@@ -24,7 +24,7 @@
 
 import os
 import ast
-import cgi
+from html import escape
 import time
 import atexit
 import urllib.parse
@@ -154,7 +154,7 @@ class Scores:
                 '<tr><td>{}</tr>'
                 '<tr><td>{}</tr>'
                 '</table>\n').format(
-                "me" if k == me else '', i, cgi.escape(k), self.scores[k]))
+                "me" if k == me else '', i, escape(k), self.scores[k]))
         return t
         
     def the_scores(self, me):
@@ -228,6 +228,7 @@ class MyRequestBroker(http.server.BaseHTTPRequestHandler):
                               ).encode("utf-8"))
                                
 
+print("Wait requests on http://127.0.0.1:8880/")
 server = http.server.HTTPServer(("0.0.0.0", 8880), MyRequestBroker)
 while True:
     server.handle_request()

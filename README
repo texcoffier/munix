@@ -1,0 +1,8 @@
+To prepare the files : « make »
+
+To try the shell explainer, open « test.html »
+
+To try FYP (Find Your Path), run « ./highscores.py »
+
+To try Key versus Mouse, run « ./keyserver.py »
+
