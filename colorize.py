@@ -3695,6 +3695,11 @@ class RegExpBackslash(Invisible):
     def color(self):
         return ["#8F8", "#8F8"]
 
+class RegExpBackslashEnd(RegExpBadEscape):
+    def local_help(self, _position):
+        return "Le backslash doit être suivi du caractère à annuler"
+    def color(self):
+        return ["#F00", "#F88"]
 
 class RegExpNoHelp(RegExpReset):
     def local_help(self, _position):
@@ -3973,6 +3978,16 @@ def regexpparser_top(root, extended):
     t = RegExpTree()
     t.content = r.content
     t.extended = extended
+
+    # Search \ without a character after, make it red with a message
+    for i, item in enumerate(t.content[::-1]):
+        if isinstance(item, RegExpBackslash):
+            t.content[len(t.content)-i-1] = RegExpBackslashEnd('\\')
+            break
+        if item.hide:
+            continue
+        break
+
     return t
 
 class SedReplacementText(Container):
